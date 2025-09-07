@@ -30,7 +30,7 @@ class HomeActivity : AppCompatActivity() {
 
     companion object {
         // 开关：true 允许点击列表 item 进入模拟点检；false 只能通过 NFC 进入点检
-        const val ALLOW_SIMULATED_INSPECTION = true
+        const val ALLOW_SIMULATED_INSPECTION = false
     }
 
     private lateinit var binding: ActivityHomeBinding

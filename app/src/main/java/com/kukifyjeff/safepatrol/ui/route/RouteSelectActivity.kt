@@ -1,13 +1,16 @@
 package com.kukifyjeff.safepatrol.ui.route
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.kukifyjeff.safepatrol.AppDatabase
 import com.kukifyjeff.safepatrol.CsvBootstrapper
+import com.kukifyjeff.safepatrol.R
 import com.kukifyjeff.safepatrol.databinding.ActivityRouteSelectBinding
 import com.kukifyjeff.safepatrol.ui.main.HomeActivity
 import kotlinx.coroutines.launch
@@ -24,7 +27,8 @@ class RouteSelectActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRouteSelectBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        val statusColor = Color.parseColor("#CD9DB9EF") // AARRGGBB
+        statusColor.also { window.statusBarColor = it }
         loadOrImportRoutes()
 
         binding.btnStart.setOnClickListener {

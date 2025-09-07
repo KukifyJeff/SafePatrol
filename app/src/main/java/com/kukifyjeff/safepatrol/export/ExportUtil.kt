@@ -175,8 +175,8 @@ object ExportUtil {
             wb.setWorkbookPassword(modifyPassword, HashAlgorithm.sha512)
         }
 
-        // === 保存 ===
-        val outDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        // === 保存到 App 私有目录（Documents） ===
+        val outDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
             ?: File(context.filesDir, "exports").apply { mkdirs() }
         val day = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val safeRoute = routeName.replace(Regex("[/:*?\"<>|]"), "_")
@@ -294,7 +294,8 @@ object ExportUtil {
             wb.setWorkbookPassword(modifyPassword, HashAlgorithm.sha512)
         }
 
-        val outDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        // === 保存到 App 私有目录（Documents） ===
+        val outDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
             ?: File(context.filesDir, "exports").apply { mkdirs() }
         val day = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val safeRoute = routeName.replace(Regex("[/:*?\"<>|]"), "_")

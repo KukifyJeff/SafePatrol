@@ -20,7 +20,9 @@ import java.io.File
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.kukifyjeff.safepatrol.R
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 
@@ -59,6 +61,7 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ContextCompat.getColor(this, R.color.blue_primary).also { window.statusBarColor = it }
 
         exportPassword = com.kukifyjeff.safepatrol.config.ConfigLoader
             .getExportPassword(this, default = "G7v#pK9!sX2qLm4@")

@@ -22,6 +22,7 @@ import java.time.*
 import java.util.Date
 import java.util.Locale
 import android.util.Log
+import androidx.core.content.ContextCompat
 
 class InspectionActivity : AppCompatActivity() {
 
@@ -43,7 +44,7 @@ class InspectionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inspection)
-
+        ContextCompat.getColor(this, R.color.blue_primary).also { window.statusBarColor = it }
         equipmentId = intent.getStringExtra("equipmentId") ?: ""
         equipmentName = intent.getStringExtra("equipmentName") ?: equipmentId
         freqHours = intent.getIntExtra("freqHours", 8)

@@ -26,7 +26,10 @@ class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nfc_reader)
-        ContextCompat.getColor(this, R.color.blue_primary).also { window.statusBarColor = it }
+        ContextCompat.getColor(this, R.color.blue_primary).also {
+            @Suppress("DEPRECATION")
+            window.statusBarColor = it
+        }
 
         sessionId = intent.getLongExtra("sessionId", 0L)
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)

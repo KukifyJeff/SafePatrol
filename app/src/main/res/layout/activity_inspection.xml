@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="点检详情"
+        android:background="@color/blue_primary"
+        android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
+        app:titleCentered="true"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tvHeader"
+            android:text="点位 - "
+            android:textStyle="bold" android:textSize="20sp"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tvLast"
+            android:text="上次提交：-"
+            android:textSize="13sp" android:textColor="#666"
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvForm"
+            android:layout_width="match_parent" android:layout_height="0dp"
+            android:layout_marginTop="12dp" android:layout_weight="1"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent" android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:text="取消" android:minHeight="56dp"
+                android:backgroundTint="#F44336"
+                android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/btnSubmit"
+                android:text="提交" android:minHeight="56dp"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="#4CAF50"
+                android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

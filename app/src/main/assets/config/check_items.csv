@@ -1,0 +1,8 @@
+equipmentId,itemId,itemName,type,unit,required,minValue,maxValue
+A101,I001,压力表正常,BOOLEAN,,YES,,
+A101,I002,温度,NUMBER,°C,YES,0,60
+B202,I003,流量正常,BOOLEAN,,YES,,
+C305,I004,电流,NUMBER,A,YES,0,200
+D410,D410-I001,温度,NUMBER,°C,NO,0,100
+D410,D410-I002,正常运行,BOOLEAN,,YES,,
+D410,D410-I003,设备无报警,BOOLEAN,,YES,,

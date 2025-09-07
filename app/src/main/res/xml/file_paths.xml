@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- 暴露 App 私有外部目录（/Android/data/<pkg>/files/）的所有子路径 -->
+    <external-files-path
+        name="external_files"
+        path="." />
+</paths>

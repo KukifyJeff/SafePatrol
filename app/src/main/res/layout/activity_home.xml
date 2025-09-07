@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 顶部标题栏 -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue_primary"
+        app:titleTextColor="@color/white"
+        android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
+        app:title="SafePatrol ｜ 华能天津IGCC安巡宝"
+        app:titleCentered="true" />
+
+    <!-- 原本的头部信息（路线/工号/班次）用框包裹，与下方区分 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+
+        android:elevation="2dp"
+        android:padding="8dp"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:id="@+id/tvHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/design_default_color_on_primary"
+            android:textSize="13sp"
+            android:text="" />
+    </LinearLayout>
+
+    <!-- 列表区域，占满中间空间 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPoints"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp" />
+
+    <!-- 底部操作条：两个按钮固定在底部 -->
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:background="?attr/colorSurface"
+        android:elevation="4dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnExport"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:backgroundTint="#4CAF50"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:text="导出" />
+        <Button
+            android:id="@+id/btnScan"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="12dp"
+            android:backgroundTint="@color/blue_variant"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:text="NFC点检" />
+    </LinearLayout>
+</LinearLayout>

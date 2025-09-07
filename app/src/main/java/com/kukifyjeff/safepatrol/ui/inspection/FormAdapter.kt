@@ -12,6 +12,8 @@ import com.kukifyjeff.safepatrol.R
 import com.kukifyjeff.safepatrol.data.db.entities.CheckItemEntity
 import kotlin.math.max
 import androidx.core.graphics.toColorInt
+import com.google.android.material.color.MaterialColors
+import android.content.res.ColorStateList
 
 sealed class FormRow(val item: CheckItemEntity) {
     class Bool(item: CheckItemEntity, var ok: Boolean? = null) : FormRow(item)
@@ -149,26 +151,40 @@ class FormAdapter(private val rows: List<FormRow>) :
             val has = v != null
             val min = row.item.minValue
             val max = row.item.maxValue
+
+            // Themed colors (auto-adapt to dark/light)
+            val cOnSurfaceVar = MaterialColors.getColor(et, com.google.android.material.R.attr.colorOnSurfaceVariant)
+            val cError = MaterialColors.getColor(et, com.google.android.material.R.attr.colorError)
+            val cPrimary = MaterialColors.getColor(et, com.google.android.material.R.attr.colorPrimary)
+            val cOutline = MaterialColors.getColor(et, com.google.android.material.R.attr.colorOutline)
+
+            fun tintEditText(color: Int?) {
+                // Prefer tinting instead of hard background colors for better M3 compatibility
+                et.backgroundTintList = color?.let { ColorStateList.valueOf(it) }
+                // Fallback outline color for some styles
+                et.highlightColor = color ?: cOutline
+            }
+
             when {
                 !has -> {
                     tvStatus.text = "状态：未输入"
-                    tvStatus.setTextColor("#666666".toColorInt())
-                    et.setBackgroundColor(Color.TRANSPARENT)
+                    tvStatus.setTextColor(cOnSurfaceVar)
+                    tintEditText(null) // reset to default tint
                 }
                 (min != null && v!! < min) -> {
                     tvStatus.text = "状态：异常（偏低）"
-                    tvStatus.setTextColor("#C62828".toColorInt())
-                    et.setBackgroundColor("#FFF3F3".toColorInt())
+                    tvStatus.setTextColor(cError)
+                    tintEditText(cError)
                 }
                 (max != null && v!! > max) -> {
                     tvStatus.text = "状态：异常（偏高）"
-                    tvStatus.setTextColor("#C62828".toColorInt())
-                    et.setBackgroundColor("#FFF3F3".toColorInt())
+                    tvStatus.setTextColor(cError)
+                    tintEditText(cError)
                 }
                 else -> {
                     tvStatus.text = "状态：正常"
-                    tvStatus.setTextColor("#2E7D32".toColorInt())
-                    et.setBackgroundColor("#F1FFF1".toColorInt())
+                    tvStatus.setTextColor(cPrimary)
+                    tintEditText(cPrimary)
                 }
             }
         }

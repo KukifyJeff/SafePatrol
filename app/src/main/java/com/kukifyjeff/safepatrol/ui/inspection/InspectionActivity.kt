@@ -32,6 +32,8 @@ class InspectionActivity : AppCompatActivity() {
     private var freqHours: Int = 8
     private var sessionId: Long = 0L
 
+    private var currentSlotIdx: Int = 1
+
     private lateinit var rv: androidx.recyclerview.widget.RecyclerView
     private lateinit var adapter: FormAdapter
     private val rows = mutableListOf<FormRow>()
@@ -46,6 +48,43 @@ class InspectionActivity : AppCompatActivity() {
         equipmentName = intent.getStringExtra("equipmentName") ?: equipmentId
         freqHours = intent.getIntExtra("freqHours", 8)
         sessionId = intent.getLongExtra("sessionId", 0L)
+
+        // ===== 同一班次同一槽位防重复点检 =====
+        fun computeCurrentSlotIdx(freq: Int): Int {
+            if (freq != 4) return 1
+            val zone = ZoneId.systemDefault()
+            val now = ZonedDateTime.now(zone)
+            val today = now.toLocalDate()
+            val boundaries = listOf(
+                ZonedDateTime.of(today, LocalTime.of(0, 30), zone),  // 00:30 夜班起
+                ZonedDateTime.of(today, LocalTime.of(8, 30), zone),  // 08:30 白班起
+                ZonedDateTime.of(today, LocalTime.of(16, 30), zone)  // 16:30 中班起
+            )
+            val yesterdayBoundary = ZonedDateTime.of(today.minusDays(1), LocalTime.of(16, 30), zone)
+            val candidates = (boundaries + yesterdayBoundary).filter { !it.isAfter(now) }
+            val shiftStart = candidates.maxByOrNull { it.toInstant().toEpochMilli() }
+                ?: ZonedDateTime.of(today, LocalTime.of(0, 30), zone)
+            val elapsedMinutes = Duration.between(shiftStart, now).toMinutes()
+            return if (elapsedMinutes < 240) 1 else 2
+        }
+
+        currentSlotIdx = computeCurrentSlotIdx(freqHours)
+
+        lifecycleScope.launch {
+            val existed = withContext(Dispatchers.IO) {
+                db.inspectionDao().getRecordsForPoint(sessionId, equipmentId)
+                    .any { it.slotIndex == currentSlotIdx }
+            }
+            if (existed) {
+                Toast.makeText(
+                    this@InspectionActivity,
+                    "本时段已点检过该点位，无需重复。请在下一时段再进行。",
+                    Toast.LENGTH_LONG
+                ).show()
+                finish()
+                return@launch
+            }
+        }
 
         findViewById<TextView>(R.id.tvHeader).text = "点位：$equipmentName（$equipmentId）"
 
@@ -150,19 +189,18 @@ class InspectionActivity : AppCompatActivity() {
     private fun save(items: List<InspectionRecordItemEntity>) {
         lifecycleScope.launch {
             val recId = withContext(Dispatchers.IO) {
-                val slot = decideSlotIndex(sessionId, equipmentId, freqHours)
                 val recordId = db.inspectionDao().insertRecord(
                     InspectionRecordEntity(
                         sessionId = sessionId,
                         equipmentId = equipmentId,
-                        slotIndex = slot,
+                        slotIndex = if (freqHours == 4) currentSlotIdx else 1,
                         timestamp = System.currentTimeMillis()
                     )
                 )
                 db.inspectionDao().insertItems(items.map { it.copy(recordId = recordId) })
                 recordId
             }
-            Toast.makeText(this@InspectionActivity, "已提交（记录ID：$recId）", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@InspectionActivity, "已提交", Toast.LENGTH_SHORT).show()
             setResult(RESULT_OK)
             finish()
         }

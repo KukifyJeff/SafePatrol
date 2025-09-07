@@ -72,8 +72,13 @@ class InspectionActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             val existed = withContext(Dispatchers.IO) {
-                db.inspectionDao().getRecordsForPoint(sessionId, equipmentId)
-                    .any { it.slotIndex == currentSlotIdx }
+                val window = com.kukifyjeff.safepatrol.utils.ShiftUtils.currentShiftWindowMillis()
+                db.inspectionDao().hasRecordForPointSlotInWindow(
+                    equipId = equipmentId,
+                    slotIndex = if (freqHours == 4) currentSlotIdx else 1,
+                    startMs = window.startMs,
+                    endMs = window.endMs
+                )
             }
             if (existed) {
                 Toast.makeText(
@@ -94,8 +99,22 @@ class InspectionActivity : AppCompatActivity() {
         // 显示上次提交时间
         lifecycleScope.launch {
             val lastText = withContext(Dispatchers.IO) {
-                val recs = db.inspectionDao().getRecordsForPoint(sessionId, equipmentId)
-                recs.lastOrNull()?.let { "上次提交：" + hhmm.format(Date(it.timestamp)) } ?: "上次提交：-"
+                val window = com.kukifyjeff.safepatrol.utils.ShiftUtils.currentShiftWindowMillis()
+                // 查询当前班次内（两个槽位）的最近提交时间
+                val recs1 = db.inspectionDao().getRecordsForPointSlotInWindow(
+                    equipId = equipmentId,
+                    slotIndex = 1,
+                    startMs = window.startMs,
+                    endMs = window.endMs
+                )
+                val recs2 = if (freqHours == 4) db.inspectionDao().getRecordsForPointSlotInWindow(
+                    equipId = equipmentId,
+                    slotIndex = 2,
+                    startMs = window.startMs,
+                    endMs = window.endMs
+                ) else emptyList()
+                val latest = (recs1 + recs2).maxByOrNull { it.timestamp }
+                latest?.let { "上次提交：" + hhmm.format(Date(it.timestamp)) } ?: "上次提交：-"
             }
             findViewById<TextView>(R.id.tvLast).text = lastText
         }

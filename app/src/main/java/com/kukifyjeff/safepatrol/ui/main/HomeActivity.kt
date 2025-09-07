@@ -2,7 +2,6 @@ package com.kukifyjeff.safepatrol.ui.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,9 +13,23 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import androidx.core.content.FileProvider
+import kotlinx.coroutines.withContext
+import com.kukifyjeff.safepatrol.utils.ShiftUtils
+import kotlinx.coroutines.Dispatchers
 import java.io.File
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 
 class HomeActivity : AppCompatActivity() {
+
+    companion object {
+        // 开关：true 允许点击列表 item 进入模拟点检；false 只能通过 NFC 进入点检
+        const val ALLOW_SIMULATED_INSPECTION = true
+    }
 
     private lateinit var binding: ActivityHomeBinding
     private var sessionId: Long = 0L
@@ -29,6 +42,18 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var exportPassword: String
 
     private lateinit var adapter: PointStatusAdapter
+
+    private fun currentShiftId(): String {
+        val now = java.time.LocalTime.now()
+        val t0830 = java.time.LocalTime.of(8, 30)
+        val t1630 = java.time.LocalTime.of(16, 30)
+        val t0030 = java.time.LocalTime.of(0, 30)
+        return when {
+            !now.isBefore(t0830) && now.isBefore(t1630) -> "白班"
+            !now.isBefore(t1630) || now.isBefore(t0030) -> "中班"
+            else -> "夜班"
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,18 +69,22 @@ class HomeActivity : AppCompatActivity() {
         operatorId = intent.getStringExtra("operatorId") ?: ""
 
         val shift = resolveCurrentShift()
-        binding.tvHeader.text = "路线：$routeName    工号：$operatorId    班次：${shift.name}(${shift.rangeText})"
+        val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date())
+        binding.tvHeader.text = "路线：$routeName    工号：$operatorId\n班次：${shift.name}(${shift.rangeText})    日期：$today"
 
         // RecyclerView 基本设置
         binding.rvPoints.layoutManager = LinearLayoutManager(this)
         adapter = PointStatusAdapter(emptyList()) { point ->
-            // 点击点位 → 进入点检表单页
-            val it = Intent(this, InspectionActivity::class.java)
-                .putExtra("equipmentId", point.equipmentId)
-                .putExtra("equipmentName", point.name)
-                .putExtra("freqHours", point.freqHours)
-                .putExtra("sessionId", sessionId)
-            startActivity(it)
+            if (ALLOW_SIMULATED_INSPECTION) {
+                val it = Intent(this, InspectionActivity::class.java)
+                    .putExtra("equipmentId", point.equipmentId)
+                    .putExtra("equipmentName", point.name)
+                    .putExtra("freqHours", point.freqHours)
+                    .putExtra("sessionId", sessionId)
+                startActivity(it)
+            } else {
+//                Toast.makeText(this, "请通过 NFC 标签进行点检", Toast.LENGTH_SHORT).show()
+            }
         }
         binding.rvPoints.adapter = adapter
 
@@ -76,6 +105,67 @@ class HomeActivity : AppCompatActivity() {
         }
 
         // 按钮（后续接入真实逻辑）
+        binding.btnClearData.setOnClickListener {
+            // 第一次确认
+            AlertDialog.Builder(this)
+                .setTitle("确认删除？")
+                .setMessage("此操作将清除所有巡检会话、记录与检查项，且不可恢复。是否继续？")
+                .setNegativeButton("取消", null)
+                .setPositiveButton("继续") { _, _ ->
+                    // 第二次确认：输入“删除”
+                    val input = EditText(this).apply {
+                        hint = "请输入：删除"
+                    }
+                    AlertDialog.Builder(this)
+                        .setTitle("二次确认")
+                        .setMessage("为避免误操作，请输入“删除”两个字确认。")
+                        .setView(input)
+                        .setNegativeButton("取消", null)
+                        .setPositiveButton("确认") { _, _ ->
+                            val text = input.text?.toString()?.trim()
+                            if (text == "删除") {
+                                lifecycleScope.launch {
+                                    try {
+                                        val newSessionId = withContext(Dispatchers.IO) {
+                                            val dao = db.inspectionDao()
+                                            // 顺序很重要：先删子表再删父表
+                                            dao.deleteAllRecordItems()
+                                            dao.deleteAllRecords()
+                                            dao.deleteAllSessions()
+
+                                            // 清空后立即创建一个新的 session，避免后续依赖 sessionId 的逻辑崩溃
+                                            val shiftNow = resolveCurrentShift()
+                                            dao.insertSession(
+                                                com.kukifyjeff.safepatrol.data.db.entities.InspectionSessionEntity(
+                                                    routeId = routeId,
+                                                    routeName = routeName,
+                                                    operatorId = operatorId,
+                                                    shiftId = shiftNow.id
+                                                )
+                                            )
+                                        }
+                                        // 更新当前持有的 sessionId
+                                        sessionId = newSessionId
+
+                                        Toast.makeText(this@HomeActivity, "已清除所有点检记录，并已创建新的会话", Toast.LENGTH_LONG).show()
+                                        // 刷新首页状态
+                                        refreshPointStatuses()
+                                    } catch (e: Exception) {
+                                        Toast.makeText(
+                                            this@HomeActivity,
+                                            "删除失败：" + (e.message ?: "未知错误"),
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
+                            } else {
+                                Toast.makeText(this, "输入不正确，已取消", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        .show()
+                }
+                .show()
+        }
         binding.btnScan.setOnClickListener {
             val it = Intent(this, com.kukifyjeff.safepatrol.ui.inspection.NfcReaderActivity::class.java)
                 .putExtra("sessionId", sessionId)
@@ -88,8 +178,15 @@ class HomeActivity : AppCompatActivity() {
                     // 打开无需密码，修改需密码（你可改为从配置读）
                     val modifyPwd = exportPassword
 
-                    val path = com.kukifyjeff.safepatrol.export.ExportUtil
-                        .exportSessionXlsx(this@HomeActivity, db, sessionId, modifyPwd)
+                    val path = com.kukifyjeff.safepatrol.export.ExportUtil.exportCurrentShiftXlsx(
+                        context = this@HomeActivity,
+                        db = db,
+                        routeId = routeId,
+                        routeName = routeName,
+                        operatorId = operatorId,             // 你在开班输入的工号
+                        shiftId = currentShiftId(),          // 例如 "白班" / "中班" / "夜班"
+                        modifyPassword = modifyPwd
+                    )
 
                     val file = java.io.File(path)
                     val uri = androidx.core.content.FileProvider.getUriForFile(
@@ -117,26 +214,77 @@ class HomeActivity : AppCompatActivity() {
         lifecycleScope.launch { refreshPointStatuses() }
     }
 
-    private suspend fun refreshPointStatuses() {
-        val points = db.pointDao().getByRoute(routeId)
-        val uiList = points.map { p ->
-            val recs = db.inspectionDao().getRecordsForPoint(sessionId, p.equipmentId)
+//    private suspend fun refreshPointStatuses() {
+//        val points = db.pointDao().getByRoute(routeId)
+//        val uiList = points.map { p ->
+//            val recs = db.inspectionDao().getRecordsForPoint(sessionId, p.equipmentId)
+//
+//            fun latestForSlot(slot: Int) =
+//                recs.filter { it.slotIndex == slot }
+//                    .maxByOrNull { it.timestamp }
+//
+//            val slots = if (p.freqHours == 4) {
+//                val first = latestForSlot(1)
+//                val second = latestForSlot(2)
+//                listOf(
+//                    SlotStatus("第一次", first != null, first?.let { hhmm(it.timestamp) }),
+//                    SlotStatus("第二次", second != null, second?.let { hhmm(it.timestamp) })
+//                )
+//            } else {
+//                val only = recs.maxByOrNull { it.timestamp }
+//                listOf(
+//                    SlotStatus("本班", only != null, only?.let { hhmm(it.timestamp) })
+//                )
+//            }
+//
+//            PointStatusUi(
+//                equipmentId = p.equipmentId,
+//                name = p.name,
+//                location = p.location,
+//                freqHours = p.freqHours,
+//                slots = slots
+//            )
+//        }
+//        adapter.submitList(uiList)
+//    }
+private suspend fun refreshPointStatuses() {
+    val points = withContext(Dispatchers.IO) {
+        db.pointDao().getByRoute(routeId)
+    }
 
-            fun latestForSlot(slot: Int) =
-                recs.filter { it.slotIndex == slot }
-                    .maxByOrNull { it.timestamp }
+    // 获取当前班次时间窗
+    val window = ShiftUtils.currentShiftWindowMillis()
 
-            val slots = if (p.freqHours == 4) {
-                val first = latestForSlot(1)
-                val second = latestForSlot(2)
+    // 构建 UI 列表（每个点位）
+    val uiList = withContext(Dispatchers.IO) {
+        points.map { p: com.kukifyjeff.safepatrol.data.db.entities.PointEntity ->
+            val freq = p.freqHours
+
+            // 槽位1（必查）
+            val recs1 = db.inspectionDao().getRecordsForPointSlotInWindow(
+                equipId = p.equipmentId,
+                slotIndex = 1,
+                startMs = window.startMs,
+                endMs = window.endMs
+            )
+            val latest1 = recs1.maxByOrNull { it.timestamp }
+
+            val slots: List<SlotStatus> = if (freq == 4) {
+                // 槽位2（仅 4h 查询）
+                val recs2 = db.inspectionDao().getRecordsForPointSlotInWindow(
+                    equipId = p.equipmentId,
+                    slotIndex = 2,
+                    startMs = window.startMs,
+                    endMs = window.endMs
+                )
+                val latest2 = recs2.maxByOrNull { it.timestamp }
                 listOf(
-                    SlotStatus("第一次", first != null, first?.let { hhmm(it.timestamp) }),
-                    SlotStatus("第二次", second != null, second?.let { hhmm(it.timestamp) })
+                    SlotStatus("第一次", latest1 != null, latest1?.let { hhmm(it.timestamp) }),
+                    SlotStatus("第二次", latest2 != null, latest2?.let { hhmm(it.timestamp) })
                 )
             } else {
-                val only = recs.maxByOrNull { it.timestamp }
                 listOf(
-                    SlotStatus("本班", only != null, only?.let { hhmm(it.timestamp) })
+                    SlotStatus("本班", latest1 != null, latest1?.let { hhmm(it.timestamp) })
                 )
             }
 
@@ -144,13 +292,17 @@ class HomeActivity : AppCompatActivity() {
                 equipmentId = p.equipmentId,
                 name = p.name,
                 location = p.location,
-                freqHours = p.freqHours,
+                freqHours = freq,
                 slots = slots
             )
         }
-        adapter.submitList(uiList)
     }
 
+    // 更新 RecyclerView/ListView
+    withContext(Dispatchers.Main) {
+        adapter.submitList(uiList)
+    }
+}
     // 将时间戳格式化为 HH:mm
     private fun hhmm(ts: Long): String = java.text.SimpleDateFormat("HH:mm", Locale.getDefault())
         .format(java.util.Date(ts))

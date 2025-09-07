@@ -109,6 +109,7 @@ object ExportUtil {
             value: String?,
             abnormal: Boolean
         ) {
+
             val p = pointMap[rec.equipmentId]
             val eqName = p?.name ?: ""
             val row = sheet.createRow(sheet.lastRowNum + 1)
@@ -128,7 +129,7 @@ object ExportUtil {
                 eqName,                            // F
                 hh.format(Date(rec.timestamp)),    // G
                 tz,                                // H
-                itemId.toString(),                 // I
+                itemId,                 // I
                 resultText                         // J
             )
             cells.forEachIndexed { idx, v -> row.createCell(idx).setCellValue(v) }
@@ -167,7 +168,7 @@ object ExportUtil {
         if (readOnlyRecommended) {
             val ctWb = wb.ctWorkbook
             val fs = if (ctWb.isSetFileSharing) ctWb.fileSharing else ctWb.addNewFileSharing()
-            fs.setReadOnlyRecommended(true)
+            fs.readOnlyRecommended = true
         }
         if (modifyPassword.isNotEmpty()) {
             wb.lockStructure()
@@ -175,16 +176,132 @@ object ExportUtil {
         }
 
         // === 保存 ===
-        val outDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+        val outDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             ?: File(context.filesDir, "exports").apply { mkdirs() }
         val day = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val safeRoute = routeName.replace(Regex("[\\/:*?\"<>|]"), "_")
-        val safeShift = shiftId.replace(Regex("[\\/:*?\"<>|]"), "_")
+        val safeRoute = routeName.replace(Regex("[/:*?\"<>|]"), "_")
+        val safeShift = shiftId.replace(Regex("[/:*?\"<>|]"), "_")
         val xlsx = File(outDir, "SafePatrol_${day}_${safeRoute}_${safeShift}.xlsx")
 
         xlsx.outputStream().use { wb.write(it) }
         wb.close()
 
+        xlsx.absolutePath
+    }
+
+    /**
+     * 导出当前班次的点检数据为 XLSX（忽略 session/operator）。
+     * 与 exportSessionXlsx 相同格式，但使用时间窗。
+     * operatorId 和 shiftId 作为参数传入。
+     */
+    suspend fun exportCurrentShiftXlsx(
+        context: Context,
+        db: AppDatabase,
+        routeId: String,
+        routeName: String,
+        operatorId: String,
+        shiftId: String,
+        modifyPassword: String,
+        readOnlyRecommended: Boolean = true
+    ): String = withContext(Dispatchers.IO) {
+        val w = com.kukifyjeff.safepatrol.utils.ShiftUtils.currentShiftWindowMillis()
+
+        val points = db.pointDao().getByRoute(routeId)
+        val pointMap = points.associateBy { it.equipmentId }
+        val equipSet = pointMap.keys
+
+        val allRecsInWindow = db.inspectionDao().getRecordsInWindow(w.startMs, w.endMs)
+        val records = allRecsInWindow.filter { equipSet.contains(it.equipmentId) }
+        if (records.isEmpty()) throw IllegalStateException("当前班次内无该路线的点检记录")
+
+        val recordIds = records.map { it.recordId }
+        val allItems = db.inspectionDao().getItemsForRecordIds(recordIds)
+        val itemsByRecord = allItems.groupBy { it.recordId }
+        val sessionIds = records.map { it.sessionId }.distinct()
+        val sessionsMap = db.inspectionDao().getSessionsByIds(sessionIds).associateBy { it.sessionId }
+
+        val wb = XSSFWorkbook()
+        val header = arrayOf(
+            "routeId","routeName","operatorId","shiftId","equipmentId","equipmentName",
+            "recordTimeLocal","timezone","checkInfo","result"
+        )
+        fun createSheet(name: String) = wb.createSheet(name).apply { createFreezePane(0,1) }
+        val s4h1 = createSheet("4h_第一次")
+        val s4h2 = createSheet("4h_第二次")
+        val s8h  = createSheet("8h")
+        val headStyle = wb.createCellStyle().apply { val f = wb.createFont().apply { bold = true }; setFont(f); wrapText = true }
+        fun putHeader(sh: org.apache.poi.ss.usermodel.Sheet) { val r = sh.createRow(0); header.forEachIndexed { i,t -> r.createCell(i).apply { setCellValue(t); cellStyle=headStyle } } }
+        putHeader(s4h1); putHeader(s4h2); putHeader(s8h)
+
+        val hh = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val tzId = TimeZone.getDefault().id
+
+        fun appendItemRow(sh: org.apache.poi.ss.usermodel.Sheet, rec: InspectionRecordEntity, itemId: String, value: String?, abnormal: Boolean) {
+            val sess = sessionsMap[rec.sessionId]
+            val opOut = sess?.operatorId ?: operatorId   // 找不到时回退到当前传入值
+            val shiftOut = sess?.shiftId ?: shiftId
+            val p = pointMap[rec.equipmentId]
+            val eqName = p?.name ?: ""
+            val resultText = if (value.isNullOrBlank()) {
+                if (abnormal) "(异常)" else "(正常)"
+            } else {
+                "$value(${if (abnormal) "异常" else "正常"})"
+            }
+            val cells = arrayOf(
+                routeId,
+                routeName,
+                opOut,      // 改为从 session 里取
+                shiftOut,   // 改为从 session 里取
+                rec.equipmentId,
+                eqName,
+                hh.format(Date(rec.timestamp)),
+                tzId,
+                itemId,
+                resultText
+            )
+            val row = sh.createRow(sh.lastRowNum + 1)
+            cells.forEachIndexed { idx,v -> row.createCell(idx).setCellValue(v) }
+        }
+
+        records.forEach { rec ->
+            val p = pointMap[rec.equipmentId]
+            val freq = p?.freqHours ?: 8
+            val target = when {
+                freq == 4 && rec.slotIndex == 1 -> s4h1
+                freq == 4 && rec.slotIndex == 2 -> s4h2
+                else -> s8h
+            }
+            itemsByRecord[rec.recordId].orEmpty().forEach { itm ->
+                appendItemRow(target, rec, itm.itemId, itm.value, itm.abnormal)
+            }
+        }
+
+        arrayOf(s4h1,s4h2,s8h).forEach { sh ->
+            for (i in header.indices) {
+                try { sh.autoSizeColumn(i) } catch (_:Throwable) {}
+                val wpx = sh.getColumnWidth(i).coerceAtMost(80*256)
+                sh.setColumnWidth(i, wpx)
+            }
+        }
+
+        if (readOnlyRecommended) {
+            val ctWb = wb.ctWorkbook
+            val fs = if (ctWb.isSetFileSharing) ctWb.fileSharing else ctWb.addNewFileSharing()
+            fs.readOnlyRecommended = true
+        }
+        if (modifyPassword.isNotEmpty()) {
+            wb.lockStructure()
+            wb.setWorkbookPassword(modifyPassword, HashAlgorithm.sha512)
+        }
+
+        val outDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            ?: File(context.filesDir, "exports").apply { mkdirs() }
+        val day = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val safeRoute = routeName.replace(Regex("[/:*?\"<>|]"), "_")
+        val safeShift = shiftId.replace(Regex("[/:*?\"<>|]"), "_")
+        val xlsx = File(outDir, "SafePatrol_${day}_${safeRoute}_${safeShift}.xlsx")
+        xlsx.outputStream().use { wb.write(it) }
+        wb.close()
         xlsx.absolutePath
     }
 }

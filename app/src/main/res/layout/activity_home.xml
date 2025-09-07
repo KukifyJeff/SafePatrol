@@ -30,7 +30,6 @@
             android:id="@+id/tvHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/design_default_color_on_primary"
             android:textSize="13sp"
             android:text="" />
     </LinearLayout>
@@ -53,14 +52,26 @@
         android:elevation="4dp"
         android:orientation="horizontal">
 
+
+        <Button
+            android:id="@+id/btnClearData"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:backgroundTint="#F44336"
+            android:textColor="@color/white"
+            android:text="清除数据" />
+
         <Button
             android:id="@+id/btnExport"
             android:layout_width="0dp"
             android:layout_height="56dp"
+            android:layout_marginStart="12dp"
             android:backgroundTint="#4CAF50"
             android:layout_weight="1"
             android:textColor="@color/white"
             android:text="导出" />
+
         <Button
             android:id="@+id/btnScan"
             android:layout_width="0dp"
@@ -70,5 +81,6 @@
             android:layout_weight="1"
             android:textColor="@color/white"
             android:text="NFC点检" />
+
     </LinearLayout>
 </LinearLayout>

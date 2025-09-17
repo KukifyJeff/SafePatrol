@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.kukifyjeff.safepatrol.ui.main
 
 import android.content.Intent
@@ -12,25 +14,20 @@ import kotlinx.coroutines.launch
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import androidx.core.content.FileProvider
 import kotlinx.coroutines.withContext
 import com.kukifyjeff.safepatrol.utils.ShiftUtils
 import kotlinx.coroutines.Dispatchers
-import java.io.File
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.kukifyjeff.safepatrol.R
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.launch
 
 class HomeActivity : AppCompatActivity() {
 
     companion object {
         // 开关：true 允许点击列表 item 进入模拟点检；false 只能通过 NFC 进入点检
-        const val ALLOW_SIMULATED_INSPECTION = false
+        const val ALLOW_SIMULATED_INSPECTION = true
     }
 
     private lateinit var binding: ActivityHomeBinding
@@ -46,10 +43,10 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var adapter: PointStatusAdapter
 
     private fun currentShiftId(): String {
-        val now = java.time.LocalTime.now()
-        val t0830 = java.time.LocalTime.of(8, 30)
-        val t1630 = java.time.LocalTime.of(16, 30)
-        val t0030 = java.time.LocalTime.of(0, 30)
+        val now = LocalTime.now()
+        val t0830 = LocalTime.of(8, 30)
+        val t1630 = LocalTime.of(16, 30)
+        val t0030 = LocalTime.of(0, 30)
         return when {
             !now.isBefore(t0830) && now.isBefore(t1630) -> "白班"
             !now.isBefore(t1630) || now.isBefore(t0030) -> "中班"
@@ -72,7 +69,7 @@ class HomeActivity : AppCompatActivity() {
         operatorId = intent.getStringExtra("operatorId") ?: ""
 
         val shift = resolveCurrentShift()
-        val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date())
+        val today = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(java.util.Date())
         binding.tvHeader.text = "路线：$routeName    工号：$operatorId\n班次：${shift.name}(${shift.rangeText})    日期：$today"
 
         // RecyclerView 基本设置
@@ -198,14 +195,14 @@ class HomeActivity : AppCompatActivity() {
                         file
                     )
 
-                    val share = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                    val share = Intent(Intent.ACTION_SEND).apply {
                         type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                        putExtra(android.content.Intent.EXTRA_STREAM, uri)
-                        addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     }
-                    startActivity(android.content.Intent.createChooser(share, "分享导出文件"))
+                    startActivity(Intent.createChooser(share, "分享导出文件"))
                 } catch (t: Throwable) {
-                    android.widget.Toast.makeText(this@HomeActivity, "导出失败：${t.message}", android.widget.Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@HomeActivity, "导出失败：${t.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }

@@ -149,6 +149,15 @@ class HomeActivity : AppCompatActivity() {
                                                 )
                                             )
                                         }
+                                        // 删除应用私有 Documents 文件夹下的所有文件
+                                        val docsDir = getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS)
+                                        if (docsDir != null && docsDir.exists() && docsDir.isDirectory) {
+                                            docsDir.listFiles()?.forEach { file ->
+                                                try {
+                                                    file.deleteRecursively()
+                                                } catch (_: Exception) {}
+                                            }
+                                        }
                                         // 更新当前持有的 sessionId
                                         sessionId = newSessionId
 

@@ -76,7 +76,6 @@ object ExportUtil {
 
         val header = arrayOf(
             "recordTimestamp",
-            "sessionId",
             "routeId",
             "routeName",
             "operatorId",
@@ -116,7 +115,6 @@ object ExportUtil {
                 val r = sheet.createRow(startRowIdx)
                 val cells = arrayOf(
                     sdf.format(Date(rec.timestamp)),
-                    rec.sessionId.toString(),
                     routeId,
                     routeName,
                     operatorIdOut,
@@ -137,7 +135,6 @@ object ExportUtil {
                 val r = sheet.createRow(next)
                 val cells = arrayOf(
                     sdf.format(Date(rec.timestamp)),
-                    rec.sessionId.toString(),
                     routeId,
                     routeName,
                     operatorIdOut,
@@ -168,24 +165,46 @@ object ExportUtil {
             sheet.setColumnWidth(i, w)
         }
 
-        // 只读推荐 + 修改密码
+        // 只读推荐
         if (readOnlyRecommended) {
             val ctWb = wb.ctWorkbook
             val fs = if (ctWb.isSetFileSharing) ctWb.fileSharing else ctWb.addNewFileSharing()
             fs.readOnlyRecommended = true
         }
-        if (modifyPassword.isNotEmpty()) {
-            wb.lockStructure()
-            wb.setWorkbookPassword(modifyPassword, HashAlgorithm.sha512)
-        }
 
-        // 保存到 App 私有目录（Documents）
+        // 保存到 App 私有目录（Documents），并根据是否加密进行处理
+        val filename = String.format(Locale.getDefault(), "SafePatrol_Monthly-%04d-%02d.xlsx", year, month)
         val outDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
             ?: File(context.filesDir, "exports").apply { mkdirs() }
-        val filename = String.format(Locale.getDefault(), "SafePatrol_Monthly-%04d-%02d.xlsx", year, month)
         val xlsx = File(outDir, filename)
-        xlsx.outputStream().use { wb.write(it) }
-        wb.close()
+
+        if (modifyPassword.isNotEmpty()) {
+            // 先将工作簿写入内存
+            val bos = java.io.ByteArrayOutputStream()
+            wb.write(bos)
+            wb.close()
+
+            val pkg = org.apache.poi.openxml4j.opc.OPCPackage.open(java.io.ByteArrayInputStream(bos.toByteArray()))
+            val info = org.apache.poi.poifs.crypt.EncryptionInfo(org.apache.poi.poifs.crypt.EncryptionMode.standard)
+            val encryptor = info.encryptor
+            encryptor.confirmPassword(modifyPassword)
+
+            // 使用 POIFSFileSystem 来生成加密 Excel
+            val fs = org.apache.poi.poifs.filesystem.POIFSFileSystem()
+            encryptor.getDataStream(fs).use { ds ->
+                pkg.save(ds)
+            }
+            pkg.close()
+
+            // 将加密后的 POIFS 写入文件
+            xlsx.outputStream().use { fos ->
+                fs.writeFilesystem(fos)
+            }
+            fs.close()
+        } else {
+            xlsx.outputStream().use { wb.write(it) }
+            wb.close()
+        }
         xlsx.absolutePath
     }
 }

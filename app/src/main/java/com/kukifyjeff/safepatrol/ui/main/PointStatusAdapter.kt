@@ -29,7 +29,12 @@ class PointStatusAdapter(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = data[position]
-        val freqLabel = if (item.freqHours == 4) "4h/次" else "8h/次"
+        val freqLabel = when (item.freqHours) {
+            2 -> "2h/次"
+            4 -> "4h/次"
+            8 -> "8h/次"
+            else -> "${item.freqHours}h/次"
+        }
         holder.tvTitle.text = "${item.equipmentId} ${item.name}  ($freqLabel)"
         holder.tvSub.text = "位置：${item.location}"
 

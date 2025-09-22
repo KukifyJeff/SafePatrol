@@ -18,10 +18,15 @@ import kotlinx.coroutines.withContext
 import com.kukifyjeff.safepatrol.utils.ShiftUtils
 import kotlinx.coroutines.Dispatchers
 import android.widget.EditText
+import android.widget.ProgressBar
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.kukifyjeff.safepatrol.R
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.view.Gravity
 
 class HomeActivity : AppCompatActivity() {
 
@@ -104,7 +109,7 @@ class HomeActivity : AppCompatActivity() {
             refreshPointStatuses()
         }
 
-        // 按钮（后续接入真实逻辑）
+        // 按钮
         binding.btnClearData.setOnClickListener {
             // 第一次确认
             AlertDialog.Builder(this)
@@ -171,20 +176,47 @@ class HomeActivity : AppCompatActivity() {
                 .putExtra("sessionId", sessionId)
             startActivity(it)
         }
-
         binding.btnExport.setOnClickListener {
+            val progressLayout = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                setPadding(50, 50, 50, 50)
+                gravity = Gravity.CENTER
+                addView(ProgressBar(context).apply { isIndeterminate = true })
+                val tv = TextView(context).apply {
+                    text = "正在导出中，请稍后"
+                    setPadding(0, 30, 0, 0)
+                    textSize = 16f
+                    gravity = Gravity.CENTER_HORIZONTAL
+                }
+                addView(tv)
+            }
+            val progressDialog = AlertDialog.Builder(this)
+                .setView(progressLayout)
+                .setCancelable(false)
+                .create()
+            progressDialog.setCanceledOnTouchOutside(false)
+            // 禁止窗口触摸
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+            progressDialog.show()
+
             lifecycleScope.launch {
                 try {
                     // 打开无需密码，修改需密码（你可改为从配置读）
                     val modifyPwd = exportPassword
 
-                    val path = com.kukifyjeff.safepatrol.export.ExportUtil.exportCurrentShiftXlsx(
+                    // 默认导出当前月，若需导出其他月份可改为 UI 选择年/月
+                    val cal = java.util.Calendar.getInstance()
+                    val year = cal.get(java.util.Calendar.YEAR)
+                    val month = cal.get(java.util.Calendar.MONTH) + 1 // Calendar.MONTH 从 0 开始
+
+                    val path = com.kukifyjeff.safepatrol.export.ExportUtil.exportMonthlyXlsx(
                         context = this@HomeActivity,
                         db = db,
-                        routeId = routeId,
-                        routeName = routeName,
-                        operatorId = operatorId,             // 你在开班输入的工号
-                        shiftId = currentShiftId(),          // 例如 "白班" / "中班" / "夜班"
+                        year = year,
+                        month = month,
                         modifyPassword = modifyPwd
                     )
 
@@ -200,8 +232,16 @@ class HomeActivity : AppCompatActivity() {
                         putExtra(Intent.EXTRA_STREAM, uri)
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     }
+
+                    // 关闭加载对话框并恢复窗口交互
+                    progressDialog.dismiss()
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+
                     startActivity(Intent.createChooser(share, "分享导出文件"))
                 } catch (t: Throwable) {
+                    // 关闭加载对话框并恢复窗口交互
+                    try { progressDialog.dismiss() } catch (_: Throwable) {}
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     Toast.makeText(this@HomeActivity, "导出失败：${t.message}", Toast.LENGTH_LONG).show()
                 }
             }
@@ -214,39 +254,6 @@ class HomeActivity : AppCompatActivity() {
         lifecycleScope.launch { refreshPointStatuses() }
     }
 
-//    private suspend fun refreshPointStatuses() {
-//        val points = db.pointDao().getByRoute(routeId)
-//        val uiList = points.map { p ->
-//            val recs = db.inspectionDao().getRecordsForPoint(sessionId, p.equipmentId)
-//
-//            fun latestForSlot(slot: Int) =
-//                recs.filter { it.slotIndex == slot }
-//                    .maxByOrNull { it.timestamp }
-//
-//            val slots = if (p.freqHours == 4) {
-//                val first = latestForSlot(1)
-//                val second = latestForSlot(2)
-//                listOf(
-//                    SlotStatus("第一次", first != null, first?.let { hhmm(it.timestamp) }),
-//                    SlotStatus("第二次", second != null, second?.let { hhmm(it.timestamp) })
-//                )
-//            } else {
-//                val only = recs.maxByOrNull { it.timestamp }
-//                listOf(
-//                    SlotStatus("本班", only != null, only?.let { hhmm(it.timestamp) })
-//                )
-//            }
-//
-//            PointStatusUi(
-//                equipmentId = p.equipmentId,
-//                name = p.name,
-//                location = p.location,
-//                freqHours = p.freqHours,
-//                slots = slots
-//            )
-//        }
-//        adapter.submitList(uiList)
-//    }
 private suspend fun refreshPointStatuses() {
     val points = withContext(Dispatchers.IO) {
         db.pointDao().getByRoute(routeId)
@@ -259,35 +266,26 @@ private suspend fun refreshPointStatuses() {
     val uiList = withContext(Dispatchers.IO) {
         points.map { p: com.kukifyjeff.safepatrol.data.db.entities.PointEntity ->
             val freq = p.freqHours
+            // 8h -> 1 个槽；4h -> 2 个槽；2h -> 4 个槽；其它默认 1 个槽
+            val nSlots = when (freq) {
+                2 -> 4
+                4 -> 2
+                8 -> 1
+                else -> 1
+            }
+            val slotTitles = arrayOf("第一次", "第二次", "第三次", "第四次")
 
-            // 槽位1（必查）
-            val recs1 = db.inspectionDao().getRecordsForPointSlotInWindow(
-                equipId = p.equipmentId,
-                slotIndex = 1,
-                startMs = window.startMs,
-                endMs = window.endMs
-            )
-            val latest1 = recs1.maxByOrNull { it.timestamp }
-
-            val slots: List<SlotStatus> = if (freq == 4) {
-                // 槽位2（仅 4h 查询）
-                val recs2 = db.inspectionDao().getRecordsForPointSlotInWindow(
+            val slots: List<SlotStatus> = (1..nSlots).map { slotIdx ->
+                val recs = db.inspectionDao().getRecordsForPointSlotInWindow(
                     equipId = p.equipmentId,
-                    slotIndex = 2,
+                    slotIndex = slotIdx,
                     startMs = window.startMs,
                     endMs = window.endMs
                 )
-                val latest2 = recs2.maxByOrNull { it.timestamp }
-                listOf(
-                    SlotStatus("第一次", latest1 != null, latest1?.let { hhmm(it.timestamp) }),
-                    SlotStatus("第二次", latest2 != null, latest2?.let { hhmm(it.timestamp) })
-                )
-            } else {
-                listOf(
-                    SlotStatus("本班", latest1 != null, latest1?.let { hhmm(it.timestamp) })
-                )
+                val latest = recs.maxByOrNull { it.timestamp }
+                val title = if (nSlots == 1) "本班" else slotTitles[slotIdx - 1]
+                SlotStatus(title, latest != null, latest?.let { hhmm(it.timestamp) })
             }
-
             PointStatusUi(
                 equipmentId = p.equipmentId,
                 name = p.name,

@@ -70,11 +70,22 @@
                 android:layout_marginStart="6dp"
                 android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
         </LinearLayout>
-
+        <Button
+            android:id="@+id/btnConfirmNumber"
+            android:text="确认数值"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:textSize="18sp"
+            android:backgroundTint="@color/teal_700"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center" />
         <TextView
             android:id="@+id/tvStatus"
             android:text="状态：--" android:textSize="13sp"
             android:layout_marginTop="6dp"
             android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

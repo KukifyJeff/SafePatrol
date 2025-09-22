@@ -1,5 +1,5 @@
 equipmentId,name,location,freqHours,templateId,routeId
-D410,电子间,集控楼,4,T004,R1
+D410,电子间,集控楼,2,T004,R1
 B205,集控楼UPS,集控楼,4,T002,R1
 B208,化工岛PC,电气综合楼1F,4,T002,R1
 B209,柴油发电机,电气综合楼1F,4,T002,R1

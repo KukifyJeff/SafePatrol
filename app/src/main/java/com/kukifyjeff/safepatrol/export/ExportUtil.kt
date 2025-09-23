@@ -1,19 +1,17 @@
 package com.kukifyjeff.safepatrol.export
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
 import com.kukifyjeff.safepatrol.AppDatabase
-import com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.apache.poi.poifs.crypt.HashAlgorithm
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 
 /**
  * 导出工具（按月导出，单 Sheet，按时间顺序导出所有点位的点检记录）
@@ -49,25 +47,37 @@ object ExportUtil {
         val endMsExclusive = cal.timeInMillis
         val endMs = endMsExclusive - 1L
 
-        // 查询当月内所有记录（按时间顺序）
-        val allRecordsInWindow = db.inspectionDao().getRecordsInWindow(startMs, endMs)
-            .sortedBy { it.timestamp }
-
-        // 如果没有记录可以抛出或返回空文件，我们选择生成空表并返回路径
-        // 取出所有 recordIds 并批量查询 items
-        val recordIds = allRecordsInWindow.map { it.recordId }
-        val itemsByRecord = if (recordIds.isEmpty()) emptyMap()
+        // 查询当月内所有实际记录（用于按 recordId 批量加载 items）
+        val actualRecords = db.inspectionDao().getRecordsInWindow(startMs, endMs).sortedBy { it.timestamp }
+        val recordIds = actualRecords.map { it.recordId }
+        val itemsByRecord = if (recordIds.isEmpty()) emptyMap<Long, List<com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordItemEntity>>()
         else db.inspectionDao().getItemsForRecordIds(recordIds).groupBy { it.recordId }
 
-        // 预取相关 session 与 point 信息，方便在导出时填充
-        val sessionIds = allRecordsInWindow.map { it.sessionId }.distinct()
-        val sessionsMap = if (sessionIds.isEmpty()) emptyMap()
+        // 预取 session 信息（按 sessionId）
+        val sessionIds = actualRecords.map { it.sessionId }.distinct()
+        val sessionsMap = if (sessionIds.isEmpty()) emptyMap<Long, com.kukifyjeff.safepatrol.data.db.entities.InspectionSessionEntity>()
         else db.inspectionDao().getSessionsByIds(sessionIds).associateBy { it.sessionId }
 
+        // 选择当前 route（优先取 sessionsMap 中第一个 session 的 route）
+        val currentRouteId: String? = sessionsMap.values.firstOrNull()?.routeId
+        val currentRouteName: String = sessionsMap.values.firstOrNull()?.routeName ?: ""
+
         // 如果 pointDao 没有提供 getAll()，我们按 session 对应的 routeId 批量拉取点位集合并合并
-        val routeIds = sessionsMap.values.map { it.routeId }.distinct()
-        val points = routeIds.flatMap { rid -> db.pointDao().getByRoute(rid) }
+        val points = if (currentRouteId != null) {
+            db.pointDao().getByRoute(currentRouteId)
+        } else {
+            val routeIds = sessionsMap.values.map { it.routeId }.distinct()
+            routeIds.flatMap { rid -> db.pointDao().getByRoute(rid) }
+        }
         val pointMap = points.associateBy { it.equipmentId }
+
+        // 预加载每个点位的检查项名称映射 (itemId -> itemName)
+        val itemNameByEquip = mutableMapOf<String, Map<String, String>>()
+        for (p in points) {
+            val cis = db.checkItemDao().getByEquipment(p.equipmentId)
+            val m = cis.associateBy({ it.itemId }, { it.itemName })
+            itemNameByEquip[p.equipmentId] = m
+        }
 
         // 创建 Excel（单表）
         val wb = XSSFWorkbook()
@@ -75,17 +85,17 @@ object ExportUtil {
         sheet.createFreezePane(0, 1)
 
         val header = arrayOf(
-            "recordTimestamp",
-            "routeId",
-            "routeName",
-            "operatorId",
-            "shiftId",
-            "equipmentId",
-            "equipmentName",
-            "slotIndex",
-            "itemId",
-            "itemValue",
-            "abnormal"
+            "日期",
+            "时间",
+            "路线名",
+            "点检员",
+            "班次",
+            "次序",
+            "点位id",
+            "点位名",
+            "点检项",
+            "检测值",
+            "是否正常"
         )
 
         val headStyle = wb.createCellStyle().apply {
@@ -97,65 +107,162 @@ object ExportUtil {
         val hr = sheet.createRow(0)
         header.forEachIndexed { i, t -> hr.createCell(i).apply { setCellValue(t); cellStyle = headStyle } }
 
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val tzId = TimeZone.getDefault().id
+        val sdfDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val sdfTime = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-        // helper：把一个 record 与对应 items 写入表格（若 items 为空也写一行）
-        fun appendRecordRows(startRowIdx: Int, rec: InspectionRecordEntity): Int {
-            val items = itemsByRecord[rec.recordId].orEmpty()
-            val p = pointMap[rec.equipmentId]
-            val eqName = p?.name ?: ""
-            val session = sessionsMap[rec.sessionId]
-            val routeId = session?.routeId ?: ""
-            val routeName = session?.routeName ?: ""
-            val operatorIdOut = session?.operatorId ?: ""
-            val shiftIdOut = session?.shiftId ?: ""
-
-            if (items.isEmpty()) {
-                val r = sheet.createRow(startRowIdx)
-                val cells = arrayOf(
-                    sdf.format(Date(rec.timestamp)),
-                    routeId,
-                    routeName,
-                    operatorIdOut,
-                    shiftIdOut,
-                    rec.equipmentId,
-                    eqName,
-                    rec.slotIndex.toString(),
-                    "",
-                    "",
-                    ""
-                )
-                cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
-                return startRowIdx + 1
+        fun shiftIdToName(shiftId: String?): String {
+            val s = shiftId?.trim()?.lowercase() ?: ""
+            val key = when {
+                s.startsWith("s") -> s.substring(1)
+                else -> s
             }
-
-            var next = startRowIdx
-            for (itm in items) {
-                val r = sheet.createRow(next)
-                val cells = arrayOf(
-                    sdf.format(Date(rec.timestamp)),
-                    routeId,
-                    routeName,
-                    operatorIdOut,
-                    shiftIdOut,
-                    rec.equipmentId,
-                    eqName,
-                    rec.slotIndex.toString(),
-                    itm.itemId,
-                    itm.value,
-                    if (itm.abnormal) "1" else "0"
-                )
-                cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
-                next++
+            return when (key) {
+                "1", "01", "s1" -> "白班"
+                "2", "02", "s2" -> "中班"
+                "3", "03", "s3" -> "夜班"
+                else -> ""
             }
-            return next
         }
 
-        // 写数据行（按时间顺序）
+        fun shiftNameFromWindowStart(startMs: Long): String {
+            val c = Calendar.getInstance().apply { timeInMillis = startMs }
+            return when (c.get(Calendar.HOUR_OF_DAY)) {
+                8 -> "白班"
+                16 -> "中班"
+                0 -> "夜班"
+                else -> ""
+            }
+        }
+
+        @SuppressLint("DefaultLocale")
+        fun formatDateTimeForRecord(ts: Long, windowStart: Long, windowEnd: Long): Pair<String, String> {
+            val cTs = Calendar.getInstance().apply { timeInMillis = ts }
+            // determine if window spans midnight (start day != end day)
+            val cs = Calendar.getInstance().apply { timeInMillis = windowStart }
+            val ce = Calendar.getInstance().apply { timeInMillis = windowEnd }
+            val spansMidnight = cs.get(Calendar.DAY_OF_YEAR) != ce.get(Calendar.DAY_OF_YEAR) || cs.get(Calendar.YEAR) != ce.get(Calendar.YEAR)
+
+            if (spansMidnight && cTs.get(Calendar.HOUR_OF_DAY) == 0 && cTs.get(Calendar.MINUTE) < 30) {
+                // treat as 24:MM on previous day
+                val dateStr = sdfDate.format(Date(windowStart))
+                val timeStr = String.format("24:%02d", cTs.get(Calendar.MINUTE))
+                return Pair(dateStr, timeStr)
+            }
+            return Pair(sdfDate.format(Date(ts)), sdfTime.format(Date(ts)))
+        }
+
+        val windows = mutableListOf<Pair<Long, Long>>()
+        val cal2 = Calendar.getInstance().apply { timeInMillis = startMs }
+        val currentWindow = com.kukifyjeff.safepatrol.utils.ShiftUtils.currentShiftWindowMillis()
+        // iterate days from start to end, but stop when window start > currentWindow.endMs
+        while (cal2.timeInMillis <= endMs) {
+            val y = cal2.get(Calendar.YEAR)
+            val m = cal2.get(Calendar.MONTH)
+            val d = cal2.get(Calendar.DAY_OF_MONTH)
+
+            fun msOf(hour: Int, minute: Int, dayOffset: Int = 0): Long {
+                val c = Calendar.getInstance().apply { clear(); set(y, m, d + dayOffset, hour, minute) }
+                return c.timeInMillis
+            }
+
+            // 夜班：00:30 - 08:30 (same day)
+            var s0 = msOf(0, 30)
+            var e0 = msOf(8, 30)
+            if (e0 >= startMs && s0 <= endMs && s0 <= currentWindow.startMs) windows.add(Pair(s0.coerceAtLeast(startMs), e0.coerceAtMost(endMs)))
+
+            // 白班：08:30 - 16:30
+            var s1 = msOf(8, 30)
+            var e1 = msOf(16, 30)
+            if (e1 >= startMs && s1 <= endMs && s1 <= currentWindow.startMs) windows.add(Pair(s1.coerceAtLeast(startMs), e1.coerceAtMost(endMs)))
+
+            // 中班：16:30 - 次日00:30
+            var s2 = msOf(16, 30)
+            var e2 = msOf(0, 30, 1)
+            if (e2 >= startMs && s2 <= endMs && s2 <= currentWindow.startMs) windows.add(Pair(s2.coerceAtLeast(startMs), e2.coerceAtMost(endMs)))
+
+            cal2.add(Calendar.DAY_OF_MONTH, 1)
+        }
+
+        // 为每个窗口、每个点位、每个槽位输出行：若有记录则写出记录对应的 items，否则写出一行未检
         var rowIdx = 1
-        for (rec in allRecordsInWindow) {
-            rowIdx = appendRecordRows(rowIdx, rec)
+        for ((wStart, wEnd) in windows) {
+            for (p in points) {
+                val nSlots = when (p.freqHours) { 2 -> 4; 4 -> 2; 8 -> 1; else -> 1 }
+                for (slotIdx in 1..nSlots) {
+                    // 查找该点位在该窗口、该槽位的记录（选择最新一条）
+                    val recs = db.inspectionDao().getRecordsForPointSlotInWindow(
+                        equipId = p.equipmentId,
+                        slotIndex = slotIdx,
+                        startMs = wStart,
+                        endMs = wEnd
+                    )
+                    val latest = recs.maxByOrNull { it.timestamp }
+                    if (latest != null) {
+                        // 有记录，写出对应 items 行（若没有 items 也写占位）
+                        val items = itemsByRecord[latest.recordId].orEmpty()
+                        val shiftName = sessionsMap[latest.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: shiftNameFromWindowStart(wStart)
+                        if (items.isEmpty()) {
+                            val (dateStr, timeStr) = formatDateTimeForRecord(latest.timestamp, wStart, wEnd)
+                            val r = sheet.createRow(rowIdx)
+                            val cells = arrayOf(
+                                dateStr,
+                                timeStr,
+                                sessionsMap[latest.sessionId]?.routeName ?: currentRouteName,
+                                sessionsMap[latest.sessionId]?.operatorId ?: "",
+                                shiftName,
+                                latest.slotIndex.toString(),
+                                latest.equipmentId,
+                                pointMap[latest.equipmentId]?.name ?: "",
+                                "",
+                                "未检",
+                                ""
+                            )
+                            cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
+                            rowIdx++
+                        } else {
+                            for (itm in items) {
+                                val (dateStr, timeStr) = formatDateTimeForRecord(latest.timestamp, wStart, wEnd)
+                                val r = sheet.createRow(rowIdx)
+                                val itemLabel = itemNameByEquip[latest.equipmentId]?.get(itm.itemId) ?: itm.itemId ?: ""
+                                val cells = arrayOf(
+                                    dateStr,
+                                    timeStr,
+                                    sessionsMap[latest.sessionId]?.routeName ?: currentRouteName,
+                                    sessionsMap[latest.sessionId]?.operatorId ?: "",
+                                    shiftName,
+                                    latest.slotIndex.toString(),
+                                    latest.equipmentId,
+                                    pointMap[latest.equipmentId]?.name ?: "",
+                                    itemLabel,
+                                    itm.value ?: "",
+                                    if (itm.abnormal) "异常" else "正常"
+                                )
+                                cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
+                                rowIdx++
+                            }
+                        }
+                    } else {
+                        // 未检：写一条占位行，itemValue 标为 未检
+                        val dateOnly = sdfDate.format(Date(wStart))
+                        val r = sheet.createRow(rowIdx)
+                        val cells = arrayOf(
+                            dateOnly,
+                            "",
+                            currentRouteName, // routeName unknown when no session
+                            "",
+                            shiftNameFromWindowStart(wStart),
+                            slotIdx.toString(),
+                            p.equipmentId,
+                            p.name,
+                            "",
+                            "未检",
+                            ""
+                        )
+                        cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
+                        rowIdx++
+                    }
+                }
+            }
         }
 
         // 自适应列宽（上限保护）
@@ -172,8 +279,14 @@ object ExportUtil {
             fs.readOnlyRecommended = true
         }
 
+        val curWindow = com.kukifyjeff.safepatrol.utils.ShiftUtils.currentShiftWindowMillis()
+        val fileDate = sdfDate.format(Date(curWindow.startMs))
+        val ym = String.format(Locale.getDefault(), "%04d-%02d", year, month)
+        val shiftForFile = shiftNameFromWindowStart(curWindow.startMs)
+        val safeRoute = if (currentRouteName.isNotBlank()) currentRouteName.replace(Regex("[\\/:*?\"<>|]"), "_") else ""
+        val filename = if (safeRoute.isNotBlank()) "SafePatrol_${safeRoute}_${ym}@${fileDate}_${shiftForFile}.xlsx" else "SafePatrol_${ym}@${fileDate}_${shiftForFile}.xlsx"
+
         // 保存到 App 私有目录（Documents），并根据是否加密进行处理
-        val filename = String.format(Locale.getDefault(), "SafePatrol_Monthly-%04d-%02d.xlsx", year, month)
         val outDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
             ?: File(context.filesDir, "exports").apply { mkdirs() }
         val xlsx = File(outDir, filename)

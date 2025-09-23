@@ -4,8 +4,12 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "nfc_map", indices = [Index("equipmentId")])
+@Entity(
+    tableName = "nfc_map",
+    indices = [Index(value = ["tagUid"]), Index(value = ["equipmentId"])]
+)
 data class NfcMapEntity(
-    @PrimaryKey val tagUid: String,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
+    val tagUid: String,
     val equipmentId: String
 )

@@ -23,13 +23,12 @@ object CsvReaders {
 
     fun readPoints(file: File): List<PointEntity> =
         readAll(file).drop(1).mapNotNull { row ->
-            if (row.size < 6) null else PointEntity(
+            if (row.size < 5) null else PointEntity(
                 equipmentId = row[0].trim(),
                 name        = row[1].trim(),
                 location    = row[2].trim(),
                 freqHours   = row[3].trim().toInt(),
-                templateId  = row[4].trim(),
-                routeId     = row[5].trim()
+                routeId     = row[4].trim()
             )
         }
 

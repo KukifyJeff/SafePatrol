@@ -1,7 +1,8 @@
-equipmentId,name,location,freqHours,templateId,routeId
-D410,电子间,集控楼,2,T004,R1
-B205,集控楼UPS,集控楼,4,T002,R1
-B208,化工岛PC,电气综合楼1F,4,T002,R1
-B209,柴油发电机,电气综合楼1F,4,T002,R1
-B212,IG水PC,厂后区,8,T002,R1
-A101,空压机,空分厂房,4,T001,R2
+equipmentId,name,location,freqHours,routeId
+D410-A,电子间,集控楼,2,R1
+D410-B,电子间,集控楼,2,R3
+B205,集控楼UPS,集控楼,4,R1
+B208,化工岛PC,电气综合楼1F,4,R1
+B209,柴油发电机,电气综合楼1F,4,R1
+B212,IG水PC,厂后区,8,R1
+A101,空压机,空分厂房,4,R2

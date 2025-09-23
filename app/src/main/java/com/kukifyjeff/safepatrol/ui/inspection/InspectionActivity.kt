@@ -266,7 +266,11 @@ class InspectionActivity : AppCompatActivity() {
         // 校验：所有已输入的数值项必须先被确认
         val unconfirmed = rows.filterIsInstance<FormRow.Number>().filter { it.value != null && !confirmedNumberItemIds.contains(it.item.itemId) }
         if (unconfirmed.isNotEmpty()) {
-            Toast.makeText(this, "存在未确认的数值项，请选中输入框并点击 '确认数值'", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this,
+                "${unconfirmed.joinToString("、") { it.item.itemName }}项数值未确认",
+                Toast.LENGTH_LONG
+            ).show()
             return
         }
 

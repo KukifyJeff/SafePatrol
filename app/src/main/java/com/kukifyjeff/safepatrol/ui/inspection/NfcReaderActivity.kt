@@ -71,8 +71,10 @@ class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
                     db.nfcMapDao().findEquipmentIdByTag(uidHex)
                 }
                 if (equipmentId == null) {
-                    Toast.makeText(this@NfcReaderActivity, "未绑定的标签：$uidHex", Toast.LENGTH_LONG).show()
-                    finish()
+                    // 标签未在映射表中
+                    runOnUiThread {
+                        Toast.makeText(this@NfcReaderActivity, "无效标签，请重新扫描", Toast.LENGTH_LONG).show()
+                    }
                     return@launch
                 }
 
@@ -80,11 +82,26 @@ class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
                     db.pointDao().findById(equipmentId)
                 }
                 if (point == null) {
-                    Toast.makeText(this@NfcReaderActivity, "标签绑定的点位不存在：$equipmentId", Toast.LENGTH_LONG).show()
-                    finish()
+                    runOnUiThread {
+                        Toast.makeText(this@NfcReaderActivity, "标签绑定的点位不存在，请联系管理员", Toast.LENGTH_LONG).show()
+                    }
                     return@launch
                 }
 
+                // 获取当前会话以确认 routeId
+                val session = withContext(Dispatchers.IO) {
+                    db.inspectionDao().getSessionById(sessionId)
+                }
+
+                if (session != null && session.routeId != null && session.routeId != point.routeId) {
+                    // 标签属于其他路线
+                    runOnUiThread {
+                        Toast.makeText(this@NfcReaderActivity, "当前标签不属于本路线，请重新扫描", Toast.LENGTH_LONG).show()
+                    }
+                    return@launch
+                }
+
+                // 一切正常，进入点检页面
                 val it = Intent(this@NfcReaderActivity, InspectionActivity::class.java)
                     .putExtra("equipmentId", point.equipmentId)
                     .putExtra("equipmentName", point.name)
@@ -94,7 +111,9 @@ class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
                 startActivity(it)
                 finish()
             } catch (e: Exception) {
-                Toast.makeText(this@NfcReaderActivity, e.message ?: "NFC 解析失败", Toast.LENGTH_LONG).show()
+                runOnUiThread {
+                    Toast.makeText(this@NfcReaderActivity, e.message ?: "NFC 解析失败", Toast.LENGTH_LONG).show()
+                }
                 finish()
             }
         }

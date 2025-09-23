@@ -47,18 +47,6 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var adapter: PointStatusAdapter
 
-    private fun currentShiftId(): String {
-        val now = LocalTime.now()
-        val t0830 = LocalTime.of(8, 30)
-        val t1630 = LocalTime.of(16, 30)
-        val t0030 = LocalTime.of(0, 30)
-        return when {
-            !now.isBefore(t0830) && now.isBefore(t1630) -> "白班"
-            !now.isBefore(t1630) || now.isBefore(t0030) -> "中班"
-            else -> "夜班"
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -75,8 +63,7 @@ class HomeActivity : AppCompatActivity() {
 
         val shift = resolveCurrentShift()
         val today = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(java.util.Date())
-        binding.tvHeader.text = "路线：$routeName    工号：$operatorId\n班次：${shift.name}(${shift.rangeText})    日期：$today"
-
+        binding.tvHeader.text = getString(R.string.homepage_header, routeName, operatorId, shift.name, shift.rangeText, today )
         // RecyclerView 基本设置
         binding.rvPoints.layoutManager = LinearLayoutManager(this)
         adapter = PointStatusAdapter(emptyList()) { point ->

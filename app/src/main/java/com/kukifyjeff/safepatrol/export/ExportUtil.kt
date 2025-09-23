@@ -50,12 +50,12 @@ object ExportUtil {
         // 查询当月内所有实际记录（用于按 recordId 批量加载 items）
         val actualRecords = db.inspectionDao().getRecordsInWindow(startMs, endMs).sortedBy { it.timestamp }
         val recordIds = actualRecords.map { it.recordId }
-        val itemsByRecord = if (recordIds.isEmpty()) emptyMap<Long, List<com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordItemEntity>>()
+        val itemsByRecord = if (recordIds.isEmpty()) emptyMap()
         else db.inspectionDao().getItemsForRecordIds(recordIds).groupBy { it.recordId }
 
         // 预取 session 信息（按 sessionId）
         val sessionIds = actualRecords.map { it.sessionId }.distinct()
-        val sessionsMap = if (sessionIds.isEmpty()) emptyMap<Long, com.kukifyjeff.safepatrol.data.db.entities.InspectionSessionEntity>()
+        val sessionsMap = if (sessionIds.isEmpty()) emptyMap()
         else db.inspectionDao().getSessionsByIds(sessionIds).associateBy { it.sessionId }
 
         // 选择当前 route（优先取 sessionsMap 中第一个 session 的 route）
@@ -166,18 +166,18 @@ object ExportUtil {
             }
 
             // 夜班：00:30 - 08:30 (same day)
-            var s0 = msOf(0, 30)
-            var e0 = msOf(8, 30)
+            val s0 = msOf(0, 30)
+            val e0 = msOf(8, 30)
             if (e0 >= startMs && s0 <= endMs && s0 <= currentWindow.startMs) windows.add(Pair(s0.coerceAtLeast(startMs), e0.coerceAtMost(endMs)))
 
             // 白班：08:30 - 16:30
-            var s1 = msOf(8, 30)
-            var e1 = msOf(16, 30)
+            val s1 = msOf(8, 30)
+            val e1 = msOf(16, 30)
             if (e1 >= startMs && s1 <= endMs && s1 <= currentWindow.startMs) windows.add(Pair(s1.coerceAtLeast(startMs), e1.coerceAtMost(endMs)))
 
             // 中班：16:30 - 次日00:30
-            var s2 = msOf(16, 30)
-            var e2 = msOf(0, 30, 1)
+            val s2 = msOf(16, 30)
+            val e2 = msOf(0, 30, 1)
             if (e2 >= startMs && s2 <= endMs && s2 <= currentWindow.startMs) windows.add(Pair(s2.coerceAtLeast(startMs), e2.coerceAtMost(endMs)))
 
             cal2.add(Calendar.DAY_OF_MONTH, 1)
@@ -223,7 +223,8 @@ object ExportUtil {
                             for (itm in items) {
                                 val (dateStr, timeStr) = formatDateTimeForRecord(latest.timestamp, wStart, wEnd)
                                 val r = sheet.createRow(rowIdx)
-                                val itemLabel = itemNameByEquip[latest.equipmentId]?.get(itm.itemId) ?: itm.itemId ?: ""
+                                val itemLabel =
+                                    itemNameByEquip[latest.equipmentId]?.get(itm.itemId) ?: itm.itemId
                                 val cells = arrayOf(
                                     dateStr,
                                     timeStr,
@@ -234,7 +235,7 @@ object ExportUtil {
                                     latest.equipmentId,
                                     pointMap[latest.equipmentId]?.name ?: "",
                                     itemLabel,
-                                    itm.value ?: "",
+                                    itm.value,
                                     if (itm.abnormal) "异常" else "正常"
                                 )
                                 cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
@@ -283,7 +284,7 @@ object ExportUtil {
         val fileDate = sdfDate.format(Date(curWindow.startMs))
         val ym = String.format(Locale.getDefault(), "%04d-%02d", year, month)
         val shiftForFile = shiftNameFromWindowStart(curWindow.startMs)
-        val safeRoute = if (currentRouteName.isNotBlank()) currentRouteName.replace(Regex("[\\/:*?\"<>|]"), "_") else ""
+        val safeRoute = if (currentRouteName.isNotBlank()) currentRouteName.replace(Regex("[/:*?\"<>|]"), "_") else ""
         val filename = if (safeRoute.isNotBlank()) "SafePatrol_${safeRoute}_${ym}@${fileDate}_${shiftForFile}.xlsx" else "SafePatrol_${ym}@${fileDate}_${shiftForFile}.xlsx"
 
         // 保存到 App 私有目录（Documents），并根据是否加密进行处理

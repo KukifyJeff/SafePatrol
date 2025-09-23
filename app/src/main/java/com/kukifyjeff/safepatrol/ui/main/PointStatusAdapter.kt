@@ -1,5 +1,6 @@
 package com.kukifyjeff.safepatrol.ui.main
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,8 +36,9 @@ class PointStatusAdapter(
             8 -> "8h/次"
             else -> "${item.freqHours}h/次"
         }
-        holder.tvTitle.text = "${item.equipmentId} ${item.name}  ($freqLabel)"
-        holder.tvSub.text = "位置：${item.location}"
+
+        holder.tvTitle.text = holder.itemView.context.getString(R.string.point_status_title, item.equipmentId, item.name, freqLabel)
+        holder.tvSub.text = holder.itemView.context.getString(R.string.point_status_sub, item.location)
 
         // 清空容器，重新添加槽位行
         holder.slotContainer.removeAllViews()
@@ -47,6 +49,7 @@ class PointStatusAdapter(
         holder.itemView.setOnClickListener { onClickPoint(item) }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun submitList(newData: List<PointStatusUi>) {
         data = newData
         notifyDataSetChanged()
@@ -59,15 +62,16 @@ class PointStatusAdapter(
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { topMargin = dp(4, ctx) }
+            ).apply { topMargin = dp4(ctx) }
         }
 
         val tvName = TextView(ctx).apply {
-            text = "• ${slot.name}："
+            text = ctx.getString(R.string.point_slot_name, slot.name)
             textSize = 14f
         }
         val tvStatus = TextView(ctx).apply {
-            text = if (slot.done) "✅ 已完成 ${slot.timeText ?: ""}" else "⬜ 未完成"
+            text = if (slot.done) ctx.getString(R.string.point_slot_status_done, slot.timeText ?: "")
+            else ctx.getString(R.string.point_slot_status_pending)
             textSize = 14f
         }
 
@@ -76,8 +80,8 @@ class PointStatusAdapter(
         return row
     }
 
-    private fun dp(value: Int, ctx: android.content.Context): Int {
-        val scale = ctx.resources.displayMetrics.density
-        return (value * scale + 0.5f).toInt()
-    }
+private fun dp4(ctx: android.content.Context): Int {
+    val scale = ctx.resources.displayMetrics.density
+    return (4 * scale + 0.5f).toInt()
+}
 }

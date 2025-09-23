@@ -14,18 +14,18 @@ import com.kukifyjeff.safepatrol.R
 import com.kukifyjeff.safepatrol.data.db.entities.CheckItemEntity
 import com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordEntity
 import com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordItemEntity
-import com.kukifyjeff.safepatrol.data.db.entities.InspectionSessionEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.*
 import java.util.Date
 import java.util.Locale
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 
+
+@Suppress("DEPRECATION")
 class InspectionActivity : AppCompatActivity() {
 
     private val db by lazy { AppDatabase.get(this) }
@@ -102,7 +102,7 @@ class InspectionActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<TextView>(R.id.tvHeader).text = "点位：$equipmentName（$equipmentId）"
+        findViewById<TextView>(R.id.tvHeader).text = getString(R.string.inspection_header,  equipmentName, equipmentId)
 
         rv = findViewById(R.id.rvForm)
 
@@ -114,7 +114,7 @@ class InspectionActivity : AppCompatActivity() {
             val lastText = withContext(Dispatchers.IO) {
                 val window = com.kukifyjeff.safepatrol.utils.ShiftUtils.currentShiftWindowMillis()
                 val nSlots = when (freqHours) { 2 -> 4; 4 -> 2; 8 -> 1; else -> 1 }
-                val all = mutableListOf<com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordEntity>()
+                val all = mutableListOf<InspectionRecordEntity>()
                 for (idx in 1..nSlots) {
                     all += db.inspectionDao().getRecordsForPointSlotInWindow(
                         equipId = equipmentId,
@@ -146,7 +146,7 @@ class InspectionActivity : AppCompatActivity() {
                         if (row !is FormRow.Number) return
 
                         val et = view.findViewById<android.widget.EditText>(R.id.etValue)
-                        val btn = view.findViewById<android.widget.Button>(R.id.btnConfirmNumber)
+                        val btn = view.findViewById<Button>(R.id.btnConfirmNumber)
                         val tvStatus = view.findViewById<TextView>(R.id.tvStatus)
                         if (et == null || btn == null || tvStatus == null) return
 
@@ -176,7 +176,7 @@ class InspectionActivity : AppCompatActivity() {
                                 Toast.makeText(this@InspectionActivity, "请先输入数值再确认", Toast.LENGTH_SHORT).show()
                                 return@setOnClickListener
                             }
-                            val v = try { text.toDouble() } catch (e: Exception) { null }
+                            val v = try { text.toDouble() } catch (_: Exception) { null }
                             if (v == null) {
                                 Toast.makeText(this@InspectionActivity, "请输入有效的数字", Toast.LENGTH_SHORT).show()
                                 return@setOnClickListener
@@ -215,7 +215,7 @@ class InspectionActivity : AppCompatActivity() {
                         if (confirmedNumberItemIds.contains(row.item.itemId)) {
                             // 如果已确认，显示绿色或红色需根据是否异常重新判定
                             val currentText = et.text?.toString()?.trim()
-                            val vcur = try { currentText?.toDouble() } catch (e: Exception) { null }
+                            val vcur = try { currentText?.toDouble() } catch (_: Exception) { null }
                             val low = vcur?.let { row.item.minValue?.let { vv -> it < vv } } ?: false
                             val high = vcur?.let { row.item.maxValue?.let { vv -> it > vv } } ?: false
                             val normal = !(low || high)
@@ -245,7 +245,7 @@ class InspectionActivity : AppCompatActivity() {
                 }
             })
             // 当表单加载完成后，禁用提交按钮直到必要的数值项被确认
-            val submitBtn = findViewById<Button>(R.id.btnSubmit)
+//            val submitBtn = findViewById<Button>(R.id.btnSubmit)
             // 若存在数值项，提交前需要确认：初始不禁用，让 onSubmit 做二次校验。
         }
 
@@ -340,7 +340,7 @@ class InspectionActivity : AppCompatActivity() {
 
     private fun save(items: List<InspectionRecordItemEntity>) {
         lifecycleScope.launch {
-            val recId = withContext(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
                 val recordId = db.inspectionDao().insertRecord(
                     InspectionRecordEntity(
                         sessionId = sessionId,
@@ -359,33 +359,5 @@ class InspectionActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun decideSlotIndex(sessionId: Long, equipId: String, freqHours: Int): Int {
-        if (freqHours != 4) return 1 // 8h 点位固定一个槽位
 
-        val zone = ZoneId.systemDefault()
-        val now = ZonedDateTime.now(zone)
-
-        // 定义三个固定边界时间（当天）
-        val today = now.toLocalDate()
-        val boundaries = listOf(
-            ZonedDateTime.of(today, LocalTime.of(0, 30), zone),  // 00:30
-            ZonedDateTime.of(today, LocalTime.of(8, 30), zone),  // 08:30
-            ZonedDateTime.of(today, LocalTime.of(16, 30), zone)  // 16:30
-        )
-
-        // 同时考虑“昨天”的 16:30（覆盖 00:00-00:30 的跨天中班）
-        val yesterdayBoundary = ZonedDateTime.of(today.minusDays(1), LocalTime.of(16, 30), zone)
-
-        // 取 <= now 的所有候选中的最大者作为“当前班次起点”
-        val candidates = (boundaries + yesterdayBoundary).filter { !it.isAfter(now) }
-        val shiftStart = candidates.maxByOrNull { it.toInstant().toEpochMilli() }
-            ?: ZonedDateTime.of(today, LocalTime.of(0, 30), zone)
-
-        val elapsedMinutes = Duration.between(shiftStart, now).toMinutes()
-
-        // Debug 日志，方便你验证
-        Log.d("InspectionSlot", "now=${now.toLocalTime()} start=${shiftStart.toLocalTime()} elapsedMin=$elapsedMinutes")
-
-        return if (elapsedMinutes < 240) 1 else 2
-    }
 }

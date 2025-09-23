@@ -94,7 +94,7 @@ class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
                         if (key == null) return
                         try {
                             val list = db.nfcMapDao().findEquipmentIdsByTag(key)
-                            if (!list.isNullOrEmpty()) results += list
+                            if (list.isNotEmpty()) results += list
                         } catch (_: Exception) {}
                     }
 
@@ -113,7 +113,7 @@ class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
                 Log.d("NfcReaderActivity", "equipIds for $uidHex = ${equipIds.joinToString()}")
                 appendDebugLine("equipIds for $uidHex = ${equipIds.joinToString()}")
 
-                if (equipIds.isNullOrEmpty()) {
+                if (equipIds.isEmpty()) {
                     // 标签未在映射表中
                     runOnUiThread {
                         Toast.makeText(this@NfcReaderActivity, "无效标签，请重新扫描", Toast.LENGTH_LONG).show()
@@ -126,8 +126,8 @@ class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
                     equipIds.mapNotNull { id -> db.pointDao().findById(id) }
                 }
 
-                Log.d("NfcReaderActivity", "points mapped: ${points.map { it.equipmentId + ":" + (it.routeId ?: "") + ":" + (it.name ?: "") }}")
-                appendDebugLine("points mapped: ${points.map { it.equipmentId + ":" + (it.routeId ?: "") + ":" + (it.name ?: "") }}")
+                Log.d("NfcReaderActivity", "points mapped: ${points.map { it.equipmentId + ":" + it.routeId + ":" + it.name }}")
+                appendDebugLine("points mapped: ${points.map { it.equipmentId + ":" + it.routeId + ":" + it.name }}")
 
                 if (points.isEmpty()) {
                     runOnUiThread {
@@ -149,7 +149,7 @@ class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
                 // 优先在 points 中匹配当前 routeId（忽略大小写和空格）
                 val matchesInRoute = if (currentRouteId != null) {
                     val cur = currentRouteId.trim().lowercase()
-                    points.filter { it.routeId?.trim()?.lowercase() == cur }
+                    points.filter { it.routeId.trim().lowercase() == cur }
                 } else emptyList()
 
                 Log.d("NfcReaderActivity", "matchesInRoute: ${matchesInRoute.map { it.equipmentId }}")
@@ -196,20 +196,20 @@ class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
                     }
 
                     // 如果没有匹配到当前 route，但只映射到单一点位，则使用该点位（向后兼容）
-                    points.size == 1 -> {
-                        val point = points.first()
-                        runOnUiThread {
-                            appendDebugLine("selected point ${point.equipmentId} route=${point.routeId}")
-                            val it = Intent(this@NfcReaderActivity, InspectionActivity::class.java)
-                                .putExtra("equipmentId", point.equipmentId)
-                                .putExtra("equipmentName", point.name)
-                                .putExtra("freqHours", point.freqHours)
-                                .putExtra("sessionId", sessionId)
-                            startActivity(it)
-                            finish()
-                        }
-                        return@launch
-                    }
+//                    points.size == 1 -> {
+//                        val point = points.first()
+//                        runOnUiThread {
+//                            appendDebugLine("selected point ${point.equipmentId} route=${point.routeId}")
+//                            val it = Intent(this@NfcReaderActivity, InspectionActivity::class.java)
+//                                .putExtra("equipmentId", point.equipmentId)
+//                                .putExtra("equipmentName", point.name)
+//                                .putExtra("freqHours", point.freqHours)
+//                                .putExtra("sessionId", sessionId)
+//                            startActivity(it)
+//                            finish()
+//                        }
+//                        return@launch
+//                    }
 
                     // 其他情况：存在多个映射但未匹配当前路线
                     else -> {

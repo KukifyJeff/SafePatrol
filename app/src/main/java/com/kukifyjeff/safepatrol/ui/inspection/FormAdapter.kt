@@ -8,12 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
-import com.kukifyjeff.safepatrol.R
 import com.kukifyjeff.safepatrol.data.db.entities.CheckItemEntity
-import kotlin.math.max
 import androidx.core.graphics.toColorInt
 import com.google.android.material.color.MaterialColors
 import android.content.res.ColorStateList
+import com.kukifyjeff.safepatrol.R
 
 sealed class FormRow(val item: CheckItemEntity) {
     class Bool(item: CheckItemEntity, var ok: Boolean? = null) : FormRow(item)
@@ -62,7 +61,7 @@ class FormAdapter(private val rows: List<FormRow>) :
         private val btnNg: Button = v.findViewById(R.id.btnNg)
 
         fun bind(row: FormRow.Bool) {
-            tvLabel.text = "• ${row.item.itemName}（正常/异常）"
+            tvLabel.text = itemView.context.getString(R.string.form_bool_label, row.item.itemName)
             fun render() {
                 when (row.ok) {
                     true -> {
@@ -70,7 +69,7 @@ class FormAdapter(private val rows: List<FormRow>) :
                         btnOk.setTextColor(Color.WHITE)
                         btnNg.setBackgroundColor("#EEEEEE".toColorInt())
                         btnNg.setTextColor(Color.BLACK)
-                        tvHint.text = "当前：正常"
+                        tvHint.text = itemView.context.getString(R.string.status_current_normal)
                         tvHint.setTextColor("#2E7D32".toColorInt())
                     }
                     false -> {
@@ -78,7 +77,7 @@ class FormAdapter(private val rows: List<FormRow>) :
                         btnNg.setTextColor(Color.WHITE)
                         btnOk.setBackgroundColor("#EEEEEE".toColorInt())
                         btnOk.setTextColor(Color.BLACK)
-                        tvHint.text = "当前：异常"
+                        tvHint.text = itemView.context.getString(R.string.status_current_abnormal)
                         tvHint.setTextColor("#C62828".toColorInt())
                     }
                     null -> {
@@ -86,7 +85,7 @@ class FormAdapter(private val rows: List<FormRow>) :
                         btnOk.setTextColor(Color.BLACK)
                         btnNg.setBackgroundColor("#EEEEEE".toColorInt())
                         btnNg.setTextColor(Color.BLACK)
-                        tvHint.text = "当前：未选择"
+                        tvHint.text = itemView.context.getString(R.string.status_current_unselected)
                         tvHint.setTextColor("#666666".toColorInt())
                     }
                 }
@@ -109,11 +108,11 @@ class FormAdapter(private val rows: List<FormRow>) :
         private val tvStatus: TextView = v.findViewById(R.id.tvStatus)
 
         fun bind(row: FormRow.Number) {
-            val unit = row.item.unit?.let { "（单位：$it）" } ?: ""
-            tvLabel.text = "• ${row.item.itemName}$unit"
+            val unit = row.item.unit ?: ""
+            tvLabel.text = itemView.context.getString(R.string.form_number_label, row.item.itemName, unit)
             val min = row.item.minValue?.toString() ?: "-"
             val max = row.item.maxValue?.toString() ?: "-"
-            tvRange.text = "范围：$min ~ $max"
+            tvRange.text = itemView.context.getString(R.string.range_format, min, max)
 
             fun setValue(newVal: Double?) {
                 row.value = newVal
@@ -167,22 +166,22 @@ class FormAdapter(private val rows: List<FormRow>) :
 
             when {
                 !has -> {
-                    tvStatus.text = "状态：未输入"
+                    tvStatus.text = itemView.context.getString(R.string.status_unentered)
                     tvStatus.setTextColor(cOnSurfaceVar)
                     tintEditText(null) // reset to default tint
                 }
-                (min != null && v!! < min) -> {
-                    tvStatus.text = "状态：异常（偏低）"
+                (min != null && v < min) -> {
+                    tvStatus.text = itemView.context.getString(R.string.status_abnormal_low)
                     tvStatus.setTextColor(cError)
                     tintEditText(cError)
                 }
-                (max != null && v!! > max) -> {
-                    tvStatus.text = "状态：异常（偏高）"
+                (max != null && v > max) -> {
+                    tvStatus.text = itemView.context.getString(R.string.status_abnormal_high)
                     tvStatus.setTextColor(cError)
                     tintEditText(cError)
                 }
                 else -> {
-                    tvStatus.text = "状态：正常"
+                    tvStatus.text = itemView.context.getString(R.string.status_normal)
                     tvStatus.setTextColor(cPrimary)
                     tintEditText(cPrimary)
                 }
@@ -194,7 +193,7 @@ class FormAdapter(private val rows: List<FormRow>) :
         private val tvLabel: TextView = v.findViewById(R.id.tvLabel)
         private val et: EditText = v.findViewById(R.id.etValue)
         fun bind(row: FormRow.Text) {
-            tvLabel.text = "• ${row.item.itemName}"
+            tvLabel.text = itemView.context.getString(R.string.form_item_label, row.item.itemName)
             et.setText(row.text)
             et.setOnFocusChangeListener { _, _ -> row.text = et.text.toString().trim() }
         }

@@ -30,13 +30,13 @@ interface InspectionDao {
 
     // 1) 某点位在班次时间窗内，某槽位是否已点检（用于去重 & 首页打勾）
     @Query("""
-SELECT EXISTS(
-  SELECT 1 FROM inspection_records
-  WHERE equipmentId = :equipId
-    AND slotIndex = :slotIndex
-    AND timestamp BETWEEN :startMs AND :endMs
-  LIMIT 1
-)
+    SELECT EXISTS(
+      SELECT 1 FROM inspection_records
+      WHERE equipmentId = :equipId
+        AND slotIndex = :slotIndex
+        AND timestamp BETWEEN :startMs AND :endMs
+      LIMIT 1
+    )
 """)
     suspend fun hasRecordForPointSlotInWindow(
         equipId: String,
@@ -47,8 +47,8 @@ SELECT EXISTS(
 
     // 2) 班次时间窗内的所有记录（用于导出汇总，不看 session/operator）
     @Query("""
-SELECT * FROM inspection_records
-WHERE timestamp BETWEEN :startMs AND :endMs
+    SELECT * FROM inspection_records
+    WHERE timestamp BETWEEN :startMs AND :endMs
 """)
     suspend fun getRecordsInWindow(
         startMs: Long,
@@ -57,8 +57,8 @@ WHERE timestamp BETWEEN :startMs AND :endMs
 
     // 3) 为导出批量取 item（避免 N 次查询）
     @Query("""
-SELECT * FROM inspection_record_items
-WHERE recordId IN (:recordIds)
+    SELECT * FROM inspection_record_items
+    WHERE recordId IN (:recordIds)
 """)
     suspend fun getItemsForRecordIds(recordIds: List<Long>): List<InspectionRecordItemEntity>
 

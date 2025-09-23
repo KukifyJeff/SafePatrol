@@ -29,7 +29,7 @@ abstract class AppDatabase : RoomDatabase() {
             INSTANCE ?: synchronized(this) {
                 INSTANCE ?: Room.databaseBuilder(
                     ctx.applicationContext,
-                    AppDatabase::class.java, "safepatrol.db"
+                    AppDatabase::class.java, "safe_patrol.db"
                 ).fallbackToDestructiveMigration().build().also { INSTANCE = it }
             }
     }

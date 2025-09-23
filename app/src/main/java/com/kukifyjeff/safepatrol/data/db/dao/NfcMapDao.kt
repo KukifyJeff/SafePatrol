@@ -8,8 +8,6 @@ import com.kukifyjeff.safepatrol.data.db.entities.NfcMapEntity
 
 @Dao
 interface NfcMapDao {
-    @Query("SELECT equipmentId FROM nfc_map WHERE tagUid = :tagUid LIMIT 1")
-    suspend fun findEquipmentIdByTag(tagUid: String): String?
 
     @Query("SELECT equipmentId FROM nfc_map WHERE tagUid = :tagUid")
     suspend fun findEquipmentIdsByTag(tagUid: String): List<String>

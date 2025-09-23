@@ -24,22 +24,4 @@ object ShiftUtils {
         return Window(start.toInstant().toEpochMilli(), end.toInstant().toEpochMilli())
     }
 
-    /** 计算当前应属的槽位：2h -> 1..4；4h -> 1..2；8h -> 1 */
-    fun slotIndexNow(freqHours: Int, now: ZonedDateTime = ZonedDateTime.now()): Int {
-        val w = currentShiftWindowMillis(now)
-        val elapsedMs = now.toInstant().toEpochMilli() - w.startMs
-        return when (freqHours) {
-            2 -> {
-                val h = elapsedMs / (60 * 60 * 1000L) // 0..7
-                when {
-                    h < 2 -> 1
-                    h < 4 -> 2
-                    h < 6 -> 3
-                    else  -> 4
-                }
-            }
-            4 -> if (elapsedMs < 4 * 60 * 60 * 1000L) 1 else 2
-            else -> 1 // 8h 或其他
-        }
-    }
 }

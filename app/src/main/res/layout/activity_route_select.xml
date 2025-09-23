@@ -58,4 +58,14 @@
         android:textColor="@color/white"
         android:backgroundTint="@color/blue_primary"
         android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/tvFooter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:text="Developed by Jeffrey CHEN @ 2025"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="14sp" />
 </LinearLayout>

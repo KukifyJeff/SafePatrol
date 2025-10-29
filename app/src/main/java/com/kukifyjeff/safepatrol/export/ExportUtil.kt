@@ -79,6 +79,9 @@ object ExportUtil {
             itemNameByEquip[p.pointId] = m
         }
 
+        // 预加载设备名称缓存 (pointId -> equipmentName)
+        val equipmentNameCache = mutableMapOf<String, String>()
+
         // 创建 Excel（单表）
         val wb = XSSFWorkbook()
         val sheet = wb.createSheet("Monthly")
@@ -90,10 +93,12 @@ object ExportUtil {
             "路线名",
             "点检员",
             "班次",
-            "次序",
             "点位id",
             "点位名",
+            "设备名",
             "点检项",
+            "点检频率",
+            "点检频次",
             "检测值",
             "是否正常"
         )
@@ -211,6 +216,12 @@ object ExportUtil {
                         // 有记录，写出对应 items 行（若没有 items 也写占位）
                         val items = itemsByRecord[latest.recordId].orEmpty()
                         val shiftName = sessionsMap[latest.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: shiftNameFromWindowStart(wStart)
+
+                        // 获取设备名缓存或查询
+                        val equipName = equipmentNameCache.getOrPut(latest.pointId) {
+                            db.equipmentDao().getById(latest.pointId)?.equipmentName ?: ""
+                        }
+
                         if (items.isEmpty()) {
                             val (dateStr, timeStr) = formatDateTimeForRecord(latest.timestamp, wStart, wEnd)
                             val r = sheet.createRow(rowIdx)
@@ -220,10 +231,12 @@ object ExportUtil {
                                 sessionsMap[latest.sessionId]?.routeName ?: currentRouteName,
                                 sessionsMap[latest.sessionId]?.operatorId ?: "",
                                 shiftName,
-                                latest.slotIndex.toString(),
                                 latest.pointId,
                                 pointMap[latest.pointId]?.name ?: "",
+                                equipName,
                                 "",
+                                freq.toString(),
+                                latest.slotIndex.toString(),
                                 "未检",
                                 ""
                             )
@@ -235,16 +248,20 @@ object ExportUtil {
                                 val r = sheet.createRow(rowIdx)
                                 val itemLabel =
                                     itemNameByEquip[latest.pointId]?.get(itm.itemId) ?: itm.itemId
+                                val freqHours = db.checkItemDao().getByEquipment(latest.pointId)
+                                    .firstOrNull { it.itemId == itm.itemId }?.freqHours ?: 8
                                 val cells = arrayOf(
                                     dateStr,
                                     timeStr,
                                     sessionsMap[latest.sessionId]?.routeName ?: currentRouteName,
                                     sessionsMap[latest.sessionId]?.operatorId ?: "",
                                     shiftName,
-                                    latest.slotIndex.toString(),
                                     latest.pointId,
                                     pointMap[latest.pointId]?.name ?: "",
+                                    equipName,
                                     itemLabel,
+                                    freqHours.toString(),
+                                    latest.slotIndex.toString(),
                                     itm.value,
                                     if (itm.abnormal) "异常" else "正常"
                                 )
@@ -253,19 +270,22 @@ object ExportUtil {
                             }
                         }
                     } else {
-                        // 未检：写一条占位行，itemValue 标为 未检
+                        // 未检：写一条占位行，itemValue 标为 未检，设备名留空
                         val dateOnly = sdfDate.format(Date(wStart))
                         val r = sheet.createRow(rowIdx)
+                        val freqVal = freqByEquip[p.pointId] ?: 8
                         val cells = arrayOf(
                             dateOnly,
                             "",
                             currentRouteName, // routeName unknown when no session
                             "",
                             shiftNameFromWindowStart(wStart),
-                            slotIdx.toString(),
                             p.pointId,
                             p.name,
                             "",
+                            "",
+                            freqVal.toString(),
+                            slotIdx.toString(),
                             "未检",
                             ""
                         )

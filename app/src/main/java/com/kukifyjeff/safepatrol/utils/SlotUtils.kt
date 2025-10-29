@@ -32,26 +32,26 @@ object SlotUtils {
     /**
      * 返回当前时间在对应频率下属于第几个槽位（1起始）
      */
-    fun getSlotIndex(freqHours: Int, timestamp: Long = System.currentTimeMillis()): Int {
-        val now = Calendar.getInstance().apply { timeInMillis = timestamp }
-
-        // 找出当前属于哪个班次
-        val currentShift = getCurrentShift(now)
-        val start = getShiftStartTime(currentShift, now)
-        val end = getShiftEndTime(currentShift, now)
-
-        val totalSlots = getTotalSlots(freqHours)
-        if (totalSlots == 1) return 1
-
-        val slotLenMs = (end.timeInMillis - start.timeInMillis) / totalSlots
-        val offsetMs = (timestamp - start.timeInMillis).coerceIn(
-            0,
-            (end.timeInMillis - start.timeInMillis - 1)
-        )
-        val slotIndex = (offsetMs / slotLenMs).toInt() + 1
-
-        return slotIndex.coerceIn(1, totalSlots)
-    }
+//    fun getSlotIndex(freqHours: Int, timestamp: Long = System.currentTimeMillis()): Int {
+//        val now = Calendar.getInstance().apply { timeInMillis = timestamp }
+//
+//        // 找出当前属于哪个班次
+//        val currentShift = getCurrentShift(now)
+//        val start = getShiftStartTime(currentShift, now)
+//        val end = getShiftEndTime(currentShift, now)
+//
+//        val totalSlots = getTotalSlots(freqHours)
+//        if (totalSlots == 1) return 1
+//
+//        val slotLenMs = (end.timeInMillis - start.timeInMillis) / totalSlots
+//        val offsetMs = (timestamp - start.timeInMillis).coerceIn(
+//            0,
+//            (end.timeInMillis - start.timeInMillis - 1)
+//        )
+//        val slotIndex = (offsetMs / slotLenMs).toInt() + 1
+//
+//        return slotIndex.coerceIn(1, totalSlots)
+//    }
 
     /**
      * 返回当前班次名称
@@ -65,13 +65,48 @@ object SlotUtils {
      * 返回当前时间下应显示的频率列表（单位小时）
      * 例如当前在第3个2h槽位时，返回 [2, 4]
      */
-    fun getActiveFrequenciesForCurrentSlot(timestamp: Long = System.currentTimeMillis()): List<Int> {
-        val slot2h = getSlotIndex(2, timestamp)
-        val active = mutableListOf(2)
-        if (slot2h == 1 || slot2h == 3) active.add(4)
-        if (slot2h == 1) active.add(8)
-        return active
+    fun getActiveFrequenciesForCurrentSlot(freqHours: Int, currentTime: Long = System.currentTimeMillis()): List<Int> {
+        val slotIndex = getSlotIndex(freqHours, currentTime)
+        return when (freqHours) {
+            // 最高频率为2h的情况：4个槽位
+            2 -> when (slotIndex) {
+                1 -> listOf(2, 4, 8)
+                2 -> listOf(2)
+                3 -> listOf(2, 4)
+                4 -> listOf(2)
+                else -> listOf(2)
+            }
+
+            // 最高频率为4h的情况：2个槽位
+            4 -> when (slotIndex) {
+                1 -> listOf(4, 8)
+                2 -> listOf(4)
+                else -> listOf(4)
+            }
+
+            // 最高频率为8h的情况：仅1个槽位，始终显示8
+            8 -> listOf(8)
+
+            else -> listOf(8)
+        }
     }
+
+    /**
+     * 根据频率计算当前槽位 index。
+     * 2h → 4 槽, 4h → 2 槽, 8h → 1 槽。
+     */
+    fun getSlotIndex(freqHours: Int, currentTime: Long): Int {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = currentTime
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+
+        return when (freqHours) {
+            2 -> (hour / 2) % 4 + 1   // 每2小时一个槽，共4个
+            4 -> (hour / 4) % 2 + 1   // 每4小时一个槽，共2个
+            else -> 1                 // 8小时或其他情况，仅1个槽
+        }
+    }
+
 
     // ===== 内部函数 =====
 

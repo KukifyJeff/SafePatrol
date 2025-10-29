@@ -53,11 +53,12 @@
 
         <LinearLayout
             android:orientation="horizontal" android:layout_marginTop="6dp"
+            android:id="@+id/llQuickAdjust"
             android:layout_width="match_parent" android:layout_height="wrap_content">
 
             <Button
                 android:id="@+id/btnQuick1"
-                android:text="+1" android:minHeight="48dp"
+                android:text="-5" android:minHeight="48dp"
                 android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
             <Button
                 android:id="@+id/btnQuick5"

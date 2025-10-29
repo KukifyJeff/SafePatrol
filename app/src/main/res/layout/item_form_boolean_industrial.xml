@@ -47,5 +47,12 @@
             android:textSize="13sp" android:textColor="#666"
             android:layout_marginTop="6dp"
             android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:id="@+id/llRemark"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="4dp"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

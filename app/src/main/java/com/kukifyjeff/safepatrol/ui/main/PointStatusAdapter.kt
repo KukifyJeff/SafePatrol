@@ -72,18 +72,18 @@ class PointStatusAdapter(
         }
 
         val tvName = TextView(ctx).apply {
-            text = ctx.getString(R.string.point_slot_name, slot.name)
+            text = slot.name
             textSize = 14f
         }
-        val tvStatus = TextView(ctx).apply {
-            text =
-                if (slot.done) ctx.getString(R.string.point_slot_status_done, slot.timeText ?: "")
-                else ctx.getString(R.string.point_slot_status_pending)
-            textSize = 14f
-        }
+//        val tvStatus = TextView(ctx).apply {
+//            text =
+//                if (slot.done) ctx.getString(R.string.point_slot_status_done, slot.timeText ?: "")
+//                else ctx.getString(R.string.point_slot_status_pending)
+//            textSize = 14f
+//        }
 
         row.addView(tvName)
-        row.addView(tvStatus)
+//        row.addView(tvStatus)
         return row
     }
 

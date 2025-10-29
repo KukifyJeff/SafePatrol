@@ -17,9 +17,11 @@ import java.util.Locale
 
 import android.util.Log
 import com.kukifyjeff.safepatrol.data.db.entities.EquipmentEntity
+import com.kukifyjeff.safepatrol.data.db.entities.PointEntity
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import java.util.Objects.toString
 
 class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
 
@@ -88,34 +90,21 @@ class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
 
         lifecycleScope.launch {
             try {
-                // 查找对应的点位
-                val point = withContext(Dispatchers.IO) {
-                    db.pointDao().findByTagUid(uidHex)
-                        ?: db.pointDao().findByTagUid(uidHex.lowercase())
-                        ?: db.pointDao().findByTagUid(uidHex.uppercase())
-                        ?: run {
-                            val rev = uidHex.chunked(2).reversed().joinToString("")
-                            db.pointDao().findByTagUid(rev)
-                                ?: db.pointDao().findByTagUid(rev.lowercase())
-                                ?: db.pointDao().findByTagUid(rev.uppercase())
-                        }
+                // 查找所有对应的点位
+                val allPoints: List<PointEntity> = withContext(Dispatchers.IO) {
+                    val rev = uidHex.chunked(2).reversed().joinToString("")
+                    val pointsNormal = db.pointDao().findAllByTagUid(uidHex) +
+                            db.pointDao().findAllByTagUid(uidHex.lowercase()) +
+                            db.pointDao().findAllByTagUid(uidHex.uppercase())
+                    val pointsReversed = db.pointDao().findAllByTagUid(rev) +
+                            db.pointDao().findAllByTagUid(rev.lowercase()) +
+                            db.pointDao().findAllByTagUid(rev.uppercase())
+                    (pointsNormal + pointsReversed).distinctBy { it.pointId }
                 }
 
-                if (point == null) {
+                if (allPoints.isEmpty()) {
                     runOnUiThread {
                         Toast.makeText(this@NfcReaderActivity, "无效标签，请重新扫描", Toast.LENGTH_LONG).show()
-                    }
-                    return@launch
-                }
-
-                // 查询该点位下的设备
-                val equipments: List<EquipmentEntity> = withContext(Dispatchers.IO) {
-                    db.equipmentDao().getByPoint(point.pointId)
-                }
-
-                if (equipments.isEmpty()) {
-                    runOnUiThread {
-                        Toast.makeText(this@NfcReaderActivity, "该标签下未配置设备，请联系管理员", Toast.LENGTH_LONG).show()
                     }
                     return@launch
                 }
@@ -127,16 +116,49 @@ class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
 
                 val currentRouteId = session?.routeId?.trim()?.lowercase()
 
-                // 当前点位本身已经绑定 routeId，因此直接比较 point.routeId
+                val matchedPoint = if (currentRouteId != null) {
+                    val matched = allPoints.filter { it.routeId.trim().lowercase() == currentRouteId }
+                    if (matched.isEmpty()) null else {
+                        if (matched.size > 1) {
+                            Log.w("NfcReaderActivity", "Multiple points matched route $currentRouteId for tag $uidHex, using first one")
+                        }
+                        matched.first()
+                    }
+                } else {
+                    allPoints.firstOrNull()
+                }
+
+                if (matchedPoint == null) {
+                    runOnUiThread {
+                        Toast.makeText(this@NfcReaderActivity, "当前标签不属于本路线，请重新扫描", Toast.LENGTH_LONG).show()
+                    }
+                    return@launch
+                }
+
+
+                // 查询该点位下的设备
+                val equipments: List<EquipmentEntity> = withContext(Dispatchers.IO) {
+                    db.equipmentDao().getByPoint(matchedPoint.pointId)
+                }
+                Log.d("FuckNfcReaderActivity", "Fucking equipments are =${equipments.joinToString()}")
+
+
+                if (equipments.isEmpty()) {
+                    runOnUiThread {
+                        Toast.makeText(this@NfcReaderActivity, "该标签下未配置设备，请联系管理员", Toast.LENGTH_LONG).show()
+                    }
+                    return@launch
+                }
+
                 val matchesInRoute = if (currentRouteId != null) {
-                    if (point.routeId.trim().lowercase() == currentRouteId) {
+                    if (matchedPoint.routeId.trim().lowercase() == currentRouteId) {
                         equipments
                     } else {
                         emptyList()
                     }
                 } else equipments
 
-                val eqs = db.equipmentDao().getByPoint(point.pointId)
+                val eqs = db.equipmentDao().getByPoint(matchedPoint.pointId)
 
                 // 获取该点下所有检查项
                 val allCheckItems = eqs.flatMap { eq ->
@@ -149,13 +171,31 @@ class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
 
                 if (matchesInRoute.isNotEmpty()) {
                     runOnUiThread {
-                        val intent = Intent(this@NfcReaderActivity, EquipmentStatusActivity::class.java)
-                            .putExtra("pointName", point.name)
-                            .putExtra("pointId", point.pointId)
-                            .putExtra("sessionId", sessionId)
-                            .putExtra("freqHours", freq)
-                        startActivity(intent)
-                        finish()
+                        val requiresStatusEquipments = equipments.filter { it.statusRequired }
+                        if (requiresStatusEquipments.isEmpty()) {
+                            // 所有设备都不需要调整状态，直接跳转到 InspectionActivity
+                            val runningEquipments = equipments.map { it.equipmentId } // 默认全部视为运行中
+                            Log.d("FuckRunningEquips", "Fucking Equipments are ${toString(runningEquipments)}")
+                            val intent = Intent(this@NfcReaderActivity, InspectionActivity::class.java).apply {
+                                putExtra("pointId", matchedPoint.pointId)
+                                putExtra("sessionId", sessionId)
+                                putExtra("pointName", matchedPoint.name)
+                                putExtra("freqHours", freq)
+                                putStringArrayListExtra("runningEquipments", ArrayList(runningEquipments))
+                            }
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            // 存在需要设定状态的设备，跳转到状态选择界面
+                            val intent = Intent(this@NfcReaderActivity, EquipmentStatusActivity::class.java).apply {
+                                putExtra("pointName", matchedPoint.name)
+                                putExtra("pointId", matchedPoint.pointId)
+                                putExtra("sessionId", sessionId)
+                                putExtra("freqHours", freq)
+                            }
+                            startActivity(intent)
+                            finish()
+                        }
                     }
                     return@launch
                 } else {

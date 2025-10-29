@@ -22,6 +22,9 @@ interface PointDao {
     @Query("SELECT * FROM points WHERE tagUid = :tagUid LIMIT 1")
     suspend fun findByTagUid(tagUid: String): PointEntity?
 
+    @Query("SELECT * FROM points WHERE tagUid = :tagUid")
+    suspend fun findAllByTagUid(tagUid: String): List<PointEntity>
+
     @Query("SELECT * FROM points WHERE pointId = :id LIMIT 1")
     suspend fun findById(id: String): PointEntity?
 }

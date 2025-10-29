@@ -1,7 +1,10 @@
 package com.kukifyjeff.safepatrol.ui.inspection
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -21,9 +24,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import android.util.Log
+import android.view.View
+import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
-import kotlin.math.log
 
 
 @Suppress("DEPRECATION")
@@ -46,7 +51,13 @@ class InspectionActivity : AppCompatActivity() {
     // 已确认的数值项集合（类级别，供 onSubmit/save 等使用）
     private val confirmedNumberItemIds = mutableSetOf<String>()
 
+    // 保存 Boolean 异常项的备注内容，key 为 itemId
+    private val remarkMap = mutableMapOf<String, String>()
+
     private val hhmm = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+    // 调试开关：true 使用 minValue 作为默认值
+    private val useMinValueAsDefault: Boolean = true
 
     // 计算当前时间在班次窗口中的槽位：8h->1; 4h->2; 2h->4
 
@@ -54,8 +65,12 @@ class InspectionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inspection)
         ContextCompat.getColor(this, R.color.blue_primary).also { window.statusBarColor = it }
-        val runningEquipments = intent.getStringArrayListExtra("runningEquipments") ?: listOf()
-        Log.d("InspectionActivity", "runningEquipments=${runningEquipments.joinToString()}")
+        val runningEquipments = intent.getStringArrayListExtra("runningEquipments") ?: arrayListOf()
+        Log.d("FuckInspectionActivity", "Fucking runningEquipments.size=${runningEquipments.size}  内容=${runningEquipments.joinToString()}")
+
+        if (runningEquipments.isEmpty()) {
+            Log.d("FuckInspectionActivity", "No Fucking Any Devices")
+        }
         pointId = intent.getStringExtra("pointId").toString()
         val pointName = intent.getStringExtra("pointName")
         // The checkItems variable is not needed for further logic, as we will directly use the fetched items to populate rows below.
@@ -77,20 +92,23 @@ class InspectionActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val existed = withContext(Dispatchers.IO) {
                 val window = com.kukifyjeff.safepatrol.utils.ShiftUtils.currentShiftWindowMillis()
+                val checkSlot = com.kukifyjeff.safepatrol.utils.SlotUtils.getSlotIndex(freqHours, System.currentTimeMillis())
                 db.inspectionDao().hasRecordForPointSlotInWindow(
-                    equipId = equipmentId,
-                    slotIndex = currentSlotIdx,
+                    equipId = pointId,
+                    slotIndex = checkSlot,
                     startMs = window.startMs,
                     endMs = window.endMs
                 )
             }
             if (existed) {
-                Toast.makeText(
-                    this@InspectionActivity,
-                    "本时段已点检过该点位，无需重复。请在下一时段再进行。",
-                    Toast.LENGTH_LONG
-                ).show()
-                finish()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        this@InspectionActivity,
+                        "该点位本时段已点检，无需重复。",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
+                }
                 return@launch
             }
         }
@@ -126,14 +144,19 @@ class InspectionActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val rowsAll = mutableListOf<FormRow>()
             withContext(Dispatchers.IO) {
-                val activeFreqs = com.kukifyjeff.safepatrol.utils.SlotUtils.getActiveFrequenciesForCurrentSlot()
+                val activeFreqs = com.kukifyjeff.safepatrol.utils.SlotUtils.getActiveFrequenciesForCurrentSlot(freqHours)
+                Log.d("FuckInspectionActivity", "当前活动频率: $activeFreqs")
                 for (equipId in runningEquipments) {
+                    Log.d("FuckInspectionActivity", "开始处理设备: $equipId")
                     // 获取设备名称
                     val equipEntity = db.equipmentDao().getById(equipId)
+                    Log.d("FuckInspectionActivity", "设备 $equipId 查找结果=${equipEntity != null}")
                     val equipName = equipEntity?.equipmentName ?: equipId
                     // 不再添加设备表头，而是将设备名前置到每个检查项
                     val items = db.checkItemDao().getByEquipment(equipId)
-                    val filteredItems = items.filter { it.freqHours in activeFreqs }
+                    Log.d("FuckInspectionActivity", "设备 $equipId 检查项数量=${items.size}")
+                    val filteredItems = items.filter { (it.freqHours ?: 8) in activeFreqs }
+                    Log.d("FuckInspectionActivity", "设备 $equipId 筛选后数量=${filteredItems.size}")
                     rowsAll.addAll(filteredItems.map {
                         it.copy(itemName = "$equipName - ${it.itemName}（${it.freqHours}h/次）").toRow()
                     })
@@ -154,14 +177,70 @@ class InspectionActivity : AppCompatActivity() {
                             if (row !is FormRow.Number) return
 
                             val et = view.findViewById<android.widget.EditText>(R.id.etValue)
+                            et.inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+                            // 自动填充默认值为 minValue（如果开关开启且 EditText 为空）
+                            if (useMinValueAsDefault && row.item.minValue != null && et.text.isNullOrBlank()) {
+                                et.setText(row.item.minValue.toString())
+                            }
                             val btn = view.findViewById<Button>(R.id.btnConfirmNumber)
                             val tvStatus = view.findViewById<TextView>(R.id.tvStatus)
                             if (et == null || btn == null || tvStatus == null) return
 
-                            // 初始按钮样式：灰色（不可确认）或可点击
+                            // ====== 自适应快捷按钮调节 ======
+                            val min = row.item.minValue ?: 0.0
+                            val max = row.item.maxValue ?: 100.0
+                            val range = max - min
+
+                            // 左右微调按钮步长
+                            val smallStep = if (range < 1) 0.01 else 1.0
+                            view.findViewById<Button>(R.id.btnMinus)?.setOnClickListener {
+                                val current = et.text.toString().toDoubleOrNull() ?: min
+                                val newVal = current - smallStep
+                                et.setText(String.format("%.3f", newVal))
+                            }
+                            view.findViewById<Button>(R.id.btnPlus)?.setOnClickListener {
+                                val current = et.text.toString().toDoubleOrNull() ?: min
+                                val newVal = current + smallStep
+                                et.setText(String.format("%.3f", newVal))
+                            }
+
+                            // 中间三颗快捷按钮
+                            val quickSteps = when {
+                                range >= 40 -> listOf(-5.0, 5.0, 10.0)
+                                range >= 10 -> listOf(-2.0, 2.0, 5.0)
+                                range >= 1 -> listOf(-0.5, 0.5, 1.0)
+                                range >= 0.1 -> listOf(-0.05, 0.05, 0.1)
+                                else -> listOf(-0.01, 0.01, 0.02)
+                            }
+                            val btnQuick1 = view.findViewById<Button>(R.id.btnQuick1)
+                            val btnQuick5 = view.findViewById<Button>(R.id.btnQuick5)
+                            val btnQuick10 = view.findViewById<Button>(R.id.btnQuick10)
+                            // 动态更新按钮文字
+                            btnQuick1?.text = if (quickSteps[0] >= 0) "+${quickSteps[0]}" else quickSteps[0].toString()
+                            btnQuick5?.text = if (quickSteps[1] >= 0) "+${quickSteps[1]}" else quickSteps[1].toString()
+                            btnQuick10?.text = if (quickSteps[2] >= 0) "+${quickSteps[2]}" else quickSteps[2].toString()
+                            btnQuick1?.setOnClickListener {
+                                val current = et.text.toString().toDoubleOrNull() ?: min
+                                val newVal = current + quickSteps[0]
+                                et.setText(String.format("%.3f", newVal))
+                            }
+                            btnQuick5?.setOnClickListener {
+                                val current = et.text.toString().toDoubleOrNull() ?: min
+                                val newVal = current + quickSteps[1]
+                                et.setText(String.format("%.3f", newVal))
+                            }
+                            btnQuick10?.setOnClickListener {
+                                val current = et.text.toString().toDoubleOrNull() ?: min
+                                val newVal = current + quickSteps[2]
+                                et.setText(String.format("%.3f", newVal))
+                            }
+
+                            // 更新 tvRange 显示范围
+                            view.findViewById<TextView>(R.id.tvRange)?.text = "范围：$min ~ $max"
+
                             val green = "#2E7D32".toColorInt()
                             val red = "#C62828".toColorInt()
-
+                            // 初始按钮样式：灰色（不可确认）或可点击
                             fun setBtnGray() {
                                 btn.isEnabled = !(et.text.isNullOrBlank())
                                 btn.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
@@ -189,6 +268,10 @@ class InspectionActivity : AppCompatActivity() {
                                     Toast.makeText(this@InspectionActivity, "请输入有效的数字", Toast.LENGTH_SHORT).show()
                                     return@setOnClickListener
                                 }
+
+                                // 更新当前行的值，防止 onSubmit 判断 value == null
+                                row.value = v
+
                                 val low = row.item.minValue?.let { v < it } ?: false
                                 val high = row.item.maxValue?.let { v > it } ?: false
                                 val normal = !(low || high)

@@ -17,6 +17,6 @@
     <string name="point_status_sub">位置：%1$s</string>
 
     <string name="point_slot_name">• %1$s：</string>
-    <string name="point_slot_status_done">✅ 已完成 %1$s</string>
-    <string name="point_slot_status_pending">⬜ 未完成</string>
+    <string name="point_slot_status_done">第%1$d次：✅ 已完成 %2$s</string>
+    <string name="point_slot_status_pending">第%1$d次：⬜ 未完成</string>
 </resources>

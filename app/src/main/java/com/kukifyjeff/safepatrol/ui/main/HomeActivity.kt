@@ -285,29 +285,32 @@ class HomeActivity : AppCompatActivity() {
                         Pair(checkItem, latestRecord)
                     }
 
-                // 计算所有槽位的完成状态，槽位索引从1开始
-                val slotStatusMap = mutableMapOf<Int, Boolean>()
+                // 计算所有槽位的完成状态，槽位索引从1开始，并记录时间戳
+                val slotStatusMap = mutableMapOf<Int, Long>() // slotIndex -> timestamp
 
                 checkItemLatestRecords.forEach { (checkItem, record) ->
-                    // Retrieve the InspectionRecordEntity to get the timestamp
                     val latestRecordEntity: com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordEntity? =
                         record?.let { db.inspectionDao().getRecordById(it.recordId) }
                     val slotIdx = latestRecordEntity?.timestamp?.let { ts ->
                         SlotUtils.getSlotIndex(checkItem.freqHours, ts)
                     }
-                    if (slotIdx != null) {
-                        slotStatusMap[slotIdx] = true
+                    if (slotIdx != null && latestRecordEntity != null) {
+                        slotStatusMap[slotIdx] = latestRecordEntity.timestamp
                     }
                 }
 
                 // 获取所有可能的槽位索引，按升序排列
                 val expectedSlotCount = 8 / freq
-                val slotTitles = arrayOf("第一次", "第二次", "第三次", "第四次")
-
                 // 生成槽位列表，槽位索引从1到expectedSlotCount
                 val slots = (1..expectedSlotCount).map { slotIdx ->
-                    val isChecked = slotStatusMap[slotIdx] == true
-                    val title = if (expectedSlotCount == 1) "本班" else slotTitles.getOrElse(slotIdx - 1) { "第${slotIdx}次" }
+                    val ts = slotStatusMap[slotIdx]
+                    val isChecked = ts != null
+                    val title = if (isChecked) {
+                        val timeStr = hhmm(ts)
+                        getString(R.string.point_slot_status_done, slotIdx, timeStr)
+                    } else {
+                        getString(R.string.point_slot_status_pending, slotIdx)
+                    }
                     SlotStatus(title, isChecked, null)
                 }
 

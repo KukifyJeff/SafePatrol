@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.content.res.ColorStateList
 import android.util.TypedValue
+import com.kukifyjeff.safepatrol.data.db.entities.EquipmentEntity
 import kotlin.properties.Delegates
 
 class EquipmentStatusActivity : AppCompatActivity() {
@@ -30,6 +31,8 @@ class EquipmentStatusActivity : AppCompatActivity() {
 
     // 用于存储用户选择的设备状态
     private val selectedStatuses = mutableMapOf<String, String>()
+
+    private var allEquipments: List<EquipmentEntity> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +65,8 @@ class EquipmentStatusActivity : AppCompatActivity() {
             db.equipmentDao().getByPoint(pointId)
         }
 
+        allEquipments = equipments
+
         if (equipments.isEmpty()) {
             Toast.makeText(this, "该点位下没有需要设置状态的设备", Toast.LENGTH_LONG).show()
             return
@@ -74,7 +79,7 @@ class EquipmentStatusActivity : AppCompatActivity() {
             val colorStandby = ColorStateList.valueOf(android.graphics.Color.parseColor("#9E9E9E"))
             val colorBlue = ColorStateList.valueOf(blueColor)
 
-            equipments.forEach { eq ->
+            equipments.filter { it.statusRequired }.forEach { eq ->
                 val itemView = layoutInflater.inflate(R.layout.item_equipment_status, llEquipmentList, false)
 
                 val tvName = itemView.findViewById<TextView>(R.id.tvEquipmentName)
@@ -100,51 +105,39 @@ class EquipmentStatusActivity : AppCompatActivity() {
                 btnMaint.setBackgroundTintList(colorBlue)
                 btnStandby.setBackgroundTintList(colorBlue)
 
-                // If not required, mark as running no adjustment needed
-                if (!eq.statusRequired) {
-                    tvStatus.text = "当前状态：运行（无需调整）"
-                    btnRun.isEnabled = false
-                    btnMaint.isEnabled = false
-                    btnStandby.isEnabled = false
-                    selectedStatuses[eq.equipmentId] = "运行"
-                    btnRun.setBackgroundTintList(colorRun)
-                    btnMaint.setBackgroundTintList(colorStandby)
-                    btnStandby.setBackgroundTintList(colorStandby)
-                } else {
-                    // Buttons enabled
-                    btnRun.isEnabled = true
-                    btnMaint.isEnabled = true
-                    btnStandby.isEnabled = true
+                // Buttons enabled
+                btnRun.isEnabled = true
+                btnMaint.isEnabled = true
+                btnStandby.isEnabled = true
 
-                    val updateStatus = { status: String ->
-                        selectedStatuses[eq.equipmentId] = status
-                        tvStatus.text = "当前状态：$status"
-                        btnConfirm.isEnabled = selectedStatuses.size == equipments.size
+                val updateStatus = { status: String ->
+                    selectedStatuses[eq.equipmentId] = status
+                    tvStatus.text = "当前状态：$status"
+                    btnConfirm.isEnabled = selectedStatuses.size == equipments.count { it.statusRequired }
 
-                        // Update button tint colors dynamically
-                        when (status) {
-                            "运行" -> {
-                                btnRun.setBackgroundTintList(colorRun)
-                                btnMaint.setBackgroundTintList(colorBlue)
-                                btnStandby.setBackgroundTintList(colorBlue)
-                            }
-                            "检修" -> {
-                                btnRun.setBackgroundTintList(colorBlue)
-                                btnMaint.setBackgroundTintList(colorMaint)
-                                btnStandby.setBackgroundTintList(colorBlue)
-                            }
-                            "备用" -> {
-                                btnRun.setBackgroundTintList(colorBlue)
-                                btnMaint.setBackgroundTintList(colorBlue)
-                                btnStandby.setBackgroundTintList(colorStandby)
-                            }
+                    // Update button tint colors dynamically
+                    when (status) {
+                        "运行" -> {
+                            btnRun.setBackgroundTintList(colorRun)
+                            btnMaint.setBackgroundTintList(colorBlue)
+                            btnStandby.setBackgroundTintList(colorBlue)
+                        }
+                        "检修" -> {
+                            btnRun.setBackgroundTintList(colorBlue)
+                            btnMaint.setBackgroundTintList(colorMaint)
+                            btnStandby.setBackgroundTintList(colorBlue)
+                        }
+                        "备用" -> {
+                            btnRun.setBackgroundTintList(colorBlue)
+                            btnMaint.setBackgroundTintList(colorBlue)
+                            btnStandby.setBackgroundTintList(colorStandby)
                         }
                     }
-
-                    btnRun.setOnClickListener { updateStatus("运行") }
-                    btnMaint.setOnClickListener { updateStatus("检修") }
-                    btnStandby.setOnClickListener { updateStatus("备用") }
                 }
+
+                btnRun.setOnClickListener { updateStatus("运行") }
+                btnMaint.setOnClickListener { updateStatus("检修") }
+                btnStandby.setOnClickListener { updateStatus("备用") }
 
                 llEquipmentList.addView(itemView)
             }
@@ -169,9 +162,15 @@ class EquipmentStatusActivity : AppCompatActivity() {
                         status = mappedStatus
                     )
                 )
-
                 if (mappedStatus == "RUNNING") {
                     runningEquipments.add(equipId)
+                }
+            }
+
+            // ✅ 自动加入不需要输入状态的设备
+            allEquipments.filter { !it.statusRequired }.forEach { eq ->
+                if (!runningEquipments.contains(eq.equipmentId)) {
+                    runningEquipments.add(eq.equipmentId)
                 }
             }
         }

@@ -1,0 +1,5 @@
+equipmentId,equipmentName,pointId,statusRequired
+IGP-A,IG泵A循环冷却水泵A,QHA-002,YES
+IGP-B,IG泵B循环冷却水泵B,QHA-002,YES
+IGP-C,IG泵C循环冷却水泵C,QHA-002,YES
+IGPH,IG泵房,QHA-002,NO

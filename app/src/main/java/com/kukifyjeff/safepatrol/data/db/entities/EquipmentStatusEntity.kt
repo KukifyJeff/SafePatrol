@@ -6,7 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "check_items",
+    tableName = "equipment_status",
     foreignKeys = [
         ForeignKey(
             entity = EquipmentEntity::class,
@@ -17,14 +17,8 @@ import androidx.room.PrimaryKey
     ],
     indices = [Index("equipmentId")]
 )
-data class CheckItemEntity(
-    @PrimaryKey val itemId: String,
-    val equipmentId: String,
-    val itemName: String,
-    val type: String,     // BOOLEAN / NUMBER / TEXT
-    val unit: String?,
-    val required: Boolean,
-    val minValue: Double?,
-    val maxValue: Double?,
-    val freqHours: Int   // 2， 4 或 8
+data class EquipmentStatusEntity(
+    @PrimaryKey val equipmentId: String,
+    val status: String, // 运行 RUNNING / 检修 MAINTENANCE / 备用 STANDBY
+    val updatedAt: Long = System.currentTimeMillis() // 更新时间
 )

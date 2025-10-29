@@ -1,0 +1,5 @@
+equipmentId,status,updatedAt
+IGP-A,RUNNING,
+IGP-B,RUNNING,
+IGP-C,STANDBY,
+IGPH,RUNNING,

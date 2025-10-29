@@ -23,6 +23,7 @@ import java.util.Locale
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
+import kotlin.math.log
 
 
 @Suppress("DEPRECATION")
@@ -34,6 +35,7 @@ class InspectionActivity : AppCompatActivity() {
     private lateinit var equipmentName: String
     private var freqHours: Int = 8
     private var sessionId: Long = 0L
+    private lateinit var pointId: String
 
     private var currentSlotIdx: Int = 1
 
@@ -47,39 +49,30 @@ class InspectionActivity : AppCompatActivity() {
     private val hhmm = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     // 计算当前时间在班次窗口中的槽位：8h->1; 4h->2; 2h->4
-    private fun resolveCurrentSlotIndex(freqHours: Int, startMs: Long, endMs: Long, nowMs: Long = System.currentTimeMillis()): Int {
-        val nSlots = when (freqHours) {
-            2 -> 4
-            4 -> 2
-            8 -> 1
-            else -> 1
-        }
-        if (nSlots == 1) return 1
-        val total = (endMs - startMs).coerceAtLeast(1L)
-        val slotLen = (total / nSlots).coerceAtLeast(1L)
-        val offset = (nowMs - startMs).coerceIn(0L, total - 1)
-        val idx = (offset / slotLen).toInt() + 1
-        return idx.coerceIn(1, nSlots)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inspection)
         ContextCompat.getColor(this, R.color.blue_primary).also { window.statusBarColor = it }
+        val runningEquipments = intent.getStringArrayListExtra("runningEquipments") ?: listOf()
+        Log.d("InspectionActivity", "runningEquipments=${runningEquipments.joinToString()}")
+        pointId = intent.getStringExtra("pointId").toString()
+        val pointName = intent.getStringExtra("pointName")
+        // The checkItems variable is not needed for further logic, as we will directly use the fetched items to populate rows below.
         equipmentId = intent.getStringExtra("equipmentId") ?: ""
         equipmentName = intent.getStringExtra("equipmentName") ?: equipmentId
         freqHours = intent.getIntExtra("freqHours", 8)
         sessionId = intent.getLongExtra("sessionId", 0L)
 
         // ===== 同一班次同一槽位防重复点检 =====
-        val window = com.kukifyjeff.safepatrol.utils.ShiftUtils.currentShiftWindowMillis()
         val nSlotsForFreq = when (freqHours) { 2 -> 4; 4 -> 2; 8 -> 1; else -> 1 }
         val passedSlot = intent.getIntExtra("slotIndex", 0)
         currentSlotIdx = if (passedSlot in 1..nSlotsForFreq) {
             passedSlot
         } else {
-            resolveCurrentSlotIndex(freqHours, window.startMs, window.endMs)
+            com.kukifyjeff.safepatrol.utils.SlotUtils.getSlotIndex(freqHours, System.currentTimeMillis())
         }
+        Log.d("FuckInspectionActivity", "cSI=$currentSlotIdx, Freq=$freqHours, nsff=$nSlotsForFreq")
 
         lifecycleScope.launch {
             val existed = withContext(Dispatchers.IO) {
@@ -102,7 +95,7 @@ class InspectionActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<TextView>(R.id.tvHeader).text = getString(R.string.inspection_header,  equipmentName, equipmentId)
+        findViewById<TextView>(R.id.tvHeader).text = getString(R.string.inspection_header,  pointName, pointId)
 
         rv = findViewById(R.id.rvForm)
 
@@ -117,7 +110,7 @@ class InspectionActivity : AppCompatActivity() {
                 val all = mutableListOf<InspectionRecordEntity>()
                 for (idx in 1..nSlots) {
                     all += db.inspectionDao().getRecordsForPointSlotInWindow(
-                        equipId = equipmentId,
+                        pointId = pointId,
                         slotIndex = idx,
                         startMs = window.startMs,
                         endMs = window.endMs
@@ -129,124 +122,139 @@ class InspectionActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.tvLast).text = lastText
         }
 
-        // 加载检查项并渲染为工业化表单
+        // 加载检查项并渲染为工业化表单（多设备支持）
         lifecycleScope.launch {
-            val items = withContext(Dispatchers.IO) { db.checkItemDao().getByEquipment(equipmentId) }
-            rows.clear()
-            rows.addAll(items.map { it.toRow() })
-            adapter = FormAdapter(rows)
-            rv.adapter = adapter
-            // 为每个已附加的子项设置行内确认按钮行为（对没有直接修改 Adapter 的项目进行增强）
-            rv.addOnChildAttachStateChangeListener(object : androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener {
-                override fun onChildViewAttachedToWindow(view: android.view.View) {
-                    try {
-                        val pos = rv.getChildAdapterPosition(view)
-                        if (pos == androidx.recyclerview.widget.RecyclerView.NO_POSITION) return
-                        val row = rows.getOrNull(pos) ?: return
-                        if (row !is FormRow.Number) return
+            val rowsAll = mutableListOf<FormRow>()
+            withContext(Dispatchers.IO) {
+                val activeFreqs = com.kukifyjeff.safepatrol.utils.SlotUtils.getActiveFrequenciesForCurrentSlot()
+                for (equipId in runningEquipments) {
+                    // 获取设备名称
+                    val equipEntity = db.equipmentDao().getById(equipId)
+                    val equipName = equipEntity?.equipmentName ?: equipId
+                    // 不再添加设备表头，而是将设备名前置到每个检查项
+                    val items = db.checkItemDao().getByEquipment(equipId)
+                    val filteredItems = items.filter { it.freqHours in activeFreqs }
+                    rowsAll.addAll(filteredItems.map {
+                        it.copy(itemName = "$equipName - ${it.itemName}（${it.freqHours}h/次）").toRow()
+                    })
+                }
+            }
+            withContext(Dispatchers.Main) {
+                rows.clear()
+                rows.addAll(rowsAll)
+                adapter = FormAdapter(rows)
+                rv.adapter = adapter
+                // 为每个已附加的子项设置行内确认按钮行为（对没有直接修改 Adapter 的项目进行增强）
+                rv.addOnChildAttachStateChangeListener(object : androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener {
+                    override fun onChildViewAttachedToWindow(view: android.view.View) {
+                        try {
+                            val pos = rv.getChildAdapterPosition(view)
+                            if (pos == androidx.recyclerview.widget.RecyclerView.NO_POSITION) return
+                            val row = rows.getOrNull(pos) ?: return
+                            if (row !is FormRow.Number) return
 
-                        val et = view.findViewById<android.widget.EditText>(R.id.etValue)
-                        val btn = view.findViewById<Button>(R.id.btnConfirmNumber)
-                        val tvStatus = view.findViewById<TextView>(R.id.tvStatus)
-                        if (et == null || btn == null || tvStatus == null) return
+                            val et = view.findViewById<android.widget.EditText>(R.id.etValue)
+                            val btn = view.findViewById<Button>(R.id.btnConfirmNumber)
+                            val tvStatus = view.findViewById<TextView>(R.id.tvStatus)
+                            if (et == null || btn == null || tvStatus == null) return
 
-                        // 初始按钮样式：灰色（不可确认）或可点击
-                        val green = "#2E7D32".toColorInt()
-                        val red = "#C62828".toColorInt()
+                            // 初始按钮样式：灰色（不可确认）或可点击
+                            val green = "#2E7D32".toColorInt()
+                            val red = "#C62828".toColorInt()
 
-                        fun setBtnGray() {
-                            btn.isEnabled = !(et.text.isNullOrBlank())
-                            btn.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
-                            btn.setTextColor(Color.BLACK)
-                            tvStatus.text = if (confirmedNumberItemIds.contains(row.item.itemId)) "已确认" else "状态：--"
-                        }
-
-                        fun markConfirmed(isNormal: Boolean) {
-                            confirmedNumberItemIds.add(row.item.itemId)
-                            btn.isEnabled = false
-                            btn.setTextColor(Color.WHITE)
-                            btn.backgroundTintList = android.content.res.ColorStateList.valueOf(if (isNormal) green else red)
-                            tvStatus.text = if (isNormal) "已确认（正常）" else "已确认（异常）"
-                        }
-
-                        // 绑定按钮点击：校验数值是否正常，标记颜色
-                        btn.setOnClickListener {
-                            val text = et.text?.toString()?.trim()
-                            if (text.isNullOrEmpty()) {
-                                Toast.makeText(this@InspectionActivity, "请先输入数值再确认", Toast.LENGTH_SHORT).show()
-                                return@setOnClickListener
+                            fun setBtnGray() {
+                                btn.isEnabled = !(et.text.isNullOrBlank())
+                                btn.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
+                                btn.setTextColor(Color.BLACK)
+                                tvStatus.text = if (confirmedNumberItemIds.contains(row.item.itemId)) "已确认" else "状态：--"
                             }
-                            val v = try { text.toDouble() } catch (_: Exception) { null }
-                            if (v == null) {
-                                Toast.makeText(this@InspectionActivity, "请输入有效的数字", Toast.LENGTH_SHORT).show()
-                                return@setOnClickListener
-                            }
-                            val low = row.item.minValue?.let { v < it } ?: false
-                            val high = row.item.maxValue?.let { v > it } ?: false
-                            val normal = !(low || high)
-                            markConfirmed(normal)
-                        }
 
-                        // 编辑框变动时，取消已确认状态并恢复灰色/可点击
-                        val existingTag = et.getTag(R.id.etValue)
-                        if (existingTag is android.text.TextWatcher) {
-                            et.removeTextChangedListener(existingTag)
-                        }
-                        val watcher = object : android.text.TextWatcher {
-                            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                            override fun afterTextChanged(s: android.text.Editable?) {
-                                // 用户手动修改时，取消确认
-                                if (confirmedNumberItemIds.remove(row.item.itemId)) {
-                                    // 恢复按钮可点并置灰
-                                    btn.isEnabled = !(et.text.isNullOrBlank())
-                                    btn.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
-                                    tvStatus.text = "状态：--"
-                                } else {
-                                    // 保持按钮启用/禁用状态
-                                    btn.isEnabled = !(et.text.isNullOrBlank())
+                            fun markConfirmed(isNormal: Boolean) {
+                                confirmedNumberItemIds.add(row.item.itemId)
+                                btn.isEnabled = false
+                                btn.setTextColor(Color.WHITE)
+                                btn.backgroundTintList = android.content.res.ColorStateList.valueOf(if (isNormal) green else red)
+                                tvStatus.text = if (isNormal) "已确认（正常）" else "已确认（异常）"
+                            }
+
+                            // 绑定按钮点击：校验数值是否正常，标记颜色
+                            btn.setOnClickListener {
+                                val text = et.text?.toString()?.trim()
+                                if (text.isNullOrEmpty()) {
+                                    Toast.makeText(this@InspectionActivity, "请先输入数值再确认", Toast.LENGTH_SHORT).show()
+                                    return@setOnClickListener
+                                }
+                                val v = try { text.toDouble() } catch (_: Exception) { null }
+                                if (v == null) {
+                                    Toast.makeText(this@InspectionActivity, "请输入有效的数字", Toast.LENGTH_SHORT).show()
+                                    return@setOnClickListener
+                                }
+                                val low = row.item.minValue?.let { v < it } ?: false
+                                val high = row.item.maxValue?.let { v > it } ?: false
+                                val normal = !(low || high)
+                                markConfirmed(normal)
+                            }
+
+                            // 编辑框变动时，取消已确认状态并恢复灰色/可点击
+                            val existingTag = et.getTag(R.id.etValue)
+                            if (existingTag is android.text.TextWatcher) {
+                                et.removeTextChangedListener(existingTag)
+                            }
+                            val watcher = object : android.text.TextWatcher {
+                                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                                override fun afterTextChanged(s: android.text.Editable?) {
+                                    // 用户手动修改时，取消确认
+                                    if (confirmedNumberItemIds.remove(row.item.itemId)) {
+                                        // 恢复按钮可点并置灰
+                                        btn.isEnabled = !(et.text.isNullOrBlank())
+                                        btn.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
+                                        tvStatus.text = "状态：--"
+                                    } else {
+                                        // 保持按钮启用/禁用状态
+                                        btn.isEnabled = !(et.text.isNullOrBlank())
+                                    }
                                 }
                             }
-                        }
-                        et.addTextChangedListener(watcher)
-                        et.setTag(R.id.etValue, watcher)
+                            et.addTextChangedListener(watcher)
+                            et.setTag(R.id.etValue, watcher)
 
-                        // 最后根据当前值与已确认集合设置初始样式
-                        if (confirmedNumberItemIds.contains(row.item.itemId)) {
-                            // 如果已确认，显示绿色或红色需根据是否异常重新判定
-                            val currentText = et.text?.toString()?.trim()
-                            val vcur = try { currentText?.toDouble() } catch (_: Exception) { null }
-                            val low = vcur?.let { row.item.minValue?.let { vv -> it < vv } } ?: false
-                            val high = vcur?.let { row.item.maxValue?.let { vv -> it > vv } } ?: false
-                            val normal = !(low || high)
-                            btn.backgroundTintList = android.content.res.ColorStateList.valueOf(if (normal) green else red)
-                            btn.isEnabled = false
-                            tvStatus.text = if (normal) "已确认（正常）" else "已确认（异常）"
-                        } else {
-                            setBtnGray()
-                        }
+                            // 最后根据当前值与已确认集合设置初始样式
+                            if (confirmedNumberItemIds.contains(row.item.itemId)) {
+                                // 如果已确认，显示绿色或红色需根据是否异常重新判定
+                                val currentText = et.text?.toString()?.trim()
+                                val vcur = try { currentText?.toDouble() } catch (_: Exception) { null }
+                                val low = vcur?.let { row.item.minValue?.let { vv -> it < vv } } ?: false
+                                val high = vcur?.let { row.item.maxValue?.let { vv -> it > vv } } ?: false
+                                val normal = !(low || high)
+                                btn.backgroundTintList = android.content.res.ColorStateList.valueOf(if (normal) green else red)
+                                btn.isEnabled = false
+                                tvStatus.text = if (normal) "已确认（正常）" else "已确认（异常）"
+                            } else {
+                                setBtnGray()
+                            }
 
-                    } catch (t: Throwable) {
-                        // 忽略单行绑定中的异常，避免整个页面崩溃
-                        Log.w("InspectionActivity", "bind confirm button failed: ${t.message}")
+                        } catch (t: Throwable) {
+                            // 忽略单行绑定中的异常，避免整个页面崩溃
+                            Log.w("InspectionActivity", "bind confirm button failed: ${t.message}")
+                        }
                     }
-                }
 
-                override fun onChildViewDetachedFromWindow(view: android.view.View) {
-                    // 清理 TextWatcher（避免内存泄漏）
-                    try {
-                        val et = view.findViewById<android.widget.EditText>(R.id.etValue)
-                        val tag = et?.getTag(R.id.etValue)
-                        if (tag is android.text.TextWatcher) {
-                            et.removeTextChangedListener(tag)
-                            et.setTag(R.id.etValue, null)
-                        }
-                    } catch (_: Throwable) {}
-                }
-            })
-            // 当表单加载完成后，禁用提交按钮直到必要的数值项被确认
-//            val submitBtn = findViewById<Button>(R.id.btnSubmit)
-            // 若存在数值项，提交前需要确认：初始不禁用，让 onSubmit 做二次校验。
+                    override fun onChildViewDetachedFromWindow(view: android.view.View) {
+                        // 清理 TextWatcher（避免内存泄漏）
+                        try {
+                            val et = view.findViewById<android.widget.EditText>(R.id.etValue)
+                            val tag = et?.getTag(R.id.etValue)
+                            if (tag is android.text.TextWatcher) {
+                                et.removeTextChangedListener(tag)
+                                et.setTag(R.id.etValue, null)
+                            }
+                        } catch (_: Throwable) {}
+                    }
+                })
+                // 当表单加载完成后，禁用提交按钮直到必要的数值项被确认
+                // 若存在数值项，提交前需要确认：初始不禁用，让 onSubmit 做二次校验。
+            }
         }
 
         findViewById<Button>(R.id.btnCancel).setOnClickListener { finish() }
@@ -291,7 +299,8 @@ class InspectionActivity : AppCompatActivity() {
                             recordId = 0,
                             itemId = row.item.itemId,
                             value = when (row.ok) { true -> "TRUE"; false -> "FALSE"; null -> "" },
-                            abnormal = abnormal
+                            abnormal = abnormal,
+                            slotIndex = currentSlotIdx,
                         )
                     )
                 }
@@ -299,13 +308,13 @@ class InspectionActivity : AppCompatActivity() {
                     val v = row.value
                     if (v == null) {
                         if (row.item.required) missingList.add(row.item.itemName)
-                        values.add(InspectionRecordItemEntity(recordId = 0, itemId = row.item.itemId, value = "", abnormal = row.item.required))
+                        values.add(InspectionRecordItemEntity(recordId = 0, itemId = row.item.itemId, value = "", abnormal = row.item.required, slotIndex = currentSlotIdx))
                     } else {
                         val low = row.item.minValue?.let { v < it } ?: false
                         val high = row.item.maxValue?.let { v > it } ?: false
                         val ab = low || high
                         if (ab) abnormalList.add("${row.item.itemName}=$v")
-                        values.add(InspectionRecordItemEntity(recordId = 0, itemId = row.item.itemId, value = v.toString(), abnormal = ab))
+                        values.add(InspectionRecordItemEntity(recordId = 0, itemId = row.item.itemId, value = v.toString(), abnormal = ab, slotIndex = currentSlotIdx))
                     }
                 }
                 is FormRow.Text -> {
@@ -314,7 +323,8 @@ class InspectionActivity : AppCompatActivity() {
                             recordId = 0,
                             itemId = row.item.itemId,
                             value = row.text.trim(),
-                            abnormal = false
+                            abnormal = false,
+                            slotIndex = currentSlotIdx
                         )
                     )
                 }
@@ -344,7 +354,7 @@ class InspectionActivity : AppCompatActivity() {
                 val recordId = db.inspectionDao().insertRecord(
                     InspectionRecordEntity(
                         sessionId = sessionId,
-                        equipmentId = equipmentId,
+                        pointId = pointId,
                         slotIndex = currentSlotIdx,
                         timestamp = System.currentTimeMillis()
                     )

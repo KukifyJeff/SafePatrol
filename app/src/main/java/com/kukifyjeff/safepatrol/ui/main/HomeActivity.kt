@@ -27,12 +27,14 @@ import com.kukifyjeff.safepatrol.R
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.view.Gravity
+import com.kukifyjeff.safepatrol.data.db.entities.CheckItemEntity
+import com.kukifyjeff.safepatrol.utils.SlotUtils
 
 class HomeActivity : AppCompatActivity() {
 
     companion object {
         // 开关：true 允许点击列表 item 进入模拟点检；false 只能通过 NFC 进入点检
-        const val ALLOW_SIMULATED_INSPECTION = false
+        const val ALLOW_SIMULATED_INSPECTION = true
     }
 
     private lateinit var binding: ActivityHomeBinding
@@ -250,53 +252,80 @@ class HomeActivity : AppCompatActivity() {
         lifecycleScope.launch { refreshPointStatuses() }
     }
 
-private suspend fun refreshPointStatuses() {
-    val points = withContext(Dispatchers.IO) {
-        db.pointDao().getByRoute(routeId)
-    }
+    private suspend fun refreshPointStatuses() {
+        val points = withContext(Dispatchers.IO) {
+            db.pointDao().getByRoute(routeId)
+        }
 
-    // 获取当前班次时间窗
-    val window = ShiftUtils.currentShiftWindowMillis()
+        // 获取当前班次时间窗
+        val window = ShiftUtils.currentShiftWindowMillis()
 
-    // 构建 UI 列表（每个点位）
-    val uiList = withContext(Dispatchers.IO) {
-        points.map { p: com.kukifyjeff.safepatrol.data.db.entities.PointEntity ->
-            val freq = p.freqHours
-            // 8h -> 1 个槽；4h -> 2 个槽；2h -> 4 个槽；其它默认 1 个槽
-            val nSlots = when (freq) {
-                2 -> 4
-                4 -> 2
-                8 -> 1
-                else -> 1
-            }
-            val slotTitles = arrayOf("第一次", "第二次", "第三次", "第四次")
+        val uiList = withContext(Dispatchers.IO) {
+            points.map { point ->
+                // 获取该点下的所有设备
+                val equipments = db.equipmentDao().getByPoint(point.pointId)
 
-            val slots: List<SlotStatus> = (1..nSlots).map { slotIdx ->
-                val recs = db.inspectionDao().getRecordsForPointSlotInWindow(
-                    equipId = p.equipmentId,
-                    slotIndex = slotIdx,
-                    startMs = window.startMs,
-                    endMs = window.endMs
+                // 获取该点下所有检查项
+                val allCheckItems = equipments.flatMap { eq ->
+                    db.checkItemDao().getByEquipment(eq.equipmentId)
+                }
+
+                // 获取频率最高（间隔最短）的频次
+                val freq = if (allCheckItems.isNotEmpty()) allCheckItems.minOf { it.freqHours } else 8
+
+                // 获取所有检查项对应的最新点检记录
+                val checkItemLatestRecords: List<Pair<CheckItemEntity, com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordItemEntity?>> =
+                    allCheckItems.map { checkItem ->
+                        val latestRecord: com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordItemEntity? =
+                            db.inspectionDao().getLatestRecordForCheckItemInWindow(
+                                checkItemId = checkItem.itemId,
+                                startMs = window.startMs,
+                                endMs = window.endMs
+                            )
+                        Pair(checkItem, latestRecord)
+                    }
+
+                // 计算所有槽位的完成状态，槽位索引从1开始
+                val slotStatusMap = mutableMapOf<Int, Boolean>()
+
+                checkItemLatestRecords.forEach { (checkItem, record) ->
+                    // Retrieve the InspectionRecordEntity to get the timestamp
+                    val latestRecordEntity: com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordEntity? =
+                        record?.let { db.inspectionDao().getRecordById(it.recordId) }
+                    val slotIdx = latestRecordEntity?.timestamp?.let { ts ->
+                        SlotUtils.getSlotIndex(checkItem.freqHours, ts)
+                    }
+                    if (slotIdx != null) {
+                        slotStatusMap[slotIdx] = true
+                    }
+                }
+
+                // 获取所有可能的槽位索引，按升序排列
+                val expectedSlotCount = 8 / freq
+                val slotTitles = arrayOf("第一次", "第二次", "第三次", "第四次")
+
+                // 生成槽位列表，槽位索引从1到expectedSlotCount
+                val slots = (1..expectedSlotCount).map { slotIdx ->
+                    val isChecked = slotStatusMap[slotIdx] == true
+                    val title = if (expectedSlotCount == 1) "本班" else slotTitles.getOrElse(slotIdx - 1) { "第${slotIdx}次" }
+                    SlotStatus(title, isChecked, null)
+                }
+
+                // 更新 UI：点位名称
+                PointStatusUi(
+                    equipmentId = point.pointId,
+                    name = point.name,
+                    location = point.location,
+                    freqHours = freq,
+                    slots = slots
                 )
-                val latest = recs.maxByOrNull { it.timestamp }
-                val title = if (nSlots == 1) "本班" else slotTitles[slotIdx - 1]
-                SlotStatus(title, latest != null, latest?.let { hhmm(it.timestamp) })
             }
-            PointStatusUi(
-                equipmentId = p.equipmentId,
-                name = p.name,
-                location = p.location,
-                freqHours = freq,
-                slots = slots
-            )
+        }
+
+        withContext(Dispatchers.Main) {
+            adapter.submitList(uiList)
         }
     }
-
-    // 更新 RecyclerView/ListView
-    withContext(Dispatchers.Main) {
-        adapter.submitList(uiList)
-    }
-}
     // 将时间戳格式化为 HH:mm
     private fun hhmm(ts: Long): String = java.text.SimpleDateFormat("HH:mm", Locale.getDefault())
         .format(java.util.Date(ts))

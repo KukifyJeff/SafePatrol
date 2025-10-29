@@ -10,6 +10,6 @@ data class PointStatusUi(
     val equipmentId: String,
     val name: String,
     val location: String,
-    val freqHours: Int,         // 4 或 8
+    val freqHours: Int,         //2， 4 或 8
     val slots: List<SlotStatus>
 )

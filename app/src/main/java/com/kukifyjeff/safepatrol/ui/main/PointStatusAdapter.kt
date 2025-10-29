@@ -37,8 +37,14 @@ class PointStatusAdapter(
             else -> "${item.freqHours}h/次"
         }
 
-        holder.tvTitle.text = holder.itemView.context.getString(R.string.point_status_title, item.equipmentId, item.name, freqLabel)
-        holder.tvSub.text = holder.itemView.context.getString(R.string.point_status_sub, item.location)
+        holder.tvTitle.text = holder.itemView.context.getString(
+            R.string.point_status_title,
+            item.equipmentId,
+            item.name,
+            freqLabel
+        )
+        holder.tvSub.text =
+            holder.itemView.context.getString(R.string.point_status_sub, item.location)
 
         // 清空容器，重新添加槽位行
         holder.slotContainer.removeAllViews()
@@ -70,8 +76,9 @@ class PointStatusAdapter(
             textSize = 14f
         }
         val tvStatus = TextView(ctx).apply {
-            text = if (slot.done) ctx.getString(R.string.point_slot_status_done, slot.timeText ?: "")
-            else ctx.getString(R.string.point_slot_status_pending)
+            text =
+                if (slot.done) ctx.getString(R.string.point_slot_status_done, slot.timeText ?: "")
+                else ctx.getString(R.string.point_slot_status_pending)
             textSize = 14f
         }
 
@@ -80,8 +87,8 @@ class PointStatusAdapter(
         return row
     }
 
-private fun dp4(ctx: android.content.Context): Int {
-    val scale = ctx.resources.displayMetrics.density
-    return (4 * scale + 0.5f).toInt()
-}
+    private fun dp4(ctx: android.content.Context): Int {
+        val scale = ctx.resources.displayMetrics.density
+        return (4 * scale + 0.5f).toInt()
+    }
 }

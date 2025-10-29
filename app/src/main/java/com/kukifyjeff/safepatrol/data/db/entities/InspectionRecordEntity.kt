@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.kukifyjeff.safepatrol.ui.main.SlotStatus
 
 @Entity(
     tableName = "inspection_records",
@@ -15,12 +16,12 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("sessionId"), Index("equipmentId")]
+    indices = [Index("sessionId"), Index("pointId")]
 )
 data class InspectionRecordEntity(
     @PrimaryKey(autoGenerate = true) val recordId: Long = 0,
     val sessionId: Long,
-    val equipmentId: String,
-    val slotIndex: Int,      // 1=第一次，2=第二次，8h=1
+    val pointId: String,   // 每条记录对应一个点位
+    val slotIndex: Int,
     val timestamp: Long
 )

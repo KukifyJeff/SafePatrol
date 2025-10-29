@@ -24,11 +24,11 @@ object CsvReaders {
     fun readPoints(file: File): List<PointEntity> =
         readAll(file).drop(1).mapNotNull { row ->
             if (row.size < 5) null else PointEntity(
-                equipmentId = row[0].trim(),
-                name        = row[1].trim(),
-                location    = row[2].trim(),
-                freqHours   = row[3].trim().toInt(),
-                routeId     = row[4].trim()
+                pointId = row[0].trim(),
+                name    = row[1].trim(),
+                location= row[2].trim(),
+                routeId = row[3].trim(),
+                tagUid  = row[4].trim().uppercase()
             )
         }
 
@@ -42,25 +42,38 @@ object CsvReaders {
             )
         }
 
-    fun readNfcMap(file: File): List<NfcMapEntity> =
-        readAll(file).drop(1).mapNotNull { row ->
-            if (row.size < 2) null else NfcMapEntity(
-                tagUid      = row[0].trim().uppercase(),
-                equipmentId = row[1].trim()
-            )
-        }
 
     fun readCheckItems(file: File): List<CheckItemEntity> =
         readAll(file).drop(1).mapNotNull { row ->
-            if (row.size < 7) null else CheckItemEntity(
+            if (row.size < 8) null else CheckItemEntity(
+                equipmentId = row[0].trim().uppercase(),
                 itemId      = row[1].trim(),
-                equipmentId = row[0].trim(),
                 itemName    = row[2].trim(),
                 type        = row[3].trim().uppercase(),
                 unit        = row[4].ifBlank { null },
-                required    = row[5].trim().equals("YES", true),
+                required    = row[5].trim().equals("yes", true),
                 minValue    = row.getOrNull(6)?.ifBlank { null }?.toDoubleOrNull(),
-                maxValue    = row.getOrNull(7)?.ifBlank { null }?.toDoubleOrNull()
+                maxValue    = row.getOrNull(7)?.ifBlank { null }?.toDoubleOrNull(),
+                freqHours   = row.getOrNull(8)?.ifBlank { null }?.toIntOrNull() ?: 8
+            )
+        }
+
+    fun readEquipments(file: File): List<EquipmentEntity> =
+        readAll(file).drop(1).mapNotNull { row ->
+            if (row.size < 4) null else EquipmentEntity(
+                equipmentId = row[0].trim(),
+                equipmentName = row[1].trim(),
+                pointId = row[2].trim(),
+                statusRequired = row[3].trim().equals("YES", true)
+            )
+        }
+
+    fun readEquipmentStatuses(file: File): List<EquipmentStatusEntity> =
+        readAll(file).drop(1).mapNotNull { row ->
+            if (row.size < 2) null else EquipmentStatusEntity(
+                equipmentId = row[0].trim(),
+                status = row[1].trim(),
+                updatedAt = row.getOrNull(2)?.trim()?.toLongOrNull() ?: System.currentTimeMillis()
             )
         }
 }

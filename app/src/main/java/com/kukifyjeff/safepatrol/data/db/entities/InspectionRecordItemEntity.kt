@@ -13,6 +13,12 @@ import androidx.room.PrimaryKey
             parentColumns = ["recordId"],
             childColumns = ["recordId"],
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = CheckItemEntity::class,
+            parentColumns = ["itemId"],
+            childColumns = ["itemId"],
+            onDelete = ForeignKey.NO_ACTION
         )
     ],
     indices = [Index("recordId"), Index("itemId")]
@@ -21,6 +27,7 @@ data class InspectionRecordItemEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val recordId: Long,
     val itemId: String,
+    val slotIndex: Int,
     val value: String,   // "TRUE"/"FALSE" 或数字/文本
     val abnormal: Boolean
 )

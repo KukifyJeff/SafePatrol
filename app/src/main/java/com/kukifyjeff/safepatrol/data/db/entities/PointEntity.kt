@@ -13,9 +13,10 @@ import androidx.room.*
     indices = [Index("routeId")]
 )
 data class PointEntity(
-    @PrimaryKey val equipmentId: String,
+    @PrimaryKey val pointId: String,
     val name: String,
     val location: String,
-    val freqHours: Int,   // 2， 4 或 8
-    val routeId: String
+//    val freqHours: Int,   // 2， 4 或 8
+    val routeId: String,
+    val tagUid: String
 )

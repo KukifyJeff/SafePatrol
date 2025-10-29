@@ -69,14 +69,14 @@ object ExportUtil {
             val routeIds = sessionsMap.values.map { it.routeId }.distinct()
             routeIds.flatMap { rid -> db.pointDao().getByRoute(rid) }
         }
-        val pointMap = points.associateBy { it.equipmentId }
+        val pointMap = points.associateBy { it.pointId }
 
         // 预加载每个点位的检查项名称映射 (itemId -> itemName)
         val itemNameByEquip = mutableMapOf<String, Map<String, String>>()
         for (p in points) {
-            val cis = db.checkItemDao().getByEquipment(p.equipmentId)
+            val cis = db.checkItemDao().getByEquipment(p.pointId)
             val m = cis.associateBy({ it.itemId }, { it.itemName })
-            itemNameByEquip[p.equipmentId] = m
+            itemNameByEquip[p.pointId] = m
         }
 
         // 创建 Excel（单表）
@@ -185,13 +185,23 @@ object ExportUtil {
 
         // 为每个窗口、每个点位、每个槽位输出行：若有记录则写出记录对应的 items，否则写出一行未检
         var rowIdx = 1
+
+        // 预加载每个设备的检查频次（从 CheckItemEntity 而非 PointEntity）
+        val freqByEquip = mutableMapOf<String, Int>()
+        for (p in points) {
+            val freqs = db.checkItemDao().getFreqHoursByEquipment(p.pointId)
+            val freq = if (freqs.isNotEmpty()) freqs.maxOrNull() ?: 8 else 8
+            freqByEquip[p.pointId] = freq
+        }
+
         for ((wStart, wEnd) in windows) {
             for (p in points) {
-                val nSlots = when (p.freqHours) { 2 -> 4; 4 -> 2; 8 -> 1; else -> 1 }
+                val freq = freqByEquip[p.pointId] ?: 8
+                val nSlots = when (freq) { 2 -> 4; 4 -> 2; 8 -> 1; else -> 1 }
                 for (slotIdx in 1..nSlots) {
                     // 查找该点位在该窗口、该槽位的记录（选择最新一条）
                     val recs = db.inspectionDao().getRecordsForPointSlotInWindow(
-                        equipId = p.equipmentId,
+                        pointId = p.pointId,
                         slotIndex = slotIdx,
                         startMs = wStart,
                         endMs = wEnd
@@ -211,8 +221,8 @@ object ExportUtil {
                                 sessionsMap[latest.sessionId]?.operatorId ?: "",
                                 shiftName,
                                 latest.slotIndex.toString(),
-                                latest.equipmentId,
-                                pointMap[latest.equipmentId]?.name ?: "",
+                                latest.pointId,
+                                pointMap[latest.pointId]?.name ?: "",
                                 "",
                                 "未检",
                                 ""
@@ -224,7 +234,7 @@ object ExportUtil {
                                 val (dateStr, timeStr) = formatDateTimeForRecord(latest.timestamp, wStart, wEnd)
                                 val r = sheet.createRow(rowIdx)
                                 val itemLabel =
-                                    itemNameByEquip[latest.equipmentId]?.get(itm.itemId) ?: itm.itemId
+                                    itemNameByEquip[latest.pointId]?.get(itm.itemId) ?: itm.itemId
                                 val cells = arrayOf(
                                     dateStr,
                                     timeStr,
@@ -232,8 +242,8 @@ object ExportUtil {
                                     sessionsMap[latest.sessionId]?.operatorId ?: "",
                                     shiftName,
                                     latest.slotIndex.toString(),
-                                    latest.equipmentId,
-                                    pointMap[latest.equipmentId]?.name ?: "",
+                                    latest.pointId,
+                                    pointMap[latest.pointId]?.name ?: "",
                                     itemLabel,
                                     itm.value,
                                     if (itm.abnormal) "异常" else "正常"
@@ -253,7 +263,7 @@ object ExportUtil {
                             "",
                             shiftNameFromWindowStart(wStart),
                             slotIdx.toString(),
-                            p.equipmentId,
+                            p.pointId,
                             p.name,
                             "",
                             "未检",

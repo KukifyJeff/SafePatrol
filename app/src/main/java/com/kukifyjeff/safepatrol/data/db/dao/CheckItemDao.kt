@@ -13,4 +13,10 @@ interface CheckItemDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(list: List<CheckItemEntity>)
+
+    @Query("SELECT DISTINCT freqHours FROM check_items WHERE equipmentId = :equipId")
+    suspend fun getFreqHoursByEquipment(equipId: String): List<Int>
+
+    @Query("SELECT * FROM check_items WHERE equipmentId IN (:equipIds)")
+    suspend fun getByEquipments(equipIds: List<String>): List<CheckItemEntity>
 }

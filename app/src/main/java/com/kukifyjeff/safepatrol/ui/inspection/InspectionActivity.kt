@@ -36,8 +36,6 @@ class InspectionActivity : AppCompatActivity() {
 
     private val db by lazy { AppDatabase.get(this) }
 
-    private lateinit var equipmentId: String
-    private lateinit var equipmentName: String
     private var freqHours: Int = 8
     private var sessionId: Long = 0L
     private lateinit var pointId: String
@@ -56,6 +54,9 @@ class InspectionActivity : AppCompatActivity() {
 
     private val hhmm = SimpleDateFormat("HH:mm", Locale.getDefault())
 
+    private var runningEquipments = arrayListOf<String>()
+
+
     // 调试开关：true 使用 minValue 作为默认值
     private val useMinValueAsDefault: Boolean = true
 
@@ -65,17 +66,12 @@ class InspectionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inspection)
         ContextCompat.getColor(this, R.color.blue_primary).also { window.statusBarColor = it }
-        val runningEquipments = intent.getStringArrayListExtra("runningEquipments") ?: arrayListOf()
+        runningEquipments = intent.getStringArrayListExtra("runningEquipments") ?: arrayListOf()
         Log.d("FuckInspectionActivity", "Fucking runningEquipments.size=${runningEquipments.size}  内容=${runningEquipments.joinToString()}")
 
-        if (runningEquipments.isEmpty()) {
-            Log.d("FuckInspectionActivity", "No Fucking Any Devices")
-        }
+
         pointId = intent.getStringExtra("pointId").toString()
         val pointName = intent.getStringExtra("pointName")
-        // The checkItems variable is not needed for further logic, as we will directly use the fetched items to populate rows below.
-        equipmentId = intent.getStringExtra("equipmentId") ?: ""
-        equipmentName = intent.getStringExtra("equipmentName") ?: equipmentId
         freqHours = intent.getIntExtra("freqHours", 8)
         sessionId = intent.getLongExtra("sessionId", 0L)
 
@@ -87,7 +83,6 @@ class InspectionActivity : AppCompatActivity() {
         } else {
             com.kukifyjeff.safepatrol.utils.SlotUtils.getSlotIndex(freqHours, System.currentTimeMillis())
         }
-        Log.d("FuckInspectionActivity", "cSI=$currentSlotIdx, Freq=$freqHours, nsff=$nSlotsForFreq")
 
         lifecycleScope.launch {
             val existed = withContext(Dispatchers.IO) {
@@ -116,7 +111,6 @@ class InspectionActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvHeader).text = getString(R.string.inspection_header,  pointName, pointId)
 
         rv = findViewById(R.id.rvForm)
-
 
         rv.layoutManager = LinearLayoutManager(this)
 
@@ -380,6 +374,7 @@ class InspectionActivity : AppCompatActivity() {
                     values.add(
                         InspectionRecordItemEntity(
                             recordId = 0,
+                            equipmentId = row.item.equipmentId,
                             itemId = row.item.itemId,
                             value = when (row.ok) { true -> "TRUE"; false -> "FALSE"; null -> "" },
                             abnormal = abnormal,
@@ -391,19 +386,20 @@ class InspectionActivity : AppCompatActivity() {
                     val v = row.value
                     if (v == null) {
                         if (row.item.required) missingList.add(row.item.itemName)
-                        values.add(InspectionRecordItemEntity(recordId = 0, itemId = row.item.itemId, value = "", abnormal = row.item.required, slotIndex = currentSlotIdx))
+                        values.add(InspectionRecordItemEntity(recordId = 0, equipmentId = row.item.equipmentId, itemId = row.item.itemId, value = "", abnormal = row.item.required, slotIndex = currentSlotIdx))
                     } else {
                         val low = row.item.minValue?.let { v < it } ?: false
                         val high = row.item.maxValue?.let { v > it } ?: false
                         val ab = low || high
                         if (ab) abnormalList.add("${row.item.itemName}=$v")
-                        values.add(InspectionRecordItemEntity(recordId = 0, itemId = row.item.itemId, value = v.toString(), abnormal = ab, slotIndex = currentSlotIdx))
+                        values.add(InspectionRecordItemEntity(recordId = 0, equipmentId = row.item.equipmentId, itemId = row.item.itemId, value = v.toString(), abnormal = ab, slotIndex = currentSlotIdx))
                     }
                 }
                 is FormRow.Text -> {
                     values.add(
                         InspectionRecordItemEntity(
                             recordId = 0,
+                            equipmentId = row.item.equipmentId,
                             itemId = row.item.itemId,
                             value = row.text.trim(),
                             abnormal = false,
@@ -442,7 +438,41 @@ class InspectionActivity : AppCompatActivity() {
                         timestamp = System.currentTimeMillis()
                     )
                 )
-                db.inspectionDao().insertItems(items.map { it.copy(recordId = recordId) })
+
+                // make a mutable copy of incoming items and assign recordId
+                val finalItems = items.map { it.copy(recordId = recordId) }.toMutableList()
+
+                // read maintenance / standby lists from intent and add corresponding records
+                val maintenanceEquipments = intent.getStringArrayListExtra("maintenanceEquipments") ?: arrayListOf<String>()
+                val standbyEquipments = intent.getStringArrayListExtra("standbyEquipments") ?: arrayListOf<String>()
+                Log.d("FuckInspectionActivity", "Maintenance Equipments: $maintenanceEquipments, Standby Equipments: $standbyEquipments")
+                for (equipId in maintenanceEquipments) {
+                    finalItems.add(
+                        InspectionRecordItemEntity(
+                            recordId = recordId,
+                            equipmentId = equipId,
+                            itemId = "",
+                            value = "维修",
+                            abnormal = false,
+                            slotIndex = currentSlotIdx
+                        )
+                    )
+                }
+                for (equipId in standbyEquipments) {
+                    finalItems.add(
+                        InspectionRecordItemEntity(
+                            recordId = recordId,
+                            equipmentId = equipId,
+                            itemId = "",
+                            value = "备用",
+                            abnormal = false,
+                            slotIndex = currentSlotIdx
+                        )
+                    )
+                }
+
+                // finally insert all items
+                db.inspectionDao().insertItems(finalItems)
                 recordId
             }
             Toast.makeText(this@InspectionActivity, "已提交", Toast.LENGTH_SHORT).show()

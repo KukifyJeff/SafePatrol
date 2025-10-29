@@ -113,6 +113,9 @@ interface InspectionDao {
         endMs: Long
     ): List<InspectionRecordEntity>
 
+    @Query("SELECT * FROM inspection_records WHERE timestamp < :endMs ORDER BY timestamp ASC")
+    suspend fun getRecordsBefore(endMs: Long): List<InspectionRecordEntity>
+
     /** 批量获取会话（用于导出时按记录还原当时操作员/班次） */
     @Query("SELECT * FROM inspection_sessions WHERE sessionId IN (:ids)")
     suspend fun getSessionsByIds(ids: List<Long>): List<InspectionSessionEntity>

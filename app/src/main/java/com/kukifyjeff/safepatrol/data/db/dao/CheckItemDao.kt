@@ -19,4 +19,10 @@ interface CheckItemDao {
 
     @Query("SELECT * FROM check_items WHERE equipmentId IN (:equipIds)")
     suspend fun getByEquipments(equipIds: List<String>): List<CheckItemEntity>
+
+    @Query("SELECT itemName FROM check_items WHERE itemId = :itemId LIMIT 1")
+    suspend fun getItemNameById(itemId: String): String?
+
+    @Query("SELECT * FROM check_items WHERE itemId = :itemId LIMIT 1")
+    suspend fun getById(itemId: String): CheckItemEntity?
 }

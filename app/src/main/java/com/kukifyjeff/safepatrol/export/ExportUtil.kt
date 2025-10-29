@@ -3,6 +3,7 @@ package com.kukifyjeff.safepatrol.export
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Environment
+import android.util.Log
 import com.kukifyjeff.safepatrol.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -79,8 +80,14 @@ object ExportUtil {
             itemNameByEquip[p.pointId] = m
         }
 
-        // 预加载设备名称缓存 (pointId -> equipmentName)
+        // 优化设备名逻辑：改为从 InspectionRecordItemEntity 的 equipmentId 获取
         val equipmentNameCache = mutableMapOf<String, String>()
+        suspend fun getEquipmentName(equipmentId: String?): String {
+            if (equipmentId.isNullOrBlank()) return ""
+            return equipmentNameCache.getOrPut(equipmentId) {
+                db.equipmentDao().getById(equipmentId)?.equipmentName ?: ""
+            }
+        }
 
         // 创建 Excel（单表）
         val wb = XSSFWorkbook()
@@ -191,108 +198,84 @@ object ExportUtil {
         // 为每个窗口、每个点位、每个槽位输出行：若有记录则写出记录对应的 items，否则写出一行未检
         var rowIdx = 1
 
-        // 预加载每个设备的检查频次（从 CheckItemEntity 而非 PointEntity）
-        val freqByEquip = mutableMapOf<String, Int>()
-        for (p in points) {
-            val freqs = db.checkItemDao().getFreqHoursByEquipment(p.pointId)
-            val freq = if (freqs.isNotEmpty()) freqs.maxOrNull() ?: 8 else 8
-            freqByEquip[p.pointId] = freq
+        // 查找从当月开始到当前手机时间的所有记录，并按时间排序输出
+        val currentTime = System.currentTimeMillis()
+        val recordsInRange = db.inspectionDao().getRecordsInWindow(startMs, currentTime).sortedBy { it.timestamp }
+        val recordsByPoint = recordsInRange.groupBy { it.pointId }
+
+        // 输出有记录的点的记录
+        for (latest in recordsInRange) {
+            val items = itemsByRecord[latest.recordId].orEmpty()
+            val shiftName = sessionsMap[latest.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: ""
+            val (dateStr, timeStr) = formatDateTimeForRecord(latest.timestamp, startMs, currentTime)
+
+            if (items.isEmpty()) {
+                val r = sheet.createRow(rowIdx)
+                val cells = arrayOf(
+                    dateStr,
+                    timeStr,
+                    sessionsMap[latest.sessionId]?.routeName ?: currentRouteName,
+                    sessionsMap[latest.sessionId]?.operatorId ?: "",
+                    shiftName,
+                    latest.pointId,
+                    pointMap[latest.pointId]?.name ?: "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "未检",
+                    ""
+                )
+                cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
+                rowIdx++
+            } else {
+                for (itm in items) {
+                    val itemLabel = db.checkItemDao().getItemNameById(itm.itemId) ?: itm.itemId
+                    val freqHours = db.checkItemDao().getById(itm.itemId)?.freqHours ?: 8
+                    val equipName = getEquipmentName(itm.equipmentId)
+                    val r = sheet.createRow(rowIdx)
+                    val cells = arrayOf(
+                        dateStr,
+                        timeStr,
+                        sessionsMap[latest.sessionId]?.routeName ?: currentRouteName,
+                        sessionsMap[latest.sessionId]?.operatorId ?: "",
+                        shiftName,
+                        latest.pointId,
+                        pointMap[latest.pointId]?.name ?: "",
+                        equipName,
+                        itemLabel,
+                        freqHours.toString(),
+                        itm.slotIndex.toString(),
+                        itm.value,
+                        if (itm.abnormal) "异常" else "正常"
+                    )
+                    cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
+                    rowIdx++
+                }
+            }
         }
 
-        for ((wStart, wEnd) in windows) {
-            for (p in points) {
-                val freq = freqByEquip[p.pointId] ?: 8
-                val nSlots = when (freq) { 2 -> 4; 4 -> 2; 8 -> 1; else -> 1 }
-                for (slotIdx in 1..nSlots) {
-                    // 查找该点位在该窗口、该槽位的记录（选择最新一条）
-                    val recs = db.inspectionDao().getRecordsForPointSlotInWindow(
-                        pointId = p.pointId,
-                        slotIndex = slotIdx,
-                        startMs = wStart,
-                        endMs = wEnd
-                    )
-                    val latest = recs.maxByOrNull { it.timestamp }
-                    if (latest != null) {
-                        // 有记录，写出对应 items 行（若没有 items 也写占位）
-                        val items = itemsByRecord[latest.recordId].orEmpty()
-                        val shiftName = sessionsMap[latest.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: shiftNameFromWindowStart(wStart)
-
-                        // 获取设备名缓存或查询
-                        val equipName = equipmentNameCache.getOrPut(latest.pointId) {
-                            db.equipmentDao().getById(latest.pointId)?.equipmentName ?: ""
-                        }
-
-                        if (items.isEmpty()) {
-                            val (dateStr, timeStr) = formatDateTimeForRecord(latest.timestamp, wStart, wEnd)
-                            val r = sheet.createRow(rowIdx)
-                            val cells = arrayOf(
-                                dateStr,
-                                timeStr,
-                                sessionsMap[latest.sessionId]?.routeName ?: currentRouteName,
-                                sessionsMap[latest.sessionId]?.operatorId ?: "",
-                                shiftName,
-                                latest.pointId,
-                                pointMap[latest.pointId]?.name ?: "",
-                                equipName,
-                                "",
-                                freq.toString(),
-                                latest.slotIndex.toString(),
-                                "未检",
-                                ""
-                            )
-                            cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
-                            rowIdx++
-                        } else {
-                            for (itm in items) {
-                                val (dateStr, timeStr) = formatDateTimeForRecord(latest.timestamp, wStart, wEnd)
-                                val r = sheet.createRow(rowIdx)
-                                val itemLabel =
-                                    itemNameByEquip[latest.pointId]?.get(itm.itemId) ?: itm.itemId
-                                val freqHours = db.checkItemDao().getByEquipment(latest.pointId)
-                                    .firstOrNull { it.itemId == itm.itemId }?.freqHours ?: 8
-                                val cells = arrayOf(
-                                    dateStr,
-                                    timeStr,
-                                    sessionsMap[latest.sessionId]?.routeName ?: currentRouteName,
-                                    sessionsMap[latest.sessionId]?.operatorId ?: "",
-                                    shiftName,
-                                    latest.pointId,
-                                    pointMap[latest.pointId]?.name ?: "",
-                                    equipName,
-                                    itemLabel,
-                                    freqHours.toString(),
-                                    latest.slotIndex.toString(),
-                                    itm.value,
-                                    if (itm.abnormal) "异常" else "正常"
-                                )
-                                cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
-                                rowIdx++
-                            }
-                        }
-                    } else {
-                        // 未检：写一条占位行，itemValue 标为 未检，设备名留空
-                        val dateOnly = sdfDate.format(Date(wStart))
-                        val r = sheet.createRow(rowIdx)
-                        val freqVal = freqByEquip[p.pointId] ?: 8
-                        val cells = arrayOf(
-                            dateOnly,
-                            "",
-                            currentRouteName, // routeName unknown when no session
-                            "",
-                            shiftNameFromWindowStart(wStart),
-                            p.pointId,
-                            p.name,
-                            "",
-                            "",
-                            freqVal.toString(),
-                            slotIdx.toString(),
-                            "未检",
-                            ""
-                        )
-                        cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
-                        rowIdx++
-                    }
-                }
+        // 输出无记录的点，标记为未检
+        for ((pointId, point) in pointMap) {
+            if (!recordsByPoint.containsKey(pointId)) {
+                val r = sheet.createRow(rowIdx)
+                val cells = arrayOf(
+                    "", // 日期
+                    "", // 时间
+                    currentRouteName,
+                    "", // 点检员
+                    "", // 班次
+                    pointId,
+                    point.name,
+                    "",
+                    "",
+                    "",
+                    "",
+                    "未检",
+                    ""
+                )
+                cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
+                rowIdx++
             }
         }
 

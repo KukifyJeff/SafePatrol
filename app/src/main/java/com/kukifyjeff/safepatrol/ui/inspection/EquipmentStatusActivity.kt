@@ -188,6 +188,8 @@ class EquipmentStatusActivity : AppCompatActivity() {
                 putExtra("pointName", pointName)
                 putExtra("freqHours", freqHours)
                 putStringArrayListExtra("runningEquipments", ArrayList(runningEquipments))
+                putStringArrayListExtra("maintenanceEquipments", ArrayList(selectedStatuses.filter { it.value == "检修" }.keys))
+                putStringArrayListExtra("standbyEquipments", ArrayList(selectedStatuses.filter { it.value == "备用" }.keys))
             }
             startActivity(intent)
             finish()

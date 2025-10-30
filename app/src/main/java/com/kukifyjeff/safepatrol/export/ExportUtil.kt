@@ -51,8 +51,7 @@ object ExportUtil {
         // 查询当月内所有实际记录（用于按 recordId 批量加载 items）
         val actualRecords = db.inspectionDao().getRecordsInWindow(startMs, endMs).sortedBy { it.timestamp }
         val recordIds = actualRecords.map { it.recordId }
-        val itemsByRecord = if (recordIds.isEmpty()) emptyMap()
-        else db.inspectionDao().getItemsForRecordIds(recordIds).groupBy { it.recordId }
+//        val itemsByRecord = if (recordIds.isEmpty()) emptyMap() else db.inspectionDao().getItemsForRecordIds(recordIds).groupBy { it.recordId }
 
         // 预取 session 信息（按 sessionId）
         val sessionIds = actualRecords.map { it.sessionId }.distinct()
@@ -166,6 +165,7 @@ object ExportUtil {
         val windows = mutableListOf<Pair<Long, Long>>()
         val cal2 = Calendar.getInstance().apply { timeInMillis = startMs }
         val currentWindow = com.kukifyjeff.safepatrol.utils.ShiftUtils.currentShiftWindowMillis()
+        val sdfFull = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
         // iterate days from start to end, but stop when window start > currentWindow.endMs
         while (cal2.timeInMillis <= endMs) {
             val y = cal2.get(Calendar.YEAR)
@@ -180,102 +180,122 @@ object ExportUtil {
             // 夜班：00:30 - 08:30 (same day)
             val s0 = msOf(0, 30)
             val e0 = msOf(8, 30)
-            if (e0 >= startMs && s0 <= endMs && s0 <= currentWindow.startMs) windows.add(Pair(s0.coerceAtLeast(startMs), e0.coerceAtMost(endMs)))
+            if (e0 >= startMs && s0 <= endMs) {
+                windows.add(Pair(s0.coerceAtLeast(startMs), e0.coerceAtMost(endMs)))
+                Log.d("FuckExportUtil", "Add window: start=${sdfFull.format(Date(s0))}, end=${sdfFull.format(Date(e0))}, label=夜班")
+            }
 
             // 白班：08:30 - 16:30
             val s1 = msOf(8, 30)
             val e1 = msOf(16, 30)
-            if (e1 >= startMs && s1 <= endMs && s1 <= currentWindow.startMs) windows.add(Pair(s1.coerceAtLeast(startMs), e1.coerceAtMost(endMs)))
+            if (e1 >= startMs && s1 <= endMs) {
+                windows.add(Pair(s1.coerceAtLeast(startMs), e1.coerceAtMost(endMs)))
+                Log.d("FuckExportUtil", "Add window: start=${sdfFull.format(Date(s1))}, end=${sdfFull.format(Date(e1))}, label=白班")
+            }
 
             // 中班：16:30 - 次日00:30
             val s2 = msOf(16, 30)
             val e2 = msOf(0, 30, 1)
-            if (e2 >= startMs && s2 <= endMs && s2 <= currentWindow.startMs) windows.add(Pair(s2.coerceAtLeast(startMs), e2.coerceAtMost(endMs)))
+            if (e2 >= startMs && s2 <= endMs) {
+                windows.add(Pair(s2.coerceAtLeast(startMs), e2.coerceAtMost(endMs)))
+                Log.d("FuckExportUtil", "Add window: start=${sdfFull.format(Date(s2))}, end=${sdfFull.format(Date(e2))}, label=中班")
+            }
 
             cal2.add(Calendar.DAY_OF_MONTH, 1)
         }
 
-        // 为每个窗口、每个点位、每个槽位输出行：若有记录则写出记录对应的 items，否则写出一行未检
+        // ========= 新版导出逻辑：基于最高频次 + 全槽位遍历 =========
         var rowIdx = 1
 
-        // 查找从当月开始到当前手机时间的所有记录，并按时间排序输出
-        val currentTime = System.currentTimeMillis()
-        val recordsInRange = db.inspectionDao().getRecordsInWindow(startMs, currentTime).sortedBy { it.timestamp }
-        val recordsByPoint = recordsInRange.groupBy { it.pointId }
-
-        // 输出有记录的点的记录
-        for (latest in recordsInRange) {
-            val items = itemsByRecord[latest.recordId].orEmpty()
-            val shiftName = sessionsMap[latest.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: ""
-            val (dateStr, timeStr) = formatDateTimeForRecord(latest.timestamp, startMs, currentTime)
-
-            if (items.isEmpty()) {
-                val r = sheet.createRow(rowIdx)
-                val cells = arrayOf(
-                    dateStr,
-                    timeStr,
-                    sessionsMap[latest.sessionId]?.routeName ?: currentRouteName,
-                    sessionsMap[latest.sessionId]?.operatorId ?: "",
-                    shiftName,
-                    latest.pointId,
-                    pointMap[latest.pointId]?.name ?: "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "未检",
-                    ""
-                )
-                cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
-                rowIdx++
-            } else {
-                for (itm in items) {
-                    val itemLabel = db.checkItemDao().getItemNameById(itm.itemId) ?: itm.itemId
-                    val freqHours = db.checkItemDao().getById(itm.itemId)?.freqHours ?: 8
-                    val equipName = getEquipmentName(itm.equipmentId)
-                    val r = sheet.createRow(rowIdx)
-                    val cells = arrayOf(
-                        dateStr,
-                        timeStr,
-                        sessionsMap[latest.sessionId]?.routeName ?: currentRouteName,
-                        sessionsMap[latest.sessionId]?.operatorId ?: "",
-                        shiftName,
-                        latest.pointId,
-                        pointMap[latest.pointId]?.name ?: "",
-                        equipName,
-                        itemLabel,
-                        freqHours.toString(),
-                        itm.slotIndex.toString(),
-                        itm.value,
-                        if (itm.abnormal) "异常" else "正常"
-                    )
-                    cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
-                    rowIdx++
-                }
-            }
+        // 1️⃣ 计算每个点位的最高频次
+        val maxFreqByPoint = mutableMapOf<String, Int>()
+        for (p in points) {
+            // 按 point -> equipments -> checkitems 的关系计算该点的最高频次（即最短间隔）
+            val equipments = db.equipmentDao().getByPoint(p.pointId)
+            // 获取该点下所有检查项（通过每个 equipment 的 equipmentId 查询）
+            val allCheckItems = equipments.flatMap { eq -> db.checkItemDao().getByEquipment(eq.equipmentId) }
+            // 取最小的 freqHours（最短的间隔），若无则默认 8
+            val freq = if (allCheckItems.isNotEmpty()) allCheckItems.minOfOrNull { it.freqHours } ?: 8 else 8
+            maxFreqByPoint[p.pointId] = freq
         }
+        Log.d("FuckExportUtil", "maxFreqByPoint: $maxFreqByPoint")
 
-        // 输出无记录的点，标记为未检
-        for ((pointId, point) in pointMap) {
-            if (!recordsByPoint.containsKey(pointId)) {
-                val r = sheet.createRow(rowIdx)
-                val cells = arrayOf(
-                    "", // 日期
-                    "", // 时间
-                    currentRouteName,
-                    "", // 点检员
-                    "", // 班次
-                    pointId,
-                    point.name,
-                    "",
-                    "",
-                    "",
-                    "",
-                    "未检",
-                    ""
-                )
-                cells.forEachIndexed { idx, v -> r.createCell(idx).setCellValue(v) }
-                rowIdx++
+        // 2️⃣ 获取本月内的所有记录（到当前时间为止）
+        val currentTime = System.currentTimeMillis()
+        val records = db.inspectionDao().getRecordsInWindow(startMs, currentTime)
+        val itemsByRecord = db.inspectionDao()
+            .getItemsForRecordIds(records.map { it.recordId })
+            .groupBy { it.recordId }
+
+        val recordsByPointSlot = records.groupBy { "${it.pointId}_${it.slotIndex}" }
+
+        // 3️⃣ 遍历所有时间段（window）、点位及槽位
+        for ((windowStart, windowEnd) in windows) {
+            val shiftName = shiftNameFromWindowStart(windowStart)
+            Log.d("ExportUtil", "Processing window: start=${sdfFull.format(Date(windowStart))}, end=${sdfFull.format(Date(windowEnd))}, shift=$shiftName")
+
+            for (p in points) {
+                val freq = maxFreqByPoint[p.pointId] ?: 8
+                val nSlots = when (freq) { 2 -> 4; 4 -> 2; 8 -> 1; else -> 1 }
+                Log.d("FuckExportUtil", "Processing point=${p.pointId}, freq=$freq, nSlots=$nSlots")
+
+                for (slotIdx in 1..nSlots) {
+                    // 查询该时间窗内该点位槽位的记录
+                    val recsInWindow = db.inspectionDao().getRecordsForPointSlotInWindow(p.pointId, slotIdx, windowStart, windowEnd)
+                    val rec = recsInWindow.maxByOrNull { it.timestamp }
+
+                    if (rec != null) {
+                        Log.d("FuckExportUtil", "Found record for point=${p.pointId}, slotIdx=$slotIdx, recordId=${rec.recordId} in window")
+                        val items = itemsByRecord[rec.recordId].orEmpty()
+                        for (itm in items) {
+                            val itemLabel = db.checkItemDao().getItemNameById(itm.itemId) ?: itm.itemId
+                            val freqHours = db.checkItemDao().getById(itm.itemId)?.freqHours ?: 8
+                            val equipName = getEquipmentName(itm.equipmentId)
+                            val (dateStr, timeStr) = formatDateTimeForRecord(rec.timestamp, windowStart, windowEnd)
+                            val shiftNameRec = sessionsMap[rec.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: ""
+
+                            val r = sheet.createRow(rowIdx++)
+                            val cells = arrayOf(
+                                dateStr,
+                                timeStr,
+                                sessionsMap[rec.sessionId]?.routeName ?: currentRouteName,
+                                sessionsMap[rec.sessionId]?.operatorId ?: "",
+                                shiftNameRec,
+                                p.pointId,
+                                p.name,
+                                equipName,
+                                itemLabel,
+                                freqHours.toString(),
+                                slotIdx.toString(),
+                                itm.value,
+                                if (itm.abnormal) "异常" else "正常"
+                            )
+                            cells.forEachIndexed { i, v -> r.createCell(i).setCellValue(v) }
+                        }
+                    } else {
+                        Log.d("ExportUtil", "No record for point=${p.pointId}, slotIdx=$slotIdx in window")
+                        // 没有记录，输出未检行，包含日期和班次
+                        val (dateStr, _) = formatDateTimeForRecord(windowStart, windowStart, windowEnd)
+                        val shiftNameCell = shiftNameFromWindowStart(windowStart)
+                        val r = sheet.createRow(rowIdx++)
+                        val cells = arrayOf(
+                            dateStr, // 日期
+                            "",      // 时间
+                            currentRouteName,
+                            "",      // 点检员
+                            shiftNameCell, // 班次
+                            p.pointId,
+                            p.name,
+                            "",      // 设备名
+                            "",      // 点检项
+                            freq.toString(),
+                            slotIdx.toString(),
+                            "未检",
+                            ""       // 是否正常
+                        )
+                        cells.forEachIndexed { i, v -> r.createCell(i).setCellValue(v) }
+                    }
+                }
             }
         }
 

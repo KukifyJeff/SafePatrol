@@ -36,8 +36,7 @@ interface InspectionDao {
         endMs: Long
     ): InspectionRecordItemEntity?
 
-    @Query("SELECT * FROM inspection_records WHERE recordId = :recordId LIMIT 1")
-    suspend fun getRecordById(recordId: Long): InspectionRecordEntity?
+
 
     @Query("SELECT * FROM inspection_sessions WHERE sessionId = :id LIMIT 1")
     suspend fun getSessionById(id: Long): InspectionSessionEntity?
@@ -45,12 +44,6 @@ interface InspectionDao {
     // Record items
     @Insert
     suspend fun insertItems(items: List<InspectionRecordItemEntity>)
-
-    @Query("SELECT * FROM inspection_record_items WHERE recordId = :recordId")
-    suspend fun getItemsForRecord(recordId: Long): List<InspectionRecordItemEntity>
-
-    @Query("SELECT * FROM inspection_records WHERE sessionId = :sessionId")
-    suspend fun getAllRecordsForSession(sessionId: Long): List<InspectionRecordEntity>
 
 
     // 1) 某点位在班次时间窗内，某槽位是否已点检（用于去重 & 首页打勾）
@@ -109,14 +102,6 @@ interface InspectionDao {
         startMs: Long,
         endMs: Long
     ): List<InspectionRecordEntity>
-    @Query(
-        """
-    SELECT iri.* FROM inspection_record_items iri
-    JOIN inspection_records ir ON ir.recordId = iri.recordId
-    WHERE ir.sessionId = :sessionId
-"""
-    )
-    suspend fun getAllItemsForSession(sessionId: Long): List<InspectionRecordItemEntity>
 
     @Query(
         "SELECT * FROM inspection_records WHERE pointId = :pointId AND slotIndex = :slotIndex AND timestamp BETWEEN :startMs AND :endMs"
@@ -127,9 +112,6 @@ interface InspectionDao {
         startMs: Long,
         endMs: Long
     ): List<InspectionRecordEntity>
-
-    @Query("SELECT * FROM inspection_records WHERE timestamp < :endMs ORDER BY timestamp ASC")
-    suspend fun getRecordsBefore(endMs: Long): List<InspectionRecordEntity>
 
     /** 批量获取会话（用于导出时按记录还原当时操作员/班次） */
     @Query("SELECT * FROM inspection_sessions WHERE sessionId IN (:ids)")

@@ -50,8 +50,7 @@ object ExportUtil {
 
         // 查询当月内所有实际记录（用于按 recordId 批量加载 items）
         val actualRecords = db.inspectionDao().getRecordsInWindow(startMs, endMs).sortedBy { it.timestamp }
-        val recordIds = actualRecords.map { it.recordId }
-//        val itemsByRecord = if (recordIds.isEmpty()) emptyMap() else db.inspectionDao().getItemsForRecordIds(recordIds).groupBy { it.recordId }
+
 
         // 预取 session 信息（按 sessionId）
         val sessionIds = actualRecords.map { it.sessionId }.distinct()
@@ -69,7 +68,6 @@ object ExportUtil {
             val routeIds = sessionsMap.values.map { it.routeId }.distinct()
             routeIds.flatMap { rid -> db.pointDao().getByRoute(rid) }
         }
-        val pointMap = points.associateBy { it.pointId }
 
         // 预加载每个点位的检查项名称映射 (itemId -> itemName)
         val itemNameByEquip = mutableMapOf<String, Map<String, String>>()
@@ -164,7 +162,6 @@ object ExportUtil {
 
         val windows = mutableListOf<Pair<Long, Long>>()
         val cal2 = Calendar.getInstance().apply { timeInMillis = startMs }
-        val currentWindow = com.kukifyjeff.safepatrol.utils.ShiftUtils.currentShiftWindowMillis()
         val sdfFull = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
         // iterate days from start to end, but stop when window start > currentWindow.endMs
         while (cal2.timeInMillis <= endMs) {
@@ -227,7 +224,6 @@ object ExportUtil {
             .getItemsForRecordIds(records.map { it.recordId })
             .groupBy { it.recordId }
 
-        val recordsByPointSlot = records.groupBy { "${it.pointId}_${it.slotIndex}" }
 
         // 3️⃣ 遍历所有时间段（window）、点位及槽位
         for ((windowStart, windowEnd) in windows) {

@@ -4,31 +4,30 @@ package com.kukifyjeff.safepatrol.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
+import android.view.WindowManager
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kukifyjeff.safepatrol.AppDatabase
+import com.kukifyjeff.safepatrol.R
 import com.kukifyjeff.safepatrol.databinding.ActivityHomeBinding
 import com.kukifyjeff.safepatrol.ui.inspection.InspectionActivity
+import com.kukifyjeff.safepatrol.utils.ShiftUtils
+import com.kukifyjeff.safepatrol.utils.SlotUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import kotlinx.coroutines.withContext
-import com.kukifyjeff.safepatrol.utils.ShiftUtils
-import kotlinx.coroutines.Dispatchers
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.view.WindowManager
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
-import com.kukifyjeff.safepatrol.R
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.view.Gravity
-import com.kukifyjeff.safepatrol.data.db.entities.CheckItemEntity
-import com.kukifyjeff.safepatrol.utils.SlotUtils
 
 class HomeActivity : AppCompatActivity() {
 

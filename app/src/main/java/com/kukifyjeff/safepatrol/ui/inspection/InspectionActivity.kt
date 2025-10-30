@@ -1,15 +1,21 @@
 package com.kukifyjeff.safepatrol.ui.inspection
 
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kukifyjeff.safepatrol.AppDatabase
@@ -18,17 +24,11 @@ import com.kukifyjeff.safepatrol.data.db.entities.CheckItemEntity
 import com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordEntity
 import com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordItemEntity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import android.util.Log
-import android.view.View
-import android.widget.EditText
-import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColorInt
 
 
 @Suppress("DEPRECATION")
@@ -149,7 +149,7 @@ class InspectionActivity : AppCompatActivity() {
                     // 不再添加设备表头，而是将设备名前置到每个检查项
                     val items = db.checkItemDao().getByEquipment(equipId)
                     Log.d("FuckInspectionActivity", "设备 $equipId 检查项数量=${items.size}")
-                    val filteredItems = items.filter { (it.freqHours ?: 8) in activeFreqs }
+                    val filteredItems = items.filter { it.freqHours in activeFreqs }
                     Log.d("FuckInspectionActivity", "设备 $equipId 筛选后数量=${filteredItems.size}")
                     rowsAll.addAll(filteredItems.map {
                         it.copy(itemName = "$equipName - ${it.itemName}（${it.freqHours}h/次）").toRow()
@@ -163,7 +163,8 @@ class InspectionActivity : AppCompatActivity() {
                 rv.adapter = adapter
                 // 为每个已附加的子项设置行内确认按钮行为（对没有直接修改 Adapter 的项目进行增强）
                 rv.addOnChildAttachStateChangeListener(object : androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener {
-                    override fun onChildViewAttachedToWindow(view: android.view.View) {
+                    @SuppressLint("DefaultLocale", "SetTextI18n")
+                    override fun onChildViewAttachedToWindow(view: View) {
                         try {
                             val pos = rv.getChildAdapterPosition(view)
                             if (pos == androidx.recyclerview.widget.RecyclerView.NO_POSITION) return
@@ -228,7 +229,7 @@ class InspectionActivity : AppCompatActivity() {
                             // --- 数值项原有逻辑 ---
                             if (row !is FormRow.Number) return
 
-                            val et = view.findViewById<android.widget.EditText>(R.id.etValue)
+                            val et = view.findViewById<EditText>(R.id.etValue)
                             et.inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
                             // 自动填充默认值为 minValue（如果开关开启且 EditText 为空）
                             if (useMinValueAsDefault && row.item.minValue != null && et.text.isNullOrBlank()) {
@@ -332,13 +333,13 @@ class InspectionActivity : AppCompatActivity() {
 
                             // 编辑框变动时，取消已确认状态并恢复灰色/可点击
                             val existingTag = et.getTag(R.id.etValue)
-                            if (existingTag is android.text.TextWatcher) {
+                            if (existingTag is TextWatcher) {
                                 et.removeTextChangedListener(existingTag)
                             }
-                            val watcher = object : android.text.TextWatcher {
+                            val watcher = object : TextWatcher {
                                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                                override fun afterTextChanged(s: android.text.Editable?) {
+                                override fun afterTextChanged(s: Editable?) {
                                     // 用户手动修改时，取消确认
                                     if (confirmedNumberItemIds.remove(row.item.itemId)) {
                                         // 恢复按钮可点并置灰
@@ -375,12 +376,12 @@ class InspectionActivity : AppCompatActivity() {
                         }
                     }
 
-                    override fun onChildViewDetachedFromWindow(view: android.view.View) {
+                    override fun onChildViewDetachedFromWindow(view: View) {
                         // 清理 TextWatcher（避免内存泄漏）
                         try {
-                            val et = view.findViewById<android.widget.EditText>(R.id.etValue)
+                            val et = view.findViewById<EditText>(R.id.etValue)
                             val tag = et?.getTag(R.id.etValue)
-                            if (tag is android.text.TextWatcher) {
+                            if (tag is TextWatcher) {
                                 et.removeTextChangedListener(tag)
                                 et.setTag(R.id.etValue, null)
                             }

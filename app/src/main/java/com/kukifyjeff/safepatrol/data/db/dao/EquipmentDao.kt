@@ -25,11 +25,4 @@ interface EquipmentDao {
     @Query("SELECT * FROM equipments WHERE statusRequired = 1")
     suspend fun getAllStatusRequired(): List<EquipmentEntity>
 
-    // 根据tagUid查询点位下所有设备
-    @Query("""
-        SELECT e.* FROM equipments e
-        INNER JOIN points p ON e.pointId = p.pointId
-        WHERE p.tagUid = :tagUid
-    """)
-    suspend fun getEquipmentsByTag(tagUid: String): List<EquipmentEntity>
 }

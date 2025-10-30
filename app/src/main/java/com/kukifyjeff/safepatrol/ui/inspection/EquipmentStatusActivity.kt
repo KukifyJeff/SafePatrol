@@ -1,7 +1,6 @@
 package com.kukifyjeff.safepatrol.ui.inspection
 
 import android.content.Intent
-import android.graphics.Typeface
 import android.os.Bundle
 import android.widget.Button
 import android.widget.LinearLayout
@@ -9,7 +8,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import com.kukifyjeff.safepatrol.AppDatabase
 import com.kukifyjeff.safepatrol.R
@@ -18,9 +16,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.content.res.ColorStateList
-import android.util.TypedValue
 import com.kukifyjeff.safepatrol.data.db.entities.EquipmentEntity
-import kotlin.properties.Delegates
+import androidx.core.graphics.toColorInt
 
 class EquipmentStatusActivity : AppCompatActivity() {
 
@@ -49,7 +46,7 @@ class EquipmentStatusActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvPointName).text = "点位：$pointName ($pointId)"
 
         lifecycleScope.launch {
-            loadEquipments(pointId, pointName)
+            loadEquipments(pointId)
         }
 
         btnConfirm.setOnClickListener {
@@ -59,7 +56,7 @@ class EquipmentStatusActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun loadEquipments(pointId: String, pointName: String) {
+    private suspend fun loadEquipments(pointId: String) {
         val db = AppDatabase.Companion.get(this)
         val equipments = withContext(Dispatchers.IO) {
             db.equipmentDao().getByPoint(pointId)
@@ -74,9 +71,9 @@ class EquipmentStatusActivity : AppCompatActivity() {
 
         withContext(Dispatchers.Main) {
             val blueColor = ContextCompat.getColor(this@EquipmentStatusActivity, R.color.blue_primary)
-            val colorRun = ColorStateList.valueOf(android.graphics.Color.parseColor("#E53935"))
-            val colorMaint = ColorStateList.valueOf(android.graphics.Color.parseColor("#43A047"))
-            val colorStandby = ColorStateList.valueOf(android.graphics.Color.parseColor("#9E9E9E"))
+            val colorRun = ColorStateList.valueOf("#E53935".toColorInt())
+            val colorMaint = ColorStateList.valueOf("#43A047".toColorInt())
+            val colorStandby = ColorStateList.valueOf("#9E9E9E".toColorInt())
             val colorBlue = ColorStateList.valueOf(blueColor)
 
             equipments.filter { it.statusRequired }.forEach { eq ->

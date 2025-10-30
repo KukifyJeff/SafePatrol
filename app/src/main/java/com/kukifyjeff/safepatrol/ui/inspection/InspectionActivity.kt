@@ -168,6 +168,64 @@ class InspectionActivity : AppCompatActivity() {
                             val pos = rv.getChildAdapterPosition(view)
                             if (pos == androidx.recyclerview.widget.RecyclerView.NO_POSITION) return
                             val row = rows.getOrNull(pos) ?: return
+                            // --- Boolean 行异常备注逻辑 ---
+                            if (row is FormRow.Bool) {
+                                val btnOk = view.findViewById<Button>(R.id.btnOk)
+                                val btnNg = view.findViewById<Button>(R.id.btnNg)
+                                val llRemark = view.findViewById<LinearLayout?>(R.id.llRemark)
+                                llRemark?.removeAllViews()
+                                // 先移除所有监听，避免重复
+                                btnNg?.setOnClickListener(null)
+                                btnOk?.setOnClickListener(null)
+                                // “异常”按钮点击弹出输入框
+                                btnNg?.setOnClickListener {
+                                    val builder = AlertDialog.Builder(this@InspectionActivity)
+                                    builder.setTitle("请输入异常备注")
+                                    val input = EditText(this@InspectionActivity)
+                                    input.setText(remarkMap[row.item.itemId] ?: "")
+                                    builder.setView(input)
+                                    builder.setPositiveButton("确定") { _, _ ->
+                                        val remark = input.text.toString().trim()
+                                        remarkMap[row.item.itemId] = remark
+                                        row.ok = false
+                                        // 触发刷新（如需）
+                                        adapter.notifyItemChanged(pos)
+                                    }
+                                    builder.setNegativeButton("取消", null)
+                                    builder.show()
+                                }
+                                // “正常”按钮点击时移除备注
+                                btnOk?.setOnClickListener {
+                                    if (remarkMap.containsKey(row.item.itemId)) {
+                                        remarkMap.remove(row.item.itemId)
+                                    }
+                                    row.ok = true
+                                    adapter.notifyItemChanged(pos)
+                                }
+                                if (row.ok == false) {
+                                    val et = EditText(this@InspectionActivity)
+                                    et.hint = "请输入异常备注"
+                                    et.setText(remarkMap[row.item.itemId] ?: "")
+                                    et.layoutParams = LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.MATCH_PARENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT
+                                    )
+                                    llRemark?.addView(et)
+                                    et.addTextChangedListener(object : TextWatcher {
+                                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                                        override fun afterTextChanged(s: Editable?) {
+                                            remarkMap[row.item.itemId] = s?.toString()?.trim() ?: ""
+                                        }
+                                    })
+                                    llRemark?.visibility = View.VISIBLE
+                                } else {
+                                    llRemark?.visibility = View.GONE
+                                }
+                                // 不处理数值逻辑
+                                return
+                            }
+                            // --- 数值项原有逻辑 ---
                             if (row !is FormRow.Number) return
 
                             val et = view.findViewById<android.widget.EditText>(R.id.etValue)
@@ -348,6 +406,8 @@ class InspectionActivity : AppCompatActivity() {
     }
 
     private fun onSubmit() {
+        // 新增：校验异常项备注
+        if (!validateRemarks()) return
         // 校验：所有已输入的数值项必须先被确认
         val unconfirmed = rows.filterIsInstance<FormRow.Number>().filter { it.value != null && !confirmedNumberItemIds.contains(it.item.itemId) }
         if (unconfirmed.isNotEmpty()) {
@@ -376,7 +436,11 @@ class InspectionActivity : AppCompatActivity() {
                             recordId = 0,
                             equipmentId = row.item.equipmentId,
                             itemId = row.item.itemId,
-                            value = when (row.ok) { true -> "TRUE"; false -> "FALSE"; null -> "" },
+                            value = when (row.ok) {
+                                true -> "TRUE"
+                                false -> remarkMap[row.item.itemId] ?: "FALSE"
+                                null -> ""
+                            },
                             abnormal = abnormal,
                             slotIndex = currentSlotIdx,
                         )
@@ -425,6 +489,21 @@ class InspectionActivity : AppCompatActivity() {
         } else {
             save(values)
         }
+    }
+
+    // 检查所有异常的 Boolean 项是否填写了备注
+    private fun validateRemarks(): Boolean {
+        val missingRemarks = rows.filterIsInstance<FormRow.Bool>()
+            .filter { it.ok == false && remarkMap[it.item.itemId].isNullOrBlank() }
+        if (missingRemarks.isNotEmpty()) {
+            Toast.makeText(
+                this,
+                "异常项必须填写备注：${missingRemarks.joinToString { it.item.itemName }}",
+                Toast.LENGTH_LONG
+            ).show()
+            return false
+        }
+        return true
     }
 
     private fun save(items: List<InspectionRecordItemEntity>) {

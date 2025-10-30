@@ -253,7 +253,29 @@ object ExportUtil {
                             val equipName = getEquipmentName(itm.equipmentId)
                             val (dateStr, timeStr) = formatDateTimeForRecord(rec.timestamp, windowStart, windowEnd)
                             val shiftNameRec = sessionsMap[rec.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: ""
-
+                            // 计算该检查项的slotIdx（频率对应的slotIndex）
+                            val slotIdxForItem = when (freqHours) {
+                                2 -> {
+                                    // 4 slots: 2h
+                                    val slotLen = ((windowEnd - windowStart) / 4.0)
+                                    val recTime = rec.timestamp
+                                    var idx = ((recTime - windowStart) / slotLen + 1).toInt()
+                                    if (idx < 1) idx = 1
+                                    if (idx > 4) idx = 4
+                                    idx
+                                }
+                                4 -> {
+                                    // 2 slots: 4h
+                                    val slotLen = ((windowEnd - windowStart) / 2.0)
+                                    val recTime = rec.timestamp
+                                    var idx = ((recTime - windowStart) / slotLen + 1).toInt()
+                                    if (idx < 1) idx = 1
+                                    if (idx > 2) idx = 2
+                                    idx
+                                }
+                                8 -> 1
+                                else -> 1
+                            }
                             val r = sheet.createRow(rowIdx++)
                             val cells = arrayOf(
                                 dateStr,

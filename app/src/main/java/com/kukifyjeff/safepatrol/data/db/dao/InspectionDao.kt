@@ -93,7 +93,22 @@ interface InspectionDao {
     )
     suspend fun getItemsForRecordIds(recordIds: List<Long>): List<InspectionRecordItemEntity>
 
-
+    @Query(
+        """
+        SELECT ir.* 
+        FROM inspection_records AS ir
+        INNER JOIN inspection_record_items AS iri
+            ON ir.recordId = iri.recordId
+        WHERE iri.itemId = :checkItemId
+          AND ir.timestamp BETWEEN :startMs AND :endMs
+        ORDER BY ir.timestamp ASC
+        """
+    )
+    suspend fun getInspectionRecordsForCheckItemInWindow(
+        checkItemId: String,
+        startMs: Long,
+        endMs: Long
+    ): List<InspectionRecordEntity>
     @Query(
         """
     SELECT iri.* FROM inspection_record_items iri

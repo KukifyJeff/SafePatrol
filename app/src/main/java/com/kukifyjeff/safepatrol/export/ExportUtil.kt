@@ -288,7 +288,7 @@ object ExportUtil {
                                 equipName,
                                 itemLabel,
                                 freqHours.toString(),
-                                slotIdx.toString(),
+                                slotIdxForItem.toString(),
                                 itm.value,
                                 if (itm.abnormal) "异常" else "正常"
                             )

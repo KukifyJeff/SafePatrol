@@ -271,45 +271,46 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 // 获取频率最高（间隔最短）的频次
-                val freq = if (allCheckItems.isNotEmpty()) allCheckItems.minOf { it.freqHours } else 8
+                val highestFreq = if (allCheckItems.isNotEmpty()) allCheckItems.minOf { it.freqHours } else 8
+                val expectedSlotCount = when (highestFreq) {
+                    2 -> 4
+                    4 -> 2
+                    8 -> 1
+                    else -> 1
+                }
+                android.util.Log.d("FuckHomeActivity", "→ Point=${point.pointId}, highestFreq=$highestFreq, expectedSlotCount=$expectedSlotCount")
 
-                // 获取所有检查项对应的最新点检记录
-                val checkItemLatestRecords: List<Pair<CheckItemEntity, com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordItemEntity?>> =
-                    allCheckItems.map { checkItem ->
-                        val latestRecord: com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordItemEntity? =
-                            db.inspectionDao().getLatestRecordForCheckItemInWindow(
-                                checkItemId = checkItem.itemId,
-                                startMs = window.startMs,
-                                endMs = window.endMs
-                            )
-                        Pair(checkItem, latestRecord)
-                    }
+                // 只保留最高频率的检查项
+                val targetCheckItems = allCheckItems.filter { it.freqHours == highestFreq }
 
-                // 计算所有槽位的完成状态，槽位索引从1开始，并记录时间戳
-                val slotStatusMap = mutableMapOf<Int, Long>() // slotIndex -> timestamp
+                // 构建槽位状态表
+                val slotStatusMap = mutableMapOf<Int, Long>()
 
-                checkItemLatestRecords.forEach { (checkItem, record) ->
-                    val latestRecordEntity: com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordEntity? =
-                        record?.let { db.inspectionDao().getRecordById(it.recordId) }
-                    val slotIdx = latestRecordEntity?.timestamp?.let { ts ->
-                        SlotUtils.getSlotIndex(checkItem.freqHours, ts)
-                    }
-                    if (slotIdx != null && latestRecordEntity != null) {
-                        slotStatusMap[slotIdx] = latestRecordEntity.timestamp
+                // 查询当前点位所有最高频率检查项的所有记录（在当前班次窗口中）
+                for (checkItem in targetCheckItems) {
+                    val allRecords = db.inspectionDao().getInspectionRecordsForCheckItemInWindow(
+                        checkItemId = checkItem.itemId,
+                        startMs = window.startMs,
+                        endMs = window.endMs
+                    )
+                    for (record in allRecords) {
+                        val slotIdx = SlotUtils.getSlotIndex(highestFreq, record.timestamp)
+                        slotStatusMap[slotIdx] = record.timestamp
+                        android.util.Log.d("FuckHomeActivity", "✅ Point=${point.pointId}, CheckItem=${checkItem.itemId}, Slot=$slotIdx")
                     }
                 }
 
-                // 获取所有可能的槽位索引，按升序排列
-                val expectedSlotCount = 8 / freq
-                // 生成槽位列表，槽位索引从1到expectedSlotCount
+                // 输出每个槽位状态（勾选 or 未检）
                 val slots = (1..expectedSlotCount).map { slotIdx ->
                     val ts = slotStatusMap[slotIdx]
                     val isChecked = ts != null
+                    android.util.Log.d("FuckHomeActivity", "Point ${point.pointId} slot $slotIdx -> ${if (isChecked) "✅ checked" else "⬜ unchecked"}")
+                    val slotChinese = slotIndexToChinese(slotIdx)
                     val title = if (isChecked) {
                         val timeStr = hhmm(ts)
-                        getString(R.string.point_slot_status_done, slotIdx, timeStr)
+                        getString(R.string.point_slot_status_done, slotChinese, timeStr)
                     } else {
-                        getString(R.string.point_slot_status_pending, slotIdx)
+                        getString(R.string.point_slot_status_pending, slotChinese)
                     }
                     SlotStatus(title, isChecked, null)
                 }
@@ -319,7 +320,7 @@ class HomeActivity : AppCompatActivity() {
                     equipmentId = point.pointId,
                     name = point.name,
                     location = point.location,
-                    freqHours = freq,
+                    freqHours = highestFreq,
                     slots = slots
                 )
             }
@@ -366,3 +367,13 @@ class HomeActivity : AppCompatActivity() {
         val rangeText: String
     )
 }
+    // 槽位数字转中文：1->一, 2->二, 3->三, 4->四
+    private fun slotIndexToChinese(idx: Int): String {
+        return when (idx) {
+            1 -> "一"
+            2 -> "二"
+            3 -> "三"
+            4 -> "四"
+            else -> idx.toString()
+        }
+    }

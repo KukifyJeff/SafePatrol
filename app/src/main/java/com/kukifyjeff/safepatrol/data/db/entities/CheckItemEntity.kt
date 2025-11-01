@@ -24,6 +24,7 @@ data class CheckItemEntity(
     val type: String,     // BOOLEAN / NUMBER / TEXT
     val unit: String?,
     val required: Boolean,
+    val requiredInStandby: Boolean,
     val minValue: Double?,
     val maxValue: Double?,
     val freqHours: Int   // 2， 4 或 8

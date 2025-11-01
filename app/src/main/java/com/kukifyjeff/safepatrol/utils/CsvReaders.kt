@@ -45,7 +45,7 @@ object CsvReaders {
 
     fun readCheckItems(file: File): List<CheckItemEntity> =
         readAll(file).drop(1).mapNotNull { row ->
-            if (row.size < 8) null else CheckItemEntity(
+            if (row.size < 9) null else CheckItemEntity(
                 equipmentId = row[0].trim().uppercase(),
                 itemId      = row[1].trim(),
                 itemName    = row[2].trim(),
@@ -54,7 +54,8 @@ object CsvReaders {
                 required    = row[5].trim().equals("yes", true),
                 minValue    = row.getOrNull(6)?.ifBlank { null }?.toDoubleOrNull(),
                 maxValue    = row.getOrNull(7)?.ifBlank { null }?.toDoubleOrNull(),
-                freqHours   = row.getOrNull(8)?.ifBlank { null }?.toIntOrNull() ?: 8
+                freqHours   = row.getOrNull(8)?.ifBlank { null }?.toIntOrNull() ?: 8,
+                requiredInStandby = row.getOrNull(9)?.trim()?.equals("yes", true) ?: false
             )
         }
 

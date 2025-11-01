@@ -67,6 +67,8 @@ class InspectionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_inspection)
         ContextCompat.getColor(this, R.color.blue_primary).also { window.statusBarColor = it }
         runningEquipments = intent.getStringArrayListExtra("runningEquipments") ?: arrayListOf()
+        val standbyEquipments = intent.getStringArrayListExtra("standbyEquipments") ?: arrayListOf()
+        val maintenanceEquipments = intent.getStringArrayListExtra("maintenanceEquipments") ?: arrayListOf()
         Log.d("FuckInspectionActivity", "Fucking runningEquipments.size=${runningEquipments.size}  内容=${runningEquipments.joinToString()}")
 
 
@@ -140,17 +142,50 @@ class InspectionActivity : AppCompatActivity() {
             withContext(Dispatchers.IO) {
                 val activeFreqs = com.kukifyjeff.safepatrol.utils.SlotUtils.getActiveFrequenciesForCurrentSlot(freqHours)
                 Log.d("FuckInspectionActivity", "当前活动频率: $activeFreqs")
-                for (equipId in runningEquipments) {
-                    Log.d("FuckInspectionActivity", "开始处理设备: $equipId")
+                // 收集所有相关设备（运行、备用、维修）
+                val allEquipIds = mutableSetOf<String>()
+                allEquipIds.addAll(runningEquipments)
+                allEquipIds.addAll(standbyEquipments)
+                allEquipIds.addAll(maintenanceEquipments)
+                Log.d("FuckInspectionActivity", "allEquipIds: $allEquipIds")
+                for (equipId in allEquipIds) {
+                    val state =
+                        when {
+                            maintenanceEquipments.contains(equipId) -> "maintenance"
+                            standbyEquipments.contains(equipId) -> "standby"
+                            runningEquipments.contains(equipId) -> "running"
+                            else -> "unknown"
+                        }
+                    Log.d("FuckInspectionActivity", "开始处理设备: $equipId, 状态: $state")
                     // 获取设备名称
                     val equipEntity = db.equipmentDao().getById(equipId)
                     Log.d("FuckInspectionActivity", "设备 $equipId 查找结果=${equipEntity != null}")
                     val equipName = equipEntity?.equipmentName ?: equipId
-                    // 不再添加设备表头，而是将设备名前置到每个检查项
+                    // 跳过维修设备
+                    if (state == "maintenance") {
+                        Log.d("FuckInspectionActivity", "设备 $equipId 处于维修状态，跳过所有检查项")
+                        continue
+                    }
                     val items = db.checkItemDao().getByEquipment(equipId)
                     Log.d("FuckInspectionActivity", "设备 $equipId 检查项数量=${items.size}")
-                    val filteredItems = items.filter { it.freqHours in activeFreqs }
-                    Log.d("FuckInspectionActivity", "设备 $equipId 筛选后数量=${filteredItems.size}")
+                    val filteredItems = when (state) {
+                        "standby" -> {
+                            // 备用设备，仅加载 requiredInStandby == true
+                            val fi = items.filter { it.freqHours in activeFreqs && (it.requiredInStandby == true) }
+                            Log.d("FuckInspectionActivity", "设备 $equipId 备用，仅加载 requiredInStandby==true，筛选后数量=${fi.size}")
+                            fi
+                        }
+                        "running" -> {
+                            // 运行设备，加载全部
+                            val fi = items.filter { it.freqHours in activeFreqs }
+                            Log.d("FuckInspectionActivity", "设备 $equipId 运行，筛选后数量=${fi.size}")
+                            fi
+                        }
+                        else -> {
+                            // 其他状态（理论不会进来），可以忽略
+                            emptyList()
+                        }
+                    }
                     rowsAll.addAll(filteredItems.map {
                         it.copy(itemName = "$equipName - ${it.itemName}（${it.freqHours}h/次）").toRow()
                     })
@@ -431,7 +466,7 @@ class InspectionActivity : AppCompatActivity() {
                         missingList.add(row.item.itemName)
                     }
                     val abnormal = (row.ok == false)  // 不合格为异常
-                    if (abnormal) abnormalList.add(row.item.itemName)
+                    if (abnormal) abnormalList.add("${row.item.itemName}：存在异常")
                     values.add(
                         InspectionRecordItemEntity(
                             recordId = 0,
@@ -456,7 +491,10 @@ class InspectionActivity : AppCompatActivity() {
                         val low = row.item.minValue?.let { v < it } ?: false
                         val high = row.item.maxValue?.let { v > it } ?: false
                         val ab = low || high
-                        if (ab) abnormalList.add("${row.item.itemName}=$v")
+                        if (ab) {
+                            val unitStr = row.item.unit?.takeIf { it.isNotBlank() } ?: ""
+                            abnormalList.add("${row.item.itemName}=$v$unitStr")
+                        }
                         values.add(InspectionRecordItemEntity(recordId = 0, equipmentId = row.item.equipmentId, itemId = row.item.itemId, value = v.toString(), abnormal = ab, slotIndex = currentSlotIdx))
                     }
                 }
@@ -481,9 +519,10 @@ class InspectionActivity : AppCompatActivity() {
         }
 
         if (abnormalList.isNotEmpty()) {
+            val abnormalText = abnormalList.mapIndexed { index, s -> "${index + 1}. $s" }.joinToString("\n")
             AlertDialog.Builder(this)
                 .setTitle("异常确认")
-                .setMessage("发现异常项：\n${abnormalList.joinToString("\n")}\n\n确认提交？")
+                .setMessage("发现异常项：\n$abnormalText\n\n确认提交？")
                 .setPositiveButton("确认") { _, _ -> save(values) }
                 .setNegativeButton("取消", null)
                 .show()

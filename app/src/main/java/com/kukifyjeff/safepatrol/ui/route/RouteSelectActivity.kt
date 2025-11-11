@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.core.graphics.toColorInt
 import com.kukifyjeff.safepatrol.BaseActivity
+import com.kukifyjeff.safepatrol.data.db.entities.EmployeeEntity
 
 @Suppress("DEPRECATION")
 class RouteSelectActivity : BaseActivity() {
@@ -22,6 +23,7 @@ class RouteSelectActivity : BaseActivity() {
     private lateinit var binding: ActivityRouteSelectBinding
     private val db by lazy { AppDatabase.get(this) }
     private var routeIds: List<String> = emptyList()
+    private var employees: List<EmployeeEntity> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +33,16 @@ class RouteSelectActivity : BaseActivity() {
         statusColor.also { window.statusBarColor = it }
         loadOrImportRoutes()
 
+        var headerClickCount = 0
+        binding.imgHeader.setOnClickListener {
+            headerClickCount++
+            if (headerClickCount >= 5) {
+                BaseActivity.developerMode = true
+                Toast.makeText(this, "已进入开发者模式", Toast.LENGTH_SHORT).show()
+                headerClickCount = 0
+            }
+        }
+
         binding.btnStart.setOnClickListener {
             val operatorId = binding.etOperatorId.text.toString().trim()
             val idx = binding.routeSpinner.selectedItemPosition
@@ -38,6 +50,13 @@ class RouteSelectActivity : BaseActivity() {
                 Toast.makeText(this, "请输入工号并选择路线", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
+            val employee = employees.find { it.employeeId.equals(operatorId, ignoreCase = true) }
+            if (employee == null) {
+                Toast.makeText(this, "无效工号，请检查后重新输入", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val routeId = routeIds[idx]
             val routeName = binding.routeSpinner.selectedItem.toString()
             startActivity(
@@ -45,6 +64,7 @@ class RouteSelectActivity : BaseActivity() {
                     .putExtra("routeId", routeId)
                     .putExtra("routeName", routeName)
                     .putExtra("operatorId", operatorId)
+                    .putExtra("operatorName", employee.employeeName)
             )
             finish()
         }
@@ -75,6 +95,7 @@ class RouteSelectActivity : BaseActivity() {
             }
 
             routeIds = routes.map { it.routeId }
+            employees = db.employeeDao().getAll()
             binding.routeSpinner.adapter = ArrayAdapter(
                 this@RouteSelectActivity,
                 android.R.layout.simple_spinner_dropdown_item,

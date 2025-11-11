@@ -11,7 +11,7 @@ import com.kukifyjeff.safepatrol.data.db.entities.*
     entities = [
         RouteEntity::class, PointEntity::class, CheckItemEntity::class,
         EquipmentEntity::class, EquipmentStatusEntity::class, ShiftEntity::class, InspectionSessionEntity::class,
-        InspectionRecordEntity::class, InspectionRecordItemEntity::class,
+        InspectionRecordEntity::class, InspectionRecordItemEntity::class, EmployeeEntity::class,
     ],
     version = 1
 )
@@ -23,6 +23,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun equipmentStatusDao(): EquipmentStatusDao
     abstract fun shiftDao(): ShiftDao
     abstract fun inspectionDao(): InspectionDao
+    abstract fun employeeDao(): EmployeeDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null

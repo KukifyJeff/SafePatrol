@@ -13,7 +13,7 @@
         android:background="@color/blue_primary"
         app:titleTextColor="@color/white"
         android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
-        app:title="SafePatrol ｜ 华能天津IGCC安巡宝"
+        app:title="SafePatrol | IGCC气化安巡宝"
         app:titleCentered="true" />
 
     <!-- 原本的头部信息（路线/工号/班次）用框包裹，与下方区分 -->
@@ -30,8 +30,7 @@
             android:id="@+id/tvHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:text="asdfasdfaasdfasdfadf\nasdfasdfad" />
+            android:textSize="13sp" />
     </LinearLayout>
 
     <!-- 列表区域，占满中间空间 -->
@@ -60,6 +59,7 @@
             android:layout_weight="1"
             android:backgroundTint="#F44336"
             android:textColor="@color/white"
+            android:textSize="14dp"
             android:text="清除数据" />
 
         <Button
@@ -70,6 +70,7 @@
             android:backgroundTint="#4CAF50"
             android:layout_weight="1"
             android:textColor="@color/white"
+            android:textSize="14dp"
             android:text="导出" />
 
         <Button
@@ -80,6 +81,7 @@
             android:backgroundTint="@color/blue_variant"
             android:layout_weight="1"
             android:textColor="@color/white"
+            android:textSize="14dp"
             android:text="NFC点检" />
 
     </LinearLayout>

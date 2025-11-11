@@ -58,6 +58,13 @@ object CsvReaders {
                 requiredInStandby = row.getOrNull(9)?.trim()?.equals("yes", true) ?: false
             )
         }
+    fun readEmployees(file: File): List<EmployeeEntity> =
+        readAll(file).drop(1).mapNotNull { row ->
+            if (row.size < 2) null else EmployeeEntity(
+                employeeId = row[0].trim(),
+                employeeName = row[1].trim(),
+            )
+        }
 
     fun readEquipments(file: File): List<EquipmentEntity> =
         readAll(file).drop(1).mapNotNull { row ->

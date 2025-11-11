@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kukifyjeff.safepatrol.AppDatabase
+import com.kukifyjeff.safepatrol.BaseActivity
 import com.kukifyjeff.safepatrol.R
 import com.kukifyjeff.safepatrol.databinding.ActivityHomeBinding
 import com.kukifyjeff.safepatrol.ui.inspection.InspectionActivity
@@ -29,7 +30,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : BaseActivity() {
 
     companion object {
         // 开关：true 允许点击列表 item 进入模拟点检；false 只能通过 NFC 进入点检

@@ -18,8 +18,9 @@ import kotlinx.coroutines.withContext
 import android.content.res.ColorStateList
 import com.kukifyjeff.safepatrol.data.db.entities.EquipmentEntity
 import androidx.core.graphics.toColorInt
+import com.kukifyjeff.safepatrol.BaseActivity
 
-class EquipmentStatusActivity : AppCompatActivity() {
+class EquipmentStatusActivity : BaseActivity() {
 
     private lateinit var llEquipmentList: LinearLayout
     private lateinit var btnConfirm: Button

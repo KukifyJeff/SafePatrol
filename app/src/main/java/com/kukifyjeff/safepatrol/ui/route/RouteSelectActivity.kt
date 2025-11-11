@@ -14,9 +14,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.core.graphics.toColorInt
+import com.kukifyjeff.safepatrol.BaseActivity
 
 @Suppress("DEPRECATION")
-class RouteSelectActivity : AppCompatActivity() {
+class RouteSelectActivity : BaseActivity() {
 
     private lateinit var binding: ActivityRouteSelectBinding
     private val db by lazy { AppDatabase.get(this) }

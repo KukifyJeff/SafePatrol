@@ -16,6 +16,7 @@ import kotlinx.coroutines.withContext
 import java.util.Locale
 
 import android.util.Log
+import com.kukifyjeff.safepatrol.BaseActivity
 import com.kukifyjeff.safepatrol.data.db.entities.EquipmentEntity
 import com.kukifyjeff.safepatrol.data.db.entities.PointEntity
 import java.io.File
@@ -23,7 +24,7 @@ import java.io.FileWriter
 import java.io.IOException
 import java.util.Objects.toString
 
-class NfcReaderActivity : AppCompatActivity(), NfcAdapter.ReaderCallback {
+class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
 
     private var nfcAdapter: NfcAdapter? = null
     private val db by lazy { AppDatabase.get(this) }

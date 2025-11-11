@@ -34,6 +34,8 @@ import java.util.Locale
 @Suppress("DEPRECATION")
 class InspectionActivity : AppCompatActivity() {
 
+    private var lastBackPressedTime = 0L
+
     private val db by lazy { AppDatabase.get(this) }
 
     private var freqHours: Int = 8
@@ -447,6 +449,10 @@ class InspectionActivity : AppCompatActivity() {
         // 校验：所有已输入的数值项必须先被确认
         val unconfirmed = rows.filterIsInstance<FormRow.Number>().filter { it.value != null && !confirmedNumberItemIds.contains(it.item.itemId) }
         if (unconfirmed.isNotEmpty()) {
+            // 滚动到第一个未确认项
+            val firstUnconfirmedId = unconfirmed.first().item.itemId
+            val targetIndex = rows.indexOfFirst { it.item.itemId == firstUnconfirmedId }
+            if (targetIndex >= 0) rv.scrollToPosition(targetIndex)
             Toast.makeText(
                 this,
                 "${unconfirmed.joinToString("、") { it.item.itemName }}项数值未确认",
@@ -514,6 +520,12 @@ class InspectionActivity : AppCompatActivity() {
         }
 
         if (missingList.isNotEmpty()) {
+            // 滚动到第一个未填项
+            val firstMissingId = rows.firstOrNull { it.item.itemName == missingList.first() }?.item?.itemId
+            if (firstMissingId != null) {
+                val targetIndex = rows.indexOfFirst { it.item.itemId == firstMissingId }
+                if (targetIndex >= 0) rv.scrollToPosition(targetIndex)
+            }
             Toast.makeText(this, "必填未填：${missingList.joinToString()}", Toast.LENGTH_LONG).show()
             return
         }
@@ -598,6 +610,18 @@ class InspectionActivity : AppCompatActivity() {
             setResult(RESULT_OK)
             finish()
             confirmedNumberItemIds.clear()
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    @SuppressLint("GestureBackNavigation")
+    override fun onBackPressed() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastBackPressedTime < 2000) {
+            super.onBackPressed()
+        } else {
+            Toast.makeText(this, "请再次按返回以返回上一级", Toast.LENGTH_SHORT).show()
+            lastBackPressedTime = currentTime
         }
     }
 

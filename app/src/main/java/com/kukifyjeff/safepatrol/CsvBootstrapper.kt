@@ -32,6 +32,8 @@ object CsvBootstrapper {
         val checkItems = CsvReaders.readCheckItems(File(dir, "check_items.csv"))
         val equipments = CsvReaders.readEquipments(File(dir, "equipments.csv"))
         val equipmentStatuses = CsvReaders.readEquipmentStatuses(File(dir, "equipment_status.csv"))
+        val employees = CsvReaders.readEmployees(File(dir, "employees.csv"))
+
 
         db.withTransaction {
             db.routeDao().upsertAll(routes)
@@ -39,9 +41,8 @@ object CsvBootstrapper {
             db.shiftDao().upsertAll(shifts)
             db.equipmentDao().upsertAll(equipments)
             db.checkItemDao().upsertAll(checkItems)
+            db.employeeDao().upsertAll(employees)
             equipmentStatuses.forEach { db.equipmentStatusDao().upsertStatus(it) }
-            Log.d("CsvBootstrapper", "CheckItems unique equipIds = ${checkItems.map { it.equipmentId }.distinct()}")
-            Log.d("CsvBootstrapper", "Equipments loaded = ${equipments.map { it.equipmentId }}")
         }
     }
 }

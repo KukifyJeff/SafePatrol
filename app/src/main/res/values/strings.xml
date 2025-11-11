@@ -12,7 +12,7 @@
     <string name="status_normal">状态：正常</string>
     <string name="form_item_label">• %1$s</string>
     <string name="inspection_header">点位：%1$s（%2$s）</string>
-    <string name="homepage_header">路线：%1$s    工号：%2$s\n班次：%3$s(%4$s)    日期：%5$s</string>
+    <string name="homepage_header">路线：%1$s    姓名：%2$s\n班次：%3$s(%4$s)    日期：%5$s</string>
     <string name="point_status_title">%1$s %2$s  (%3$s)</string>
     <string name="point_status_sub">位置：%1$s</string>
 

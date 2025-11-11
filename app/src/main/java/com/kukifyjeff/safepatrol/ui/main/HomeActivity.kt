@@ -12,7 +12,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -62,10 +61,11 @@ class HomeActivity : BaseActivity() {
         routeId = intent.getStringExtra("routeId") ?: ""
         routeName = intent.getStringExtra("routeName") ?: ""
         operatorId = intent.getStringExtra("operatorId") ?: ""
+        val operatorName = intent.getStringExtra("operatorName") ?: ""
 
         val shift = resolveCurrentShift()
         val today = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(java.util.Date())
-        binding.tvHeader.text = getString(R.string.homepage_header, routeName, operatorId, shift.name, shift.rangeText, today )
+        binding.tvHeader.text = getString(R.string.homepage_header, routeName, operatorName, shift.name, shift.rangeText, today )
         // RecyclerView 基本设置
         binding.rvPoints.layoutManager = LinearLayoutManager(this)
         adapter = PointStatusAdapter(emptyList()) { point ->

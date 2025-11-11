@@ -20,10 +20,10 @@
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SafePatrol | 天津IGCC安巡宝"
-        android:paddingTop="100dp"
+        android:text="SafePatrol | 华能天津IGCC\n煤气化装置安巡宝"
+        android:paddingTop="50dp"
         android:gravity="center"
-        android:textSize="24sp"
+        android:textSize="20dp"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:paddingBottom="24dp"/>
@@ -56,6 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
+        android:textSize="13dp"
         android:backgroundTint="@color/blue_primary"
         android:layout_marginTop="20dp"/>
 

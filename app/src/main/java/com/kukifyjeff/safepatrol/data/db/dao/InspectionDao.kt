@@ -126,4 +126,6 @@ interface InspectionDao {
     @Query("DELETE FROM inspection_sessions")
     suspend fun deleteAllSessions()
 
+    @Query("SELECT MAX(timestamp) FROM inspection_records")
+    suspend fun getLatestRecordTimestamp(): Long?
 }

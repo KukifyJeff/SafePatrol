@@ -170,9 +170,29 @@ class HomeActivity : BaseActivity() {
                 .show()
         }
         binding.btnScan.setOnClickListener {
-            val it = Intent(this, com.kukifyjeff.safepatrol.ui.inspection.NfcReaderActivity::class.java)
-                .putExtra("sessionId", sessionId)
-            startActivity(it)
+            lifecycleScope.launch {
+                val latestTs = withContext(Dispatchers.IO) {
+                    db.inspectionDao().getLatestRecordTimestamp() ?: 0L
+                }
+
+                val now = System.currentTimeMillis()
+
+                if (now < latestTs) {
+                    AlertDialog.Builder(this@HomeActivity)
+                        .setTitle("系统时间异常")
+                        .setMessage(
+                            "检测到当前设备系统时间早于最近一次点检记录时间。\n" +
+                                    "请检查是否修改了系统时间，以避免数据异常。"
+                        )
+                        .setPositiveButton("确定", null)
+                        .show()
+                    return@launch
+                }
+
+                val it = Intent(this@HomeActivity, com.kukifyjeff.safepatrol.ui.inspection.NfcReaderActivity::class.java)
+                    .putExtra("sessionId", sessionId)
+                startActivity(it)
+            }
         }
         binding.btnExport.setOnClickListener {
             val progressLayout = LinearLayout(this).apply {

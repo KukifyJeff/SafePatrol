@@ -20,6 +20,7 @@
         <activity android:name=".ui.main.HomeActivity" />
         <activity android:name=".ui.inspection.NfcReaderActivity" />
         <activity android:name=".ui.inspection.InspectionActivity" />
+        <activity android:name=".ui.main.ActivateActivity" />
         <activity
             android:name=".ui.inspection.EquipmentStatusActivity"
             android:exported="true"/>

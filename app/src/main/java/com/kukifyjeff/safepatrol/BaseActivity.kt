@@ -13,12 +13,6 @@ import androidx.core.content.edit
 
 open class BaseActivity : AppCompatActivity() {
 
-    private val PREF_NAME = "SafePatrolPrefs"
-    private val KEY_LAST_TIME = "last_timestamp"
-
-    companion object {
-        var developerMode = false
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,35 +33,35 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        checkForTimeTampering()
+//        checkForTimeTampering()
     }
 
-    private fun checkForTimeTampering() {
-        val prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
-        val lastTime = prefs.getLong(KEY_LAST_TIME, -1L)
-        val currentTime = System.currentTimeMillis()
-        val diff = currentTime - lastTime
-
-        val toleranceBackward = 5 * 60 * 1000   // 5分钟
-        val lastTimeInstant = java.time.Instant.ofEpochMilli(lastTime)
-        val currentTimeInstant = java.time.Instant.ofEpochMilli(currentTime)
-        val formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-            .withZone(java.time.ZoneId.systemDefault())
-
-
-        if (lastTime > 0 && (diff < -toleranceBackward) && (!developerMode)) {
-
-            AlertDialog.Builder(this)
-                .setTitle("系统时间异常")
-                .setMessage("检测到设备时间可能被修改。\n上次记录时间：${formatter.format(lastTimeInstant)}\n当前系统时间：${formatter.format(currentTimeInstant)}\n请校准系统时间后重启应用。")
-                .setCancelable(false)
-                .setPositiveButton("退出") { _, _ ->
-                    finishAffinity()
-                    exitProcess(0)
-                }
-                .show()
-        } else {
-            prefs.edit { putLong(KEY_LAST_TIME, currentTime) }
-        }
-    }
+//    private fun checkForTimeTampering() {
+//        val prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
+//        val lastTime = prefs.getLong(KEY_LAST_TIME, -1L)
+//        val currentTime = System.currentTimeMillis()
+//        val diff = currentTime - lastTime
+//
+//        val toleranceBackward = 5 * 60 * 1000   // 5分钟
+//        val lastTimeInstant = java.time.Instant.ofEpochMilli(lastTime)
+//        val currentTimeInstant = java.time.Instant.ofEpochMilli(currentTime)
+//        val formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+//            .withZone(java.time.ZoneId.systemDefault())
+//
+//
+//        if (lastTime > 0 && (diff < -toleranceBackward) && (!developerMode)) {
+//
+//            AlertDialog.Builder(this)
+//                .setTitle("系统时间异常")
+//                .setMessage("检测到设备时间可能被修改。\n上次记录时间：${formatter.format(lastTimeInstant)}\n当前系统时间：${formatter.format(currentTimeInstant)}\n请校准系统时间后重启应用。")
+//                .setCancelable(false)
+//                .setPositiveButton("退出") { _, _ ->
+//                    finishAffinity()
+//                    exitProcess(0)
+//                }
+//                .show()
+//        } else {
+//            prefs.edit { putLong(KEY_LAST_TIME, currentTime) }
+//        }
+//    }
 }

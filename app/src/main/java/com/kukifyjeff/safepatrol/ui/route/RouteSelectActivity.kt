@@ -27,6 +27,14 @@ class RouteSelectActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Activation check
+        val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
+        val activated = prefs.getBoolean("activated", false)
+        if (!activated) {
+            startActivity(Intent(this, com.kukifyjeff.safepatrol.ui.main.ActivateActivity::class.java))
+            finish()
+            return
+        }
         binding = ActivityRouteSelectBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val statusColor = "#CD9DB9EF".toColorInt() // AARRGGBB
@@ -37,7 +45,7 @@ class RouteSelectActivity : BaseActivity() {
         binding.imgHeader.setOnClickListener {
             headerClickCount++
             if (headerClickCount >= 5) {
-                BaseActivity.developerMode = true
+//                BaseActivity.developerMode = true
                 Toast.makeText(this, "已进入开发者模式", Toast.LENGTH_SHORT).show()
                 headerClickCount = 0
             }

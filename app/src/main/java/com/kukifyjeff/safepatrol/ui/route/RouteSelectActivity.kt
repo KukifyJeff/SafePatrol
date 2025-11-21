@@ -16,6 +16,7 @@ import kotlinx.coroutines.withContext
 import androidx.core.graphics.toColorInt
 import com.kukifyjeff.safepatrol.BaseActivity
 import com.kukifyjeff.safepatrol.data.db.entities.EmployeeEntity
+import com.kukifyjeff.safepatrol.ui.main.ConfirmSystemTimeActivity
 
 @Suppress("DEPRECATION")
 class RouteSelectActivity : BaseActivity() {
@@ -68,7 +69,7 @@ class RouteSelectActivity : BaseActivity() {
             val routeId = routeIds[idx]
             val routeName = binding.routeSpinner.selectedItem.toString()
             startActivity(
-                Intent(this, HomeActivity::class.java)
+                Intent(this, ConfirmSystemTimeActivity::class.java)
                     .putExtra("routeId", routeId)
                     .putExtra("routeName", routeName)
                     .putExtra("operatorId", operatorId)

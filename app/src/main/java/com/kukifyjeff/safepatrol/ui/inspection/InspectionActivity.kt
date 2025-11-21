@@ -19,6 +19,7 @@ import androidx.core.graphics.toColorInt
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kukifyjeff.safepatrol.AppDatabase
+import com.kukifyjeff.safepatrol.BaseActivity
 import com.kukifyjeff.safepatrol.R
 import com.kukifyjeff.safepatrol.data.db.entities.CheckItemEntity
 import com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordEntity
@@ -32,7 +33,7 @@ import java.util.Locale
 
 
 @Suppress("DEPRECATION")
-class InspectionActivity : AppCompatActivity() {
+class InspectionActivity : BaseActivity() {
 
     private var lastBackPressedTime = 0L
 

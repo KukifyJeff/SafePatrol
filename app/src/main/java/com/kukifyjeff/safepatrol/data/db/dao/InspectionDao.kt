@@ -45,6 +45,9 @@ interface InspectionDao {
     @Insert
     suspend fun insertItems(items: List<InspectionRecordItemEntity>)
 
+    @Insert
+    suspend fun insertItem(item: InspectionRecordItemEntity)
+
 
     // 1) 某点位在班次时间窗内，某槽位是否已点检（用于去重 & 首页打勾）
     @Query(
@@ -128,4 +131,15 @@ interface InspectionDao {
 
     @Query("SELECT MAX(timestamp) FROM inspection_records")
     suspend fun getLatestRecordTimestamp(): Long?
+
+    @Query("DELETE FROM inspection_records WHERE timestamp > :now")
+    suspend fun deleteRecordsAfter(now: Long)
+
+    @Query("""
+    DELETE FROM inspection_record_items 
+    WHERE recordId IN (
+        SELECT recordId FROM inspection_records WHERE timestamp > :now
+    )
+""")
+    suspend fun deleteRecordItemsAfter(now: Long)
 }

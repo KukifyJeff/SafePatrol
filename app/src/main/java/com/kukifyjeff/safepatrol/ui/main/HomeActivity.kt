@@ -171,8 +171,10 @@ class HomeActivity : BaseActivity() {
         }
         binding.btnScan.setOnClickListener {
             lifecycleScope.launch {
+                val dao = db.inspectionDao()
+
                 val latestTs = withContext(Dispatchers.IO) {
-                    db.inspectionDao().getLatestRecordTimestamp() ?: 0L
+                    dao.getLatestRecordTimestamp() ?: 0L
                 }
 
                 val now = System.currentTimeMillis()
@@ -181,16 +183,60 @@ class HomeActivity : BaseActivity() {
                     AlertDialog.Builder(this@HomeActivity)
                         .setTitle("系统时间异常")
                         .setMessage(
-                            "检测到当前设备系统时间早于最近一次点检记录时间。\n" +
-                                    "请检查是否修改了系统时间，以避免数据异常。"
+                            "检测到当前设备系统时间(${hhmm(now)}) 早于最近一次点检记录时间(${hhmm(latestTs)}).\n\n" +
+                            "若是因为修改了系统时间，可选择删除未来时间的点检记录，此操作会被记录。"
                         )
-                        .setPositiveButton("确定", null)
+                        .setNegativeButton("取消", null)
+                        .setPositiveButton("删除冲突点检记录") { _, _ ->
+                            lifecycleScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    // 删除 timestamp > now 的记录
+                                    dao.deleteRecordsAfter(now)
+                                    dao.deleteRecordItemsAfter(now)
+
+                                    // 写入一条系统记录日志
+                                    val systemRecordId = dao.insertRecord(
+                                        com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordEntity(
+                                            sessionId = sessionId,
+                                            pointId = "-1",
+                                            slotIndex = 1,
+                                            timestamp = now
+                                        )
+                                    )
+
+                                    dao.insertItem(
+                                        com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordItemEntity(
+                                            recordId = systemRecordId,
+                                            equipmentId = "-1",
+                                            itemId = "-1",
+                                            slotIndex = 1,
+                                            value = "用户删除了冲突记录",
+                                            abnormal = false
+                                        )
+                                    )
+                                }
+
+                                Toast.makeText(
+                                    this@HomeActivity,
+                                    "已删除冲突记录，并记录日志。",
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+                                val it = Intent(
+                                    this@HomeActivity,
+                                    com.kukifyjeff.safepatrol.ui.inspection.NfcReaderActivity::class.java
+                                ).putExtra("sessionId", sessionId)
+                                startActivity(it)
+                            }
+                        }
                         .show()
                     return@launch
                 }
 
-                val it = Intent(this@HomeActivity, com.kukifyjeff.safepatrol.ui.inspection.NfcReaderActivity::class.java)
-                    .putExtra("sessionId", sessionId)
+                val it = Intent(
+                    this@HomeActivity,
+                    com.kukifyjeff.safepatrol.ui.inspection.NfcReaderActivity::class.java
+                ).putExtra("sessionId", sessionId)
                 startActivity(it)
             }
         }
@@ -308,15 +354,36 @@ class HomeActivity : BaseActivity() {
 
                 // 查询当前点位所有最高频率检查项的所有记录（在当前班次窗口中）
                 for (checkItem in targetCheckItems) {
-                    val allRecords = db.inspectionDao().getInspectionRecordsForCheckItemInWindow(
+                    // 先获取在时间窗内的记录（inspection_records）
+                    val records = db.inspectionDao().getInspectionRecordsForCheckItemInWindow(
                         checkItemId = checkItem.itemId,
                         startMs = window.startMs,
                         endMs = window.endMs
                     )
-                    for (record in allRecords) {
-                        val slotIdx = SlotUtils.getSlotIndex(highestFreq, record.timestamp)
-                        slotStatusMap[slotIdx] = record.timestamp
-                        android.util.Log.d("FuckHomeActivity", "✅ Point=${point.pointId}, CheckItem=${checkItem.itemId}, Slot=$slotIdx")
+
+                    if (records.isEmpty()) continue
+
+                    // 建立 recordId -> timestamp 映射
+                    val recordTimestampMap = records.associate { it.recordId to it.timestamp }
+                    val recordIds = recordTimestampMap.keys.toList()
+
+                    // 批量查询这些记录对应的 item（inspection_record_items）
+                    val items = db.inspectionDao().getItemsForRecordIds(recordIds)
+
+                    // 过滤出属于当前检查项的 item 并按 record 的时间计算 slot
+                    for (item in items) {
+                        // 忽略系统日志条目
+                        if (item.itemId == "-1" || item.equipmentId == "-1") {
+                            android.util.Log.d("FuckHomeActivity", "⏭ Skipped system item for point=${point.pointId}")
+                            continue
+                        }
+
+                        if (item.itemId != checkItem.itemId) continue
+
+                        val recTs = recordTimestampMap[item.recordId] ?: continue
+                        val slotIdx = SlotUtils.getSlotIndex(highestFreq, recTs)
+                        slotStatusMap[slotIdx] = recTs
+                        android.util.Log.d("FuckHomeActivity", "✅ Point=${point.pointId}, CheckItem=${checkItem.itemId}, Slot=$slotIdx (recordId=${item.recordId})")
                     }
                 }
 

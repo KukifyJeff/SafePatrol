@@ -68,6 +68,7 @@ object ExportUtil {
             val routeIds = sessionsMap.values.map { it.routeId }.distinct()
             routeIds.flatMap { rid -> db.pointDao().getByRoute(rid) }
         }
+        Log.d("FuckExportUtil", "points: $points")
 
         // 预加载每个点位的检查项名称映射 (itemId -> itemName)
         val itemNameByEquip = mutableMapOf<String, Map<String, String>>()
@@ -227,51 +228,93 @@ object ExportUtil {
 
         // 3️⃣ 遍历所有时间段（window）、点位及槽位
         for ((windowStart, windowEnd) in windows) {
+            Log.d("ExportDebug", "=== Window start=${sdfFull.format(Date(windowStart))} end=${sdfFull.format(Date(windowEnd))} ===")
             val shiftName = shiftNameFromWindowStart(windowStart)
             Log.d("ExportUtil", "Processing window: start=${sdfFull.format(Date(windowStart))}, end=${sdfFull.format(Date(windowEnd))}, shift=$shiftName")
 
+            // --- Export system logs that fall inside this window, before points ---
+            val systemLogsInWindow = records.filter {
+                it.pointId == "-1" && it.timestamp in windowStart..windowEnd
+            }
+            for (rec in systemLogsInWindow) {
+                Log.d("ExportDebug", "SYSTEM LOG AT WINDOW HEAD recordId=${rec.recordId}, ts=${sdfFull.format(Date(rec.timestamp))}")
+                val items = itemsByRecord[rec.recordId].orEmpty()
+                val (dateStr, timeStr) = formatDateTimeForRecord(rec.timestamp, windowStart, windowEnd)
+                val shiftNameRec = shiftNameFromWindowStart(windowStart)
+
+                if (items.isEmpty()) {
+                    val r = sheet.createRow(rowIdx++)
+                    val cells = arrayOf(
+                        dateStr, timeStr,
+                        sessionsMap[rec.sessionId]?.routeName ?: currentRouteName,
+                        sessionsMap[rec.sessionId]?.operatorId ?: "",
+                        shiftNameRec,
+                        "", "", "",
+                        "用户删除了冲突记录",
+                        "0", "0",
+                        "用户删除了冲突记录",
+                        ""
+                    )
+                    cells.forEachIndexed { i, v -> r.createCell(i).setCellValue(v) }
+                } else {
+                    for (itm in items) {
+                        val r = sheet.createRow(rowIdx++)
+                        val cells = arrayOf(
+                            dateStr, timeStr,
+                            sessionsMap[rec.sessionId]?.routeName ?: currentRouteName,
+                            sessionsMap[rec.sessionId]?.operatorId ?: "",
+                            shiftNameRec,
+                            "", "", "",
+                            "用户删除了冲突记录",
+                            "0", "0",
+                            "用户删除了冲突记录",
+                            ""
+                        )
+                        cells.forEachIndexed { i, v -> r.createCell(i).setCellValue(v) }
+                    }
+                }
+            }
+
             for (p in points) {
+                Log.d("ExportDebug", "---- Point ${p.pointId} (${p.name}) ----")
                 val freq = maxFreqByPoint[p.pointId] ?: 8
                 val nSlots = when (freq) { 2 -> 4; 4 -> 2; 8 -> 1; else -> 1 }
                 Log.d("FuckExportUtil", "Processing point=${p.pointId}, freq=$freq, nSlots=$nSlots")
 
                 for (slotIdx in 1..nSlots) {
+                    Log.d("ExportDebug", "Checking slot $slotIdx")
                     // 查询该时间窗内该点位槽位的记录
                     val recsInWindow = db.inspectionDao().getRecordsForPointSlotInWindow(p.pointId, slotIdx, windowStart, windowEnd)
+                    // 🚫 系统日志不参与任何点位/槽位的记录选择
+                    // 只使用当前点位 + 当前槽位的真实记录
                     val rec = recsInWindow.maxByOrNull { it.timestamp }
 
                     if (rec != null) {
-                        Log.d("FuckExportUtil", "Found record for point=${p.pointId}, slotIdx=$slotIdx, recordId=${rec.recordId} in window")
+                        Log.d("ExportDebug", "Selected recordId=${rec.recordId}, ts=${sdfFull.format(Date(rec.timestamp))}, pointId=${rec.pointId}")
                         val items = itemsByRecord[rec.recordId].orEmpty()
                         for (itm in items) {
+                            Log.d("ExportDebug", "Export NORMAL record recordId=${rec.recordId}, itemId=${itm.itemId}, ts=${sdfFull.format(Date(rec.timestamp))}")
                             val itemLabel = db.checkItemDao().getItemNameById(itm.itemId) ?: itm.itemId
                             val freqHours = db.checkItemDao().getById(itm.itemId)?.freqHours ?: 8
                             val equipName = getEquipmentName(itm.equipmentId)
                             val (dateStr, timeStr) = formatDateTimeForRecord(rec.timestamp, windowStart, windowEnd)
                             val shiftNameRec = sessionsMap[rec.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: ""
-                            // 计算该检查项的slotIdx（频率对应的slotIndex）
+
                             val slotIdxForItem = when (freqHours) {
                                 2 -> {
-                                    // 4 slots: 2h
                                     val slotLen = ((windowEnd - windowStart) / 4.0)
-                                    val recTime = rec.timestamp
-                                    var idx = ((recTime - windowStart) / slotLen + 1).toInt()
-                                    if (idx < 1) idx = 1
-                                    if (idx > 4) idx = 4
-                                    idx
+                                    var idx = ((rec.timestamp - windowStart) / slotLen + 1).toInt()
+                                    idx.coerceIn(1, 4)
                                 }
                                 4 -> {
-                                    // 2 slots: 4h
                                     val slotLen = ((windowEnd - windowStart) / 2.0)
-                                    val recTime = rec.timestamp
-                                    var idx = ((recTime - windowStart) / slotLen + 1).toInt()
-                                    if (idx < 1) idx = 1
-                                    if (idx > 2) idx = 2
-                                    idx
+                                    var idx = ((rec.timestamp - windowStart) / slotLen + 1).toInt()
+                                    idx.coerceIn(1, 2)
                                 }
                                 8 -> 1
                                 else -> 1
                             }
+
                             val r = sheet.createRow(rowIdx++)
                             val cells = arrayOf(
                                 dateStr,
@@ -291,7 +334,7 @@ object ExportUtil {
                             cells.forEachIndexed { i, v -> r.createCell(i).setCellValue(v) }
                         }
                     } else {
-                        Log.d("ExportUtil", "No record for point=${p.pointId}, slotIdx=$slotIdx in window")
+                        Log.d("ExportDebug", "NO RECORD for point=${p.pointId}, slot=$slotIdx within window ${sdfFull.format(Date(windowStart))}")
                         // 没有记录，输出未检行，包含日期和班次
                         val (dateStr, _) = formatDateTimeForRecord(windowStart, windowStart, windowEnd)
                         val shiftNameCell = shiftNameFromWindowStart(windowStart)
@@ -316,6 +359,8 @@ object ExportUtil {
                 }
             }
         }
+
+
 
         // 自适应列宽（上限保护）
         for (i in header.indices) {

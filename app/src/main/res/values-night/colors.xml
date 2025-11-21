@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <color name="text_primary">#FFFFFFFF</color>
+    <color name="text_secondary">#FF000000</color>
+    <color name="card_bg">#7C000000</color>
+
+    <!-- 主题主色 -->
+    <color name="blue_primary">#2F5FAB</color>
+    <!-- 主色的深色变体 -->
+    <color name="blue_variant">#3440B3</color>
+    <!-- 你还可以定义次要颜色 -->
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+</resources>

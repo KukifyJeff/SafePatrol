@@ -1,53 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <com.google.android.material.appbar.MaterialToolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:title="设备状态选择"
-        android:background="@color/blue_primary"
-        android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
-        app:titleCentered="true"/>
-    <TextView
-        android:id="@+id/tvPointName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:text="点位名"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        />
-    <ScrollView
+
+    <ImageView
+        android:id="@+id/bgImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5dp">
+        android:src="@drawable/home_bg"
+        android:scaleType="centerCrop"
+        android:alpha="0.3"/>
 
-        <LinearLayout
-            android:id="@+id/llContainer"
-            android:orientation="vertical"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:title="设备状态选择"
+            android:background="@color/blue_primary"
+            android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
+            app:titleCentered="true"/>
 
+        <TextView
+            android:id="@+id/tvPointName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="点位名"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            />
 
-            <!-- 设备列表会动态生成，每个设备一行 -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp">
+
             <LinearLayout
-                android:id="@+id/llEquipmentList"
+                android:id="@+id/llContainer"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/btnConfirm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="确认选择"
-                android:layout_marginTop="24dp"
-                android:textSize="14dp"
-                android:enabled="false" />
 
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+                <!-- 设备列表会动态生成，每个设备一行 -->
+                <LinearLayout
+                    android:id="@+id/llEquipmentList"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/btnConfirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="确认选择"
+                    android:layout_marginTop="24dp"
+                    android:textSize="14dp"
+                    android:enabled="false" />
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</FrameLayout>

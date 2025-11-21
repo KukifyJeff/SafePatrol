@@ -10,10 +10,10 @@ android {
 
     defaultConfig {
         applicationId = "com.kukifyjeff.safepatrol"
-        minSdk = 26
+        minSdk = 31
         targetSdk = 36
         versionCode = 1
-        versionName = "0.6.1_beta"
+        versionName = "0.7_beta"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -67,6 +67,10 @@ dependencies {
 
     // CSV
     implementation("com.opencsv:opencsv:5.9")
+
+    // AndroidX SplashScreen API
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
 
     // Zip 加密
 //    implementation("net.lingala.zip4j:zip4j:2.11.5")

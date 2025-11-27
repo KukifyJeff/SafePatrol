@@ -46,7 +46,7 @@ class RouteSelectActivity : BaseActivity() {
         binding.imgHeader.setOnClickListener {
             headerClickCount++
             if (headerClickCount >= 5) {
-//                BaseActivity.developerMode = true
+                developerMode = true
                 Toast.makeText(this, "已进入开发者模式", Toast.LENGTH_SHORT).show()
                 headerClickCount = 0
             }

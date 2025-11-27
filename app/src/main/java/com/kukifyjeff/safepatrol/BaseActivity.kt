@@ -10,9 +10,14 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import kotlin.system.exitProcess
 import androidx.core.content.edit
+import com.kukifyjeff.safepatrol.ui.inspection.FormRow
 
 open class BaseActivity : AppCompatActivity() {
 
+    companion object {
+        @JvmStatic
+        var developerMode: Boolean = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

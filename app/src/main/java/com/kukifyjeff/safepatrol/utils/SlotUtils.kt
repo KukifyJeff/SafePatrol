@@ -40,15 +40,63 @@ object SlotUtils {
      * 2h → 4 槽, 4h → 2 槽, 8h → 1 槽。
      */
     fun getSlotIndex(freqHours: Int, currentTime: Long): Int {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = currentTime
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        // determine shift start and end based on defined boundaries
+        val cal = Calendar.getInstance().apply { timeInMillis = currentTime }
 
-        return when (freqHours) {
-            2 -> (hour / 2) % 4 + 1   // 每2小时一个槽，共4个
-            4 -> (hour / 4) % 2 + 1   // 每4小时一个槽，共2个
-            else -> 1                 // 8小时或其他情况，仅1个槽
+        // today at 00:30, 08:30, 16:30
+        val today = Calendar.getInstance().apply { timeInMillis = currentTime }
+        val t00_30 = Calendar.getInstance().apply { timeInMillis = currentTime; set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 30); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }
+        val t08_30 = Calendar.getInstance().apply { timeInMillis = currentTime; set(Calendar.HOUR_OF_DAY, 8); set(Calendar.MINUTE, 30); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }
+        val t16_30 = Calendar.getInstance().apply { timeInMillis = currentTime; set(Calendar.HOUR_OF_DAY, 16); set(Calendar.MINUTE, 30); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }
+
+        // tomorrow 00:30 and yesterday 16:30 for comparisons
+        val tTomorrow00_30 = Calendar.getInstance().apply { timeInMillis = t00_30.timeInMillis; add(Calendar.DAY_OF_MONTH, 1) }
+        val tYesterday16_30 = Calendar.getInstance().apply { timeInMillis = t16_30.timeInMillis; add(Calendar.DAY_OF_MONTH, -1) }
+
+        val cur = currentTime
+
+        val shiftStartMs: Long
+        val shiftEndMs: Long
+
+        when {
+            // between 08:30 (inclusive) and 16:30 (exclusive) => day shift
+            cur >= t08_30.timeInMillis && cur < t16_30.timeInMillis -> {
+                shiftStartMs = t08_30.timeInMillis
+                shiftEndMs = t16_30.timeInMillis
+            }
+            // between 16:30 (inclusive) and next day 00:30 (exclusive) => mid shift
+            cur >= t16_30.timeInMillis && cur < tTomorrow00_30.timeInMillis -> {
+                shiftStartMs = t16_30.timeInMillis
+                shiftEndMs = tTomorrow00_30.timeInMillis
+            }
+            // between 00:30 (inclusive) and 08:30 (exclusive) => night shift (today)
+            cur >= t00_30.timeInMillis && cur < t08_30.timeInMillis -> {
+                shiftStartMs = t00_30.timeInMillis
+                shiftEndMs = t08_30.timeInMillis
+            }
+            // times between 00:00 and 00:30 belong to previous day's mid shift
+            else -> {
+                // previous day's 16:30 to today 00:30
+                val prev16_30 = Calendar.getInstance().apply { timeInMillis = t16_30.timeInMillis; add(Calendar.DAY_OF_MONTH, -1) }
+                val prev00_30 = Calendar.getInstance().apply { timeInMillis = t00_30.timeInMillis }
+                shiftStartMs = prev16_30.timeInMillis
+                shiftEndMs = prev00_30.timeInMillis
+            }
         }
+
+        val nSlots = when (freqHours) {
+            2 -> 4
+            4 -> 2
+            else -> 1
+        }
+
+        val slotLenMs = (shiftEndMs - shiftStartMs).toDouble() / nSlots.toDouble()
+        val offset = (currentTime - shiftStartMs).coerceAtLeast(0L).toDouble()
+        var idx = (offset / slotLenMs).toInt() + 1
+        if (idx < 1) idx = 1
+        if (idx > nSlots) idx = nSlots
+
+        return idx
     }
 
 }

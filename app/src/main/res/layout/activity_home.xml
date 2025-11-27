@@ -70,7 +70,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="#F44336"
                 android:textColor="@color/white"
-                android:textSize="14dp"
+                android:textSize="6pt"
                 android:text="清除数据" />
 
             <Button
@@ -81,7 +81,7 @@
                 android:backgroundTint="#4CAF50"
                 android:layout_weight="1"
                 android:textColor="@color/white"
-                android:textSize="14dp"
+                android:textSize="6pt"
                 android:text="导出" />
 
             <Button
@@ -92,7 +92,7 @@
                 android:backgroundTint="@color/blue_variant"
                 android:layout_weight="1"
                 android:textColor="@color/white"
-                android:textSize="14dp"
+                android:textSize="6pt"
                 android:text="NFC点检" />
 
         </LinearLayout>

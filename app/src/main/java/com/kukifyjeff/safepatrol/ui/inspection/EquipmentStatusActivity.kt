@@ -19,6 +19,7 @@ import android.content.res.ColorStateList
 import com.kukifyjeff.safepatrol.data.db.entities.EquipmentEntity
 import androidx.core.graphics.toColorInt
 import com.kukifyjeff.safepatrol.BaseActivity
+import kotlin.collections.forEach
 
 class EquipmentStatusActivity : BaseActivity() {
 
@@ -84,7 +85,6 @@ class EquipmentStatusActivity : BaseActivity() {
                 val btnRun = itemView.findViewById<Button>(R.id.btnRunning)
                 val btnMaint = itemView.findViewById<Button>(R.id.btnMaintenance)
                 val btnStandby = itemView.findViewById<Button>(R.id.btnStandby)
-                val tvStatus = itemView.findViewById<TextView>(R.id.tvCurrentStatus)
 
                 tvName.text = eq.equipmentName
 
@@ -110,7 +110,6 @@ class EquipmentStatusActivity : BaseActivity() {
 
                 val updateStatus = { status: String ->
                     selectedStatuses[eq.equipmentId] = status
-                    tvStatus.text = "当前状态：$status"
                     btnConfirm.isEnabled = selectedStatuses.size == equipments.count { it.statusRequired }
 
                     // Update button tint colors dynamically
@@ -132,6 +131,16 @@ class EquipmentStatusActivity : BaseActivity() {
                         }
                     }
                 }
+
+                val lastStatusEntity: EquipmentStatusEntity? = withContext(Dispatchers.IO) { db.equipmentStatusDao().getByEquipmentId(eq.equipmentId) }
+                val currentStatus = when(lastStatusEntity?.status) {
+                    "RUNNING" -> "运行"
+                    "MAINTENANCE" -> "检修"
+                    "STANDBY" -> "备用"
+                    else -> "运行"
+                }
+                selectedStatuses[eq.equipmentId] = currentStatus
+                updateStatus(currentStatus)
 
                 btnRun.setOnClickListener { updateStatus("运行") }
                 btnMaint.setOnClickListener { updateStatus("检修") }
@@ -157,7 +166,8 @@ class EquipmentStatusActivity : BaseActivity() {
                 db.equipmentStatusDao().upsertStatus(
                     EquipmentStatusEntity(
                         equipmentId = equipId,
-                        status = mappedStatus
+                        status = mappedStatus,
+                        updatedAt = System.currentTimeMillis()
                     )
                 )
                 if (mappedStatus == "RUNNING") {
@@ -170,6 +180,7 @@ class EquipmentStatusActivity : BaseActivity() {
                 if (!runningEquipments.contains(eq.equipmentId)) {
                     runningEquipments.add(eq.equipmentId)
                 }
+
             }
         }
 

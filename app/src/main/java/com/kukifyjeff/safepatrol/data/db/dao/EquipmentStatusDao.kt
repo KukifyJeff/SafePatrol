@@ -33,5 +33,7 @@ interface EquipmentStatusDao {
     @Query("DELETE FROM equipment_status")
     suspend fun clearAll()
 
+    @Query("SELECT * FROM equipment_status WHERE equipmentId = :equipId LIMIT 1")
+    suspend fun getByEquipmentId(equipId: String): EquipmentStatusEntity?
 
 }

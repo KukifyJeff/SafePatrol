@@ -28,8 +28,13 @@ import kotlinx.coroutines.withContext
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import androidx.core.content.edit
+import com.kukifyjeff.safepatrol.export.ExportUtil.exportFromLastTimeXlsx
 
 class HomeActivity : BaseActivity() {
+
+    // 存储最后导出时间戳
+    private var lastExportTs: Long = 0L
 
     companion object {
         // 开关：true 允许点击列表 item 进入模拟点检；false 只能通过 NFC 进入点检
@@ -57,7 +62,6 @@ class HomeActivity : BaseActivity() {
         exportPassword = com.kukifyjeff.safepatrol.config.ConfigLoader
             .getExportPassword(this, default = "G7v#pK9!sX2qLm4@")
 
-
         routeId = intent.getStringExtra("routeId") ?: ""
         routeName = intent.getStringExtra("routeName") ?: ""
         operatorId = intent.getStringExtra("operatorId") ?: ""
@@ -65,7 +69,11 @@ class HomeActivity : BaseActivity() {
 
         val shift = resolveCurrentShift()
         val today = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(java.util.Date())
-        binding.tvHeader.text = getString(R.string.homepage_header, routeName, operatorName, shift.name, shift.rangeText, today )
+        // 读取上次导出时间
+        val prefs = getSharedPreferences("SafePatrolPrefs", MODE_PRIVATE)
+        lastExportTs = prefs.getLong("lastExportTs", 0L)
+        val lastExportStr = if (lastExportTs > 0) java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(java.util.Date(lastExportTs)) else "无"
+        binding.tvHeader.text = getString(R.string.homepage_header, routeName, operatorName, shift.name, shift.rangeText, today, lastExportStr)
         // RecyclerView 基本设置
         binding.rvPoints.layoutManager = LinearLayoutManager(this)
         adapter = PointStatusAdapter(emptyList()) { point ->
@@ -179,7 +187,7 @@ class HomeActivity : BaseActivity() {
 
                 val now = System.currentTimeMillis()
 
-                if (now < latestTs) {
+                if (!developerMode && now < latestTs) {
                     AlertDialog.Builder(this@HomeActivity)
                         .setTitle("系统时间异常")
                         .setMessage(
@@ -268,19 +276,17 @@ class HomeActivity : BaseActivity() {
 
             lifecycleScope.launch {
                 try {
-                    // 打开无需密码，修改需密码（你可改为从配置读）
                     val modifyPwd = exportPassword
 
-                    // 默认导出当前月，若需导出其他月份可改为 UI 选择年/月
-                    val cal = java.util.Calendar.getInstance()
-                    val year = cal.get(java.util.Calendar.YEAR)
-                    val month = cal.get(java.util.Calendar.MONTH) + 1 // Calendar.MONTH 从 0 开始
+                    // 计算导出起止时间戳
+                    val startTs = if (lastExportTs > 0) lastExportTs else 1764086400000L // 从最后导出时间开始或从第一条记录
+                    val endTs = System.currentTimeMillis()
 
-                    val path = com.kukifyjeff.safepatrol.export.ExportUtil.exportMonthlyXlsx(
+                    val path = exportFromLastTimeXlsx(
                         context = this@HomeActivity,
                         db = db,
-                        year = year,
-                        month = month,
+                        startTs = startTs,
+                        endTs = endTs,
                         modifyPassword = modifyPwd
                     )
 
@@ -302,6 +308,44 @@ class HomeActivity : BaseActivity() {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
 
                     startActivity(Intent.createChooser(share, "分享导出文件"))
+
+                    // 弹出导出确认对话框
+                    AlertDialog.Builder(this@HomeActivity)
+                        .setTitle("确认导出")
+                        .setMessage("是否确认已经完成导出？确认后系统将记录导出时间，以后将无法重新导出本次时间段。")
+
+                        .setPositiveButton("是") { dialog, _ ->
+                            // 更新导出时间
+                            val endTs = System.currentTimeMillis()
+                            lastExportTs = endTs
+                            // 保存到 SharedPreferences
+                            getSharedPreferences("SafePatrolPrefs", MODE_PRIVATE)
+                                .edit {
+                                    putLong("lastExportTs", endTs)
+                                }
+
+                            // 刷新 tvHeader 上的最后导出时间显示
+                            val shift = resolveCurrentShift()
+                            val today = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                .format(java.util.Date())
+                            val lastExportStr = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                                .format(java.util.Date(lastExportTs))
+                            binding.tvHeader.text = getString(
+                                R.string.homepage_header,
+                                routeName,
+                                operatorName,
+                                shift.name,
+                                shift.rangeText,
+                                today,
+                                lastExportStr
+                            )
+                            dialog.dismiss()
+                            Toast.makeText(this@HomeActivity, "已记录导出时间", Toast.LENGTH_SHORT).show()
+                        }
+                        .setNegativeButton("否") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .show()
                 } catch (t: Throwable) {
                     // 关闭加载对话框并恢复窗口交互
                     try { progressDialog.dismiss() } catch (_: Throwable) {}

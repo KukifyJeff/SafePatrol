@@ -62,6 +62,8 @@ class InspectionActivity : BaseActivity() {
 
     // 调试开关：true 使用 minValue 作为默认值
     private val useMinValueAsDefault: Boolean = true
+    // 使用上次记录作为默认值（跨班次）
+    private val useLastRecordAsDefault: Boolean = true
 
     // 计算当前时间在班次窗口中的槽位：8h->1; 4h->2; 2h->4
 
@@ -174,7 +176,7 @@ class InspectionActivity : BaseActivity() {
                     val filteredItems = when (state) {
                         "standby" -> {
                             // 备用设备，仅加载 requiredInStandby == true
-                            val fi = items.filter { it.freqHours in activeFreqs && (it.requiredInStandby == true) }
+                            val fi = items.filter { it.freqHours in activeFreqs && it.requiredInStandby }
                             Log.d("FuckInspectionActivity", "设备 $equipId 备用，仅加载 requiredInStandby==true，筛选后数量=${fi.size}")
                             fi
                         }
@@ -199,6 +201,34 @@ class InspectionActivity : BaseActivity() {
                 rows.addAll(rowsAll)
                 adapter = FormAdapter(rows)
                 rv.adapter = adapter
+                // ===== 加载跨班次最后一次记录的数值作为默认值 =====
+                if (useLastRecordAsDefault) {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val itemHistoryMap = mutableMapOf<String, Double>()
+                        rows.forEach { row ->
+                            if (row is FormRow.Number) {
+                                val lastItem = db.inspectionDao().getLastRecordItemForItem(row.item.itemId)
+                                val v = lastItem?.value?.toDoubleOrNull()
+                                if (v != null) {
+                                    itemHistoryMap[row.item.itemId] = v
+                                }
+                            }
+                        }
+                        withContext(Dispatchers.Main) {
+                            rows.forEach { row ->
+                                if (row is FormRow.Number) {
+                                    val v = itemHistoryMap[row.item.itemId]
+                                    if (v != null) {
+                                        row.value = v
+                                    } else if (useMinValueAsDefault && row.item.minValue != null) {
+                                        row.value = row.item.minValue
+                                    }
+                                }
+                            }
+                            adapter.notifyDataSetChanged()
+                        }
+                    }
+                }
                 // 为每个已附加的子项设置行内确认按钮行为（对没有直接修改 Adapter 的项目进行增强）
                 rv.addOnChildAttachStateChangeListener(object : androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener {
                     @SuppressLint("DefaultLocale", "SetTextI18n")
@@ -269,8 +299,10 @@ class InspectionActivity : BaseActivity() {
 
                             val et = view.findViewById<EditText>(R.id.etValue)
                             et.inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
-                            // 自动填充默认值为 minValue（如果开关开启且 EditText 为空）
-                            if (useMinValueAsDefault && row.item.minValue != null && et.text.isNullOrBlank()) {
+                            // if row.value already populated (from last record or min fallback), set it
+                            if (row is FormRow.Number && row.value != null && et.text.isNullOrBlank()) {
+                                et.setText(row.value.toString())
+                            } else if (!useLastRecordAsDefault && useMinValueAsDefault && row is FormRow.Number && row.item.minValue != null && et.text.isNullOrBlank()) {
                                 et.setText(row.item.minValue.toString())
                             }
                             val btn = view.findViewById<Button>(R.id.btnConfirmNumber)

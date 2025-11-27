@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 
 import android.content.Context
 import android.util.Log
+import com.kukifyjeff.safepatrol.data.db.entities.EquipmentStatusEntity
 import com.kukifyjeff.safepatrol.utils.CsvReaders
 import java.io.File
 
@@ -31,7 +32,13 @@ object CsvBootstrapper {
         val shifts = CsvReaders.readShifts(File(dir, "shifts.csv"))
         val checkItems = CsvReaders.readCheckItems(File(dir, "check_items.csv"))
         val equipments = CsvReaders.readEquipments(File(dir, "equipments.csv"))
-        val equipmentStatuses = CsvReaders.readEquipmentStatuses(File(dir, "equipment_status.csv"))
+        val equipmentStatuses = equipments.map { eq ->
+            EquipmentStatusEntity(
+                equipmentId = eq.equipmentId,
+                status = "RUNNING",
+                updatedAt = 1764086400000L
+            )
+        }
         val employees = CsvReaders.readEmployees(File(dir, "employees.csv"))
 
 

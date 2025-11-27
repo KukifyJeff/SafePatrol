@@ -49,6 +49,16 @@ interface InspectionDao {
     suspend fun insertItem(item: InspectionRecordItemEntity)
 
 
+    @Query("""
+        SELECT * FROM inspection_record_items
+        WHERE itemId = :itemId
+          AND value NOT IN ('维修', '备用', '用户删除了冲突记录')
+        ORDER BY id DESC
+        LIMIT 1
+    """)
+    suspend fun getLastRecordItemForItem(itemId: String): InspectionRecordItemEntity?
+
+
     // 1) 某点位在班次时间窗内，某槽位是否已点检（用于去重 & 首页打勾）
     @Query(
         """

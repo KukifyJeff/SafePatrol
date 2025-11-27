@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-feature android:name="android.hardware.nfc" android:required="false"/>
     <uses-permission android:name="android.permission.NFC"/>
 
@@ -13,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.SafePatrol"
-        android:statusBarColor="@color/blue_primary">
+        android:statusBarColor="@color/blue_primary"
+        tools:ignore="ManifestResource">
 
 
         <activity android:name=".ui.route.RouteSelectActivity" />

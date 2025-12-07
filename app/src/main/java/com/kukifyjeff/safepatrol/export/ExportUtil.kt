@@ -744,9 +744,9 @@ object ExportUtil {
         val startStr = sdfFile.format(Date(startTs))
         val endStr = sdfFile.format(Date(endTs))
         val filename = if (safeRoute.isNotBlank())
-            "SafePatrol_${safeRoute}_${startStr}至${endStr}.xlsx"
+            "点检结果_${safeRoute}_${startStr}至${endStr}.xlsx"
         else
-            "SafePatrol_${startStr}至${endStr}.xlsx"
+            "点检结果_${startStr}至${endStr}.xlsx"
 
         // 保存到 App 私有目录（Documents），并根据是否加密进行处理
         val outDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)

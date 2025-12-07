@@ -25,7 +25,7 @@
             android:background="@color/blue_primary"
             app:titleTextColor="@color/white"
             android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
-            app:title="SafePatrol | IGCC气化安巡宝"
+            app:title="IGCC气化安巡宝"
             app:titleCentered="true" />
 
         <!-- 原本的头部信息（路线/工号/班次）用框包裹，与下方区分 -->

@@ -291,6 +291,18 @@ class HomeActivity : BaseActivity() {
                     )
 
                     val file = java.io.File(path)
+                    // === Copy file to system Downloads folder ===
+                    val downloads = android.os.Environment.getExternalStoragePublicDirectory(
+                        android.os.Environment.DIRECTORY_DOWNLOADS
+                    )
+                    if (!downloads.exists()) downloads.mkdirs()
+
+                    val destFile = java.io.File(downloads, file.name)
+                    try {
+                        file.copyTo(destFile, overwrite = true)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                     val uri = androidx.core.content.FileProvider.getUriForFile(
                         this@HomeActivity,
                         "${applicationContext.packageName}.fileprovider",

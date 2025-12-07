@@ -4,8 +4,24 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.kukifyjeff.safepatrol.data.db.dao.*
-import com.kukifyjeff.safepatrol.data.db.entities.*
+import com.kukifyjeff.safepatrol.data.db.dao.CheckItemDao
+import com.kukifyjeff.safepatrol.data.db.dao.EmployeeDao
+import com.kukifyjeff.safepatrol.data.db.dao.EquipmentDao
+import com.kukifyjeff.safepatrol.data.db.dao.EquipmentStatusDao
+import com.kukifyjeff.safepatrol.data.db.dao.InspectionDao
+import com.kukifyjeff.safepatrol.data.db.dao.PointDao
+import com.kukifyjeff.safepatrol.data.db.dao.RouteDao
+import com.kukifyjeff.safepatrol.data.db.dao.ShiftDao
+import com.kukifyjeff.safepatrol.data.db.entities.CheckItemEntity
+import com.kukifyjeff.safepatrol.data.db.entities.EmployeeEntity
+import com.kukifyjeff.safepatrol.data.db.entities.EquipmentEntity
+import com.kukifyjeff.safepatrol.data.db.entities.EquipmentStatusEntity
+import com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordEntity
+import com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordItemEntity
+import com.kukifyjeff.safepatrol.data.db.entities.InspectionSessionEntity
+import com.kukifyjeff.safepatrol.data.db.entities.PointEntity
+import com.kukifyjeff.safepatrol.data.db.entities.RouteEntity
+import com.kukifyjeff.safepatrol.data.db.entities.ShiftEntity
 
 @Database(
     entities = [
@@ -26,7 +42,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun employeeDao(): EmployeeDao
 
     companion object {
-        @Volatile private var INSTANCE: AppDatabase? = null
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
         fun get(ctx: Context): AppDatabase =
             INSTANCE ?: synchronized(this) {
                 INSTANCE ?: Room.databaseBuilder(

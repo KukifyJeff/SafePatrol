@@ -4,55 +4,68 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/card_bg"
     app:cardCornerRadius="8dp"
-    app:strokeWidth="1dp"
     app:strokeColor="#DDDDDD"
-    app:cardBackgroundColor="@color/card_bg">
+    app:strokeWidth="1dp">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:padding="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/tvLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="• 项目（正常/不正常）"
-            android:textStyle="bold" android:textSize="18sp"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <LinearLayout
-            android:orientation="horizontal" android:layout_marginTop="8dp"
-            android:layout_width="match_parent" android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnOk"
-                android:text="正常"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:backgroundTint="@color/blue_primary"
-                android:minHeight="56dp" android:textSize="16sp"
-                android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
+                android:minHeight="56dp"
+                android:text="正常"
+                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/btnNg"
-                android:text="异常"
-                android:backgroundTint="@color/blue_primary"
-                android:minHeight="56dp" android:textSize="16sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:backgroundTint="@color/blue_primary"
+                android:minHeight="56dp"
+                android:text="异常"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/tvHint"
-            android:text="当前：未选择"
-            android:textSize="13sp" android:textColor="#666"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            android:text="当前：未选择"
+            android:textColor="#666"
+            android:textSize="13sp" />
+
         <LinearLayout
             android:id="@+id/llRemark"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginTop="4dp"
+            android:orientation="vertical"
+            android:visibility="gone" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -3,33 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="8dp"
-    app:strokeWidth="1dp"
-    app:strokeColor="#DDDDDD"
     android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="@color/card_bg">
+    app:cardBackgroundColor="@color/card_bg"
+    app:cardCornerRadius="8dp"
+    app:strokeColor="#DDDDDD"
+    app:strokeWidth="1dp">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:padding="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/tvLabel"
-            android:text="• 备注（可选）"
-            android:textStyle="bold"
-            android:textSize="18sp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="• 备注（可选）"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="输入文本"
             android:inputType="textCapSentences|textMultiLine"
-            android:minLines="2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:minLines="2" />
 
     </LinearLayout>
 

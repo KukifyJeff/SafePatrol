@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.kukifyjeff.safepatrol.ui.main.SlotStatus
 
 @Entity(
     tableName = "inspection_records",

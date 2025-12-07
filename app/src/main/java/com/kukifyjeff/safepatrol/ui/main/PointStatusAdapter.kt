@@ -21,8 +21,8 @@ class PointStatusAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_point_status, parent, false)
+        val v =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_point_status, parent, false)
         return VH(v)
     }
 
@@ -38,10 +38,7 @@ class PointStatusAdapter(
         }
 
         holder.tvTitle.text = holder.itemView.context.getString(
-            R.string.point_status_title,
-            item.equipmentId,
-            item.name,
-            freqLabel
+            R.string.point_status_title, item.equipmentId, item.name, freqLabel
         )
         holder.tvSub.text =
             holder.itemView.context.getString(R.string.point_status_sub, item.location)
@@ -66,8 +63,7 @@ class PointStatusAdapter(
         val row = LinearLayout(ctx).apply {
             orientation = LinearLayout.HORIZONTAL
             layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { topMargin = dp4(ctx) }
         }
 

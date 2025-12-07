@@ -100,8 +100,8 @@ class FormAdapter(private val rows: List<FormRow>) :
         private val tvLabel: TextView = v.findViewById(R.id.tvLabel)
         private val tvRange: TextView = v.findViewById(R.id.tvRange)
         private val et: EditText = v.findViewById(R.id.etValue)
-        private val btnMinus: Button = v.findViewById(R.id.btnMinus)
-        private val btnPlus: Button = v.findViewById(R.id.btnPlus)
+//        private val btnMinus: Button = v.findViewById(R.id.btnMinus)
+//        private val btnPlus: Button = v.findViewById(R.id.btnPlus)
         private val btnQuick1: Button = v.findViewById(R.id.btnQuick1)
         private val btnQuick5: Button = v.findViewById(R.id.btnQuick5)
         private val btnQuick10: Button = v.findViewById(R.id.btnQuick10)
@@ -128,8 +128,8 @@ class FormAdapter(private val rows: List<FormRow>) :
                 setValue(cur + d)
             }
 
-            btnMinus.setOnClickListener { delta(-1.0) }
-            btnPlus.setOnClickListener { delta(+1.0) }
+//            btnMinus.setOnClickListener { delta(-1.0) }
+//            btnPlus.setOnClickListener { delta(+1.0) }
             btnQuick1.setOnClickListener { delta(+1.0) }
             btnQuick5.setOnClickListener { delta(+5.0) }
             btnQuick10.setOnClickListener { delta(+10.0) }

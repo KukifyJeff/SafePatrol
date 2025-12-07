@@ -8,14 +8,14 @@
         android:id="@+id/bgImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/home_bg"
+        android:alpha="0.3"
         android:scaleType="centerCrop"
-        android:alpha="0.3"/>
+        android:src="@drawable/home_bg" />
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <!-- 顶部标题栏 -->
         <com.google.android.material.appbar.MaterialToolbar
@@ -23,26 +23,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/blue_primary"
-            app:titleTextColor="@color/white"
             android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
             app:title="IGCC气化安巡宝"
-            app:titleCentered="true" />
+            app:titleCentered="true"
+            app:titleTextColor="@color/white" />
 
         <!-- 原本的头部信息（路线/工号/班次）用框包裹，与下方区分 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:elevation="2dp"
+            android:layout_marginBottom="4dp"
             android:background="?attr/colorSurface"
-            android:padding="4dp"
-            android:layout_marginBottom="4dp">
+            android:elevation="2dp"
+            android:orientation="vertical"
+            android:padding="4dp">
 
             <TextView
                 android:id="@+id/tvHeader"
-                android:paddingStart="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingStart="10dp"
                 android:textSize="13sp" />
         </LinearLayout>
 
@@ -59,9 +59,9 @@
             android:id="@+id/bottomBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
             android:elevation="4dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="12dp">
 
             <Button
                 android:id="@+id/btnClearData"
@@ -69,31 +69,31 @@
                 android:layout_height="56dp"
                 android:layout_weight="1"
                 android:backgroundTint="#F44336"
+                android:text="清除数据"
                 android:textColor="@color/white"
-                android:textSize="6pt"
-                android:text="清除数据" />
+                android:textSize="6pt" />
 
             <Button
                 android:id="@+id/btnExport"
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_marginStart="12dp"
-                android:backgroundTint="#4CAF50"
                 android:layout_weight="1"
+                android:backgroundTint="#4CAF50"
+                android:text="导出"
                 android:textColor="@color/white"
-                android:textSize="6pt"
-                android:text="导出" />
+                android:textSize="6pt" />
 
             <Button
                 android:id="@+id/btnScan"
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_marginStart="12dp"
-                android:backgroundTint="@color/blue_variant"
                 android:layout_weight="1"
+                android:backgroundTint="@color/blue_variant"
+                android:text="NFC点检"
                 android:textColor="@color/white"
-                android:textSize="6pt"
-                android:text="NFC点检" />
+                android:textSize="6pt" />
 
         </LinearLayout>
     </LinearLayout>

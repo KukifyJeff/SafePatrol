@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <!-- 顶部标题栏 -->
     <com.google.android.material.appbar.MaterialToolbar
@@ -11,48 +11,49 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/blue_primary"
-        app:titleTextColor="@color/white"
         android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
         app:title="SafePatrol | 系统时间确认"
-        app:titleCentered="true" />
+        app:titleCentered="true"
+        app:titleTextColor="@color/white" />
+
     <LinearLayout
-        android:orientation="vertical"
-        android:padding="15dp"
-        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/tag"
-            android:text="当前系统时间"
-            android:textSize="20pt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:text="当前系统时间"
+            android:textSize="20pt" />
 
         <TextView
             android:id="@+id/tvTime"
-            android:text="2025-11-21 18:00:00"
-            android:textSize="23pt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:text="2025-11-21 18:00:00"
+            android:textSize="23pt" />
 
         <TextView
-            android:text="请对照其他设备确认当前系统时间是否正确，若存在错误可能会影响点检。请不要在点检过程当中修改系统时间，SafePatrol会自动记录异常点检行为。"
-            android:textSize="8pt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="48dp"
             android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:text="请对照其他设备确认当前系统时间是否正确，若存在错误可能会影响点检。请不要在点检过程当中修改系统时间，SafePatrol会自动记录异常点检行为。"
+            android:textSize="8pt" />
 
         <Button
             android:id="@+id/btnConfirm"
-            android:text="我已确认时间无误，开始点检"
-            android:textSize="6pt"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="我已确认时间无误，开始点检"
+            android:textSize="6pt" />
     </LinearLayout>
 </LinearLayout>

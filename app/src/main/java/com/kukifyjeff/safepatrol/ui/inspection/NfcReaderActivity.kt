@@ -4,23 +4,22 @@ import android.content.Intent
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.kukifyjeff.safepatrol.AppDatabase
+import com.kukifyjeff.safepatrol.BaseActivity
 import com.kukifyjeff.safepatrol.R
+import com.kukifyjeff.safepatrol.data.db.entities.EquipmentEntity
+import com.kukifyjeff.safepatrol.data.db.entities.PointEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Locale
-
-import android.util.Log
-import com.kukifyjeff.safepatrol.BaseActivity
-import com.kukifyjeff.safepatrol.data.db.entities.EquipmentEntity
-import com.kukifyjeff.safepatrol.data.db.entities.PointEntity
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import java.util.Locale
 import java.util.Objects.toString
 
 class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
@@ -66,11 +65,11 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
             this,
             this,
             NfcAdapter.FLAG_READER_NFC_A or
-            NfcAdapter.FLAG_READER_NFC_B or
-            NfcAdapter.FLAG_READER_NFC_F or
-            NfcAdapter.FLAG_READER_NFC_V or
-            NfcAdapter.FLAG_READER_NO_PLATFORM_SOUNDS or
-            NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
+                    NfcAdapter.FLAG_READER_NFC_B or
+                    NfcAdapter.FLAG_READER_NFC_F or
+                    NfcAdapter.FLAG_READER_NFC_V or
+                    NfcAdapter.FLAG_READER_NO_PLATFORM_SOUNDS or
+                    NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
             null
         )
     }
@@ -104,7 +103,11 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
 
                 if (allPoints.isEmpty()) {
                     runOnUiThread {
-                        Toast.makeText(this@NfcReaderActivity, "无效标签，请重新扫描", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this@NfcReaderActivity,
+                            "无效标签，请重新扫描",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                     return@launch
                 }
@@ -117,10 +120,14 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
                 val currentRouteId = session?.routeId?.trim()?.lowercase()
 
                 val matchedPoint = if (currentRouteId != null) {
-                    val matched = allPoints.filter { it.routeId.trim().lowercase() == currentRouteId }
+                    val matched =
+                        allPoints.filter { it.routeId.trim().lowercase() == currentRouteId }
                     if (matched.isEmpty()) null else {
                         if (matched.size > 1) {
-                            Log.w("NfcReaderActivity", "Multiple points matched route $currentRouteId for tag $uidHex, using first one")
+                            Log.w(
+                                "NfcReaderActivity",
+                                "Multiple points matched route $currentRouteId for tag $uidHex, using first one"
+                            )
                         }
                         matched.first()
                     }
@@ -130,7 +137,11 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
 
                 if (matchedPoint == null) {
                     runOnUiThread {
-                        Toast.makeText(this@NfcReaderActivity, "当前标签不属于本路线，请重新扫描", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this@NfcReaderActivity,
+                            "当前标签不属于本路线，请重新扫描",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                     return@launch
                 }
@@ -140,12 +151,19 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
                 val equipments: List<EquipmentEntity> = withContext(Dispatchers.IO) {
                     db.equipmentDao().getByPoint(matchedPoint.pointId)
                 }
-                Log.d("FuckNfcReaderActivity", "Fucking equipments are =${equipments.joinToString()}")
+                Log.d(
+                    "FuckNfcReaderActivity",
+                    "Fucking equipments are =${equipments.joinToString()}"
+                )
 
 
                 if (equipments.isEmpty()) {
                     runOnUiThread {
-                        Toast.makeText(this@NfcReaderActivity, "该标签下未配置设备，请联系管理员", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this@NfcReaderActivity,
+                            "该标签下未配置设备，请联系管理员",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                     return@launch
                 }
@@ -166,7 +184,8 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
                 }
 
                 // 获取频率最高（间隔最短）的频次
-                val freq = if (allCheckItems.isNotEmpty()) allCheckItems.minOf { it.freqHours } else 8
+                val freq =
+                    if (allCheckItems.isNotEmpty()) allCheckItems.minOf { it.freqHours } else 8
                 Log.d("FuckNfcReaderActivity", "Fucking session id is $sessionId")
 
                 if (matchesInRoute.isNotEmpty()) {
@@ -175,19 +194,31 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
                         if (requiresStatusEquipments.isEmpty()) {
                             // 所有设备都不需要调整状态，直接跳转到 InspectionActivity
                             val runningEquipments = equipments.map { it.equipmentId } // 默认全部视为运行中
-                            Log.d("FuckRunningEquips", "Fucking Equipments are ${toString(runningEquipments)}")
-                            val intent = Intent(this@NfcReaderActivity, InspectionActivity::class.java).apply {
+                            Log.d(
+                                "FuckRunningEquips",
+                                "Fucking Equipments are ${toString(runningEquipments)}"
+                            )
+                            val intent = Intent(
+                                this@NfcReaderActivity,
+                                InspectionActivity::class.java
+                            ).apply {
                                 putExtra("pointId", matchedPoint.pointId)
                                 putExtra("sessionId", sessionId)
                                 putExtra("pointName", matchedPoint.name)
                                 putExtra("freqHours", freq)
-                                putStringArrayListExtra("runningEquipments", ArrayList(runningEquipments))
+                                putStringArrayListExtra(
+                                    "runningEquipments",
+                                    ArrayList(runningEquipments)
+                                )
                             }
                             startActivity(intent)
                             finish()
                         } else {
                             // 存在需要设定状态的设备，跳转到状态选择界面
-                            val intent = Intent(this@NfcReaderActivity, EquipmentStatusActivity::class.java).apply {
+                            val intent = Intent(
+                                this@NfcReaderActivity,
+                                EquipmentStatusActivity::class.java
+                            ).apply {
                                 putExtra("pointName", matchedPoint.name)
                                 putExtra("pointId", matchedPoint.pointId)
                                 putExtra("sessionId", sessionId)
@@ -200,14 +231,22 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
                     return@launch
                 } else {
                     runOnUiThread {
-                        Toast.makeText(this@NfcReaderActivity, "当前标签不属于本路线，请重新扫描", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this@NfcReaderActivity,
+                            "当前标签不属于本路线，请重新扫描",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                     return@launch
                 }
 
             } catch (e: Exception) {
                 runOnUiThread {
-                    Toast.makeText(this@NfcReaderActivity, e.message ?: "NFC 解析失败", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@NfcReaderActivity,
+                        e.message ?: "NFC 解析失败",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
                 appendDebugLine("Exception: ${e.message ?: "NFC 解析失败"}")
                 finish()
@@ -216,4 +255,5 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
     }
 
     private fun ByteArray.toHexString(): String =
-        joinToString("") { "%02X".format(it) }.uppercase(Locale.getDefault())}
+        joinToString("") { "%02X".format(it) }.uppercase(Locale.getDefault())
+}

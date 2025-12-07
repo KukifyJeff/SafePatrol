@@ -4,19 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.lifecycleScope
 import com.kukifyjeff.safepatrol.AppDatabase
-import com.kukifyjeff.safepatrol.CsvBootstrapper
-import com.kukifyjeff.safepatrol.databinding.ActivityRouteSelectBinding
-import com.kukifyjeff.safepatrol.ui.main.HomeActivity
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import androidx.core.graphics.toColorInt
 import com.kukifyjeff.safepatrol.BaseActivity
+import com.kukifyjeff.safepatrol.CsvBootstrapper
 import com.kukifyjeff.safepatrol.data.db.entities.EmployeeEntity
+import com.kukifyjeff.safepatrol.databinding.ActivityRouteSelectBinding
 import com.kukifyjeff.safepatrol.ui.main.ConfirmSystemTimeActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Suppress("DEPRECATION")
 class RouteSelectActivity : BaseActivity() {
@@ -32,7 +30,12 @@ class RouteSelectActivity : BaseActivity() {
         val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
         val activated = prefs.getBoolean("activated", false)
         if (!activated) {
-            startActivity(Intent(this, com.kukifyjeff.safepatrol.ui.main.ActivateActivity::class.java))
+            startActivity(
+                Intent(
+                    this,
+                    com.kukifyjeff.safepatrol.ui.main.ActivateActivity::class.java
+                )
+            )
             finish()
             return
         }
@@ -96,7 +99,8 @@ class RouteSelectActivity : BaseActivity() {
 
             if (routes.isEmpty()) {
                 // 还为空：提示排查 assets 目录和文件名
-                Toast.makeText(this@RouteSelectActivity,
+                Toast.makeText(
+                    this@RouteSelectActivity,
                     "未找到巡检路线，请确认 assets/config/routes.csv 是否存在且有数据（含表头）",
                     Toast.LENGTH_LONG
                 ).show()

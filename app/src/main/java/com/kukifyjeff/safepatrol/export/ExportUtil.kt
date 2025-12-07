@@ -49,7 +49,8 @@ object ExportUtil {
         val endMs = endMsExclusive - 1L
 
         // 查询当月内所有实际记录（用于按 recordId 批量加载 items）
-        val actualRecords = db.inspectionDao().getRecordsInWindow(startMs, endMs).sortedBy { it.timestamp }
+        val actualRecords =
+            db.inspectionDao().getRecordsInWindow(startMs, endMs).sortedBy { it.timestamp }
 
 
         // 预取 session 信息（按 sessionId）
@@ -115,7 +116,9 @@ object ExportUtil {
 
         // 写 header
         val hr = sheet.createRow(0)
-        header.forEachIndexed { i, t -> hr.createCell(i).apply { setCellValue(t); cellStyle = headStyle } }
+        header.forEachIndexed { i, t ->
+            hr.createCell(i).apply { setCellValue(t); cellStyle = headStyle }
+        }
 
         val sdfDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val sdfTime = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -145,12 +148,19 @@ object ExportUtil {
         }
 
         @SuppressLint("DefaultLocale")
-        fun formatDateTimeForRecord(ts: Long, windowStart: Long, windowEnd: Long): Pair<String, String> {
+        fun formatDateTimeForRecord(
+            ts: Long,
+            windowStart: Long,
+            windowEnd: Long
+        ): Pair<String, String> {
             val cTs = Calendar.getInstance().apply { timeInMillis = ts }
             // determine if window spans midnight (start day != end day)
             val cs = Calendar.getInstance().apply { timeInMillis = windowStart }
             val ce = Calendar.getInstance().apply { timeInMillis = windowEnd }
-            val spansMidnight = cs.get(Calendar.DAY_OF_YEAR) != ce.get(Calendar.DAY_OF_YEAR) || cs.get(Calendar.YEAR) != ce.get(Calendar.YEAR)
+            val spansMidnight =
+                cs.get(Calendar.DAY_OF_YEAR) != ce.get(Calendar.DAY_OF_YEAR) || cs.get(Calendar.YEAR) != ce.get(
+                    Calendar.YEAR
+                )
 
             if (spansMidnight && cTs.get(Calendar.HOUR_OF_DAY) == 0 && cTs.get(Calendar.MINUTE) < 30) {
                 // treat as 24:MM on previous day
@@ -171,7 +181,8 @@ object ExportUtil {
             val d = cal2.get(Calendar.DAY_OF_MONTH)
 
             fun msOf(hour: Int, minute: Int, dayOffset: Int = 0): Long {
-                val c = Calendar.getInstance().apply { clear(); set(y, m, d + dayOffset, hour, minute) }
+                val c =
+                    Calendar.getInstance().apply { clear(); set(y, m, d + dayOffset, hour, minute) }
                 return c.timeInMillis
             }
 
@@ -180,7 +191,10 @@ object ExportUtil {
             val e0 = msOf(8, 30)
             if (e0 >= startMs && s0 <= endMs) {
                 windows.add(Pair(s0.coerceAtLeast(startMs), e0.coerceAtMost(endMs)))
-                Log.d("FuckExportUtil", "Add window: start=${sdfFull.format(Date(s0))}, end=${sdfFull.format(Date(e0))}, label=夜班")
+                Log.d(
+                    "FuckExportUtil",
+                    "Add window: start=${sdfFull.format(Date(s0))}, end=${sdfFull.format(Date(e0))}, label=夜班"
+                )
             }
 
             // 白班：08:30 - 16:30
@@ -188,7 +202,10 @@ object ExportUtil {
             val e1 = msOf(16, 30)
             if (e1 >= startMs && s1 <= endMs) {
                 windows.add(Pair(s1.coerceAtLeast(startMs), e1.coerceAtMost(endMs)))
-                Log.d("FuckExportUtil", "Add window: start=${sdfFull.format(Date(s1))}, end=${sdfFull.format(Date(e1))}, label=白班")
+                Log.d(
+                    "FuckExportUtil",
+                    "Add window: start=${sdfFull.format(Date(s1))}, end=${sdfFull.format(Date(e1))}, label=白班"
+                )
             }
 
             // 中班：16:30 - 次日00:30
@@ -196,7 +213,10 @@ object ExportUtil {
             val e2 = msOf(0, 30, 1)
             if (e2 >= startMs && s2 <= endMs) {
                 windows.add(Pair(s2.coerceAtLeast(startMs), e2.coerceAtMost(endMs)))
-                Log.d("FuckExportUtil", "Add window: start=${sdfFull.format(Date(s2))}, end=${sdfFull.format(Date(e2))}, label=中班")
+                Log.d(
+                    "FuckExportUtil",
+                    "Add window: start=${sdfFull.format(Date(s2))}, end=${sdfFull.format(Date(e2))}, label=中班"
+                )
             }
 
             cal2.add(Calendar.DAY_OF_MONTH, 1)
@@ -211,9 +231,11 @@ object ExportUtil {
             // 按 point -> equipments -> checkitems 的关系计算该点的最高频次（即最短间隔）
             val equipments = db.equipmentDao().getByPoint(p.pointId)
             // 获取该点下所有检查项（通过每个 equipment 的 equipmentId 查询）
-            val allCheckItems = equipments.flatMap { eq -> db.checkItemDao().getByEquipment(eq.equipmentId) }
+            val allCheckItems =
+                equipments.flatMap { eq -> db.checkItemDao().getByEquipment(eq.equipmentId) }
             // 取最小的 freqHours（最短的间隔），若无则默认 8
-            val freq = if (allCheckItems.isNotEmpty()) allCheckItems.minOfOrNull { it.freqHours } ?: 8 else 8
+            val freq = if (allCheckItems.isNotEmpty()) allCheckItems.minOfOrNull { it.freqHours }
+                ?: 8 else 8
             maxFreqByPoint[p.pointId] = freq
         }
         Log.d("FuckExportUtil", "maxFreqByPoint: $maxFreqByPoint")
@@ -228,18 +250,41 @@ object ExportUtil {
 
         // 3️⃣ 遍历所有时间段（window）、点位及槽位
         for ((windowStart, windowEnd) in windows) {
-            Log.d("ExportDebug", "=== Window start=${sdfFull.format(Date(windowStart))} end=${sdfFull.format(Date(windowEnd))} ===")
+            Log.d(
+                "ExportDebug",
+                "=== Window start=${sdfFull.format(Date(windowStart))} end=${
+                    sdfFull.format(
+                        Date(windowEnd)
+                    )
+                } ==="
+            )
             val shiftName = shiftNameFromWindowStart(windowStart)
-            Log.d("ExportUtil", "Processing window: start=${sdfFull.format(Date(windowStart))}, end=${sdfFull.format(Date(windowEnd))}, shift=$shiftName")
+            Log.d(
+                "ExportUtil",
+                "Processing window: start=${sdfFull.format(Date(windowStart))}, end=${
+                    sdfFull.format(Date(windowEnd))
+                }, shift=$shiftName"
+            )
 
             // --- Export system logs that fall inside this window, before points ---
             val systemLogsInWindow = records.filter {
                 it.pointId == "-1" && it.timestamp in windowStart..windowEnd
             }
             for (rec in systemLogsInWindow) {
-                Log.d("ExportDebug", "SYSTEM LOG AT WINDOW HEAD recordId=${rec.recordId}, ts=${sdfFull.format(Date(rec.timestamp))}")
+                Log.d(
+                    "ExportDebug",
+                    "SYSTEM LOG AT WINDOW HEAD recordId=${rec.recordId}, ts=${
+                        sdfFull.format(
+                            Date(rec.timestamp)
+                        )
+                    }"
+                )
                 val items = itemsByRecord[rec.recordId].orEmpty()
-                val (dateStr, timeStr) = formatDateTimeForRecord(rec.timestamp, windowStart, windowEnd)
+                val (dateStr, timeStr) = formatDateTimeForRecord(
+                    rec.timestamp,
+                    windowStart,
+                    windowEnd
+                )
                 val shiftNameRec = shiftNameFromWindowStart(windowStart)
 
                 if (items.isEmpty()) {
@@ -278,27 +323,44 @@ object ExportUtil {
             for (p in points) {
                 Log.d("ExportDebug", "---- Point ${p.pointId} (${p.name}) ----")
                 val freq = maxFreqByPoint[p.pointId] ?: 8
-                val nSlots = when (freq) { 2 -> 4; 4 -> 2; 8 -> 1; else -> 1 }
+                val nSlots = when (freq) {
+                    2 -> 4; 4 -> 2; 8 -> 1; else -> 1
+                }
                 Log.d("FuckExportUtil", "Processing point=${p.pointId}, freq=$freq, nSlots=$nSlots")
 
                 for (slotIdx in 1..nSlots) {
                     Log.d("ExportDebug", "Checking slot $slotIdx")
                     // 查询该时间窗内该点位槽位的记录
-                    val recsInWindow = db.inspectionDao().getRecordsForPointSlotInWindow(p.pointId, slotIdx, windowStart, windowEnd)
+                    val recsInWindow = db.inspectionDao()
+                        .getRecordsForPointSlotInWindow(p.pointId, slotIdx, windowStart, windowEnd)
                     // 🚫 系统日志不参与任何点位/槽位的记录选择
                     // 只使用当前点位 + 当前槽位的真实记录
                     val rec = recsInWindow.maxByOrNull { it.timestamp }
 
                     if (rec != null) {
-                        Log.d("ExportDebug", "Selected recordId=${rec.recordId}, ts=${sdfFull.format(Date(rec.timestamp))}, pointId=${rec.pointId}")
+                        Log.d(
+                            "ExportDebug",
+                            "Selected recordId=${rec.recordId}, ts=${sdfFull.format(Date(rec.timestamp))}, pointId=${rec.pointId}"
+                        )
                         val items = itemsByRecord[rec.recordId].orEmpty()
                         for (itm in items) {
-                            Log.d("ExportDebug", "Export NORMAL record recordId=${rec.recordId}, itemId=${itm.itemId}, ts=${sdfFull.format(Date(rec.timestamp))}")
-                            val itemLabel = db.checkItemDao().getItemNameById(itm.itemId) ?: itm.itemId
+                            Log.d(
+                                "ExportDebug",
+                                "Export NORMAL record recordId=${rec.recordId}, itemId=${itm.itemId}, ts=${
+                                    sdfFull.format(Date(rec.timestamp))
+                                }"
+                            )
+                            val itemLabel =
+                                db.checkItemDao().getItemNameById(itm.itemId) ?: itm.itemId
                             val freqHours = db.checkItemDao().getById(itm.itemId)?.freqHours ?: 8
                             val equipName = getEquipmentName(itm.equipmentId)
-                            val (dateStr, timeStr) = formatDateTimeForRecord(rec.timestamp, windowStart, windowEnd)
-                            val shiftNameRec = sessionsMap[rec.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: ""
+                            val (dateStr, timeStr) = formatDateTimeForRecord(
+                                rec.timestamp,
+                                windowStart,
+                                windowEnd
+                            )
+                            val shiftNameRec =
+                                sessionsMap[rec.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: ""
 
                             val slotIdxForItem = when (freqHours) {
                                 2 -> {
@@ -306,11 +368,13 @@ object ExportUtil {
                                     var idx = ((rec.timestamp - windowStart) / slotLen + 1).toInt()
                                     idx.coerceIn(1, 4)
                                 }
+
                                 4 -> {
                                     val slotLen = ((windowEnd - windowStart) / 2.0)
                                     var idx = ((rec.timestamp - windowStart) / slotLen + 1).toInt()
                                     idx.coerceIn(1, 2)
                                 }
+
                                 8 -> 1
                                 else -> 1
                             }
@@ -334,9 +398,18 @@ object ExportUtil {
                             cells.forEachIndexed { i, v -> r.createCell(i).setCellValue(v) }
                         }
                     } else {
-                        Log.d("ExportDebug", "NO RECORD for point=${p.pointId}, slot=$slotIdx within window ${sdfFull.format(Date(windowStart))}")
+                        Log.d(
+                            "ExportDebug",
+                            "NO RECORD for point=${p.pointId}, slot=$slotIdx within window ${
+                                sdfFull.format(Date(windowStart))
+                            }"
+                        )
                         // 没有记录，输出未检行，包含日期和班次
-                        val (dateStr, _) = formatDateTimeForRecord(windowStart, windowStart, windowEnd)
+                        val (dateStr, _) = formatDateTimeForRecord(
+                            windowStart,
+                            windowStart,
+                            windowEnd
+                        )
                         val shiftNameCell = shiftNameFromWindowStart(windowStart)
                         val r = sheet.createRow(rowIdx++)
                         val cells = arrayOf(
@@ -361,10 +434,12 @@ object ExportUtil {
         }
 
 
-
         // 自适应列宽（上限保护）
         for (i in header.indices) {
-            try { sheet.autoSizeColumn(i) } catch (_: Throwable) {}
+            try {
+                sheet.autoSizeColumn(i)
+            } catch (_: Throwable) {
+            }
             val w = sheet.getColumnWidth(i).coerceAtMost(80 * 256)
             sheet.setColumnWidth(i, w)
         }
@@ -380,8 +455,12 @@ object ExportUtil {
         val fileDate = sdfDate.format(Date(curWindow.startMs))
         val ym = String.format(Locale.getDefault(), "%04d-%02d", year, month)
         val shiftForFile = shiftNameFromWindowStart(curWindow.startMs)
-        val safeRoute = if (currentRouteName.isNotBlank()) currentRouteName.replace(Regex("[/:*?\"<>|]"), "_") else ""
-        val filename = if (safeRoute.isNotBlank()) "SafePatrol_${safeRoute}_${ym}@${fileDate}_${shiftForFile}.xlsx" else "SafePatrol_${ym}@${fileDate}_${shiftForFile}.xlsx"
+        val safeRoute = if (currentRouteName.isNotBlank()) currentRouteName.replace(
+            Regex("[/:*?\"<>|]"),
+            "_"
+        ) else ""
+        val filename =
+            if (safeRoute.isNotBlank()) "SafePatrol_${safeRoute}_${ym}@${fileDate}_${shiftForFile}.xlsx" else "SafePatrol_${ym}@${fileDate}_${shiftForFile}.xlsx"
 
         // 保存到 App 私有目录（Documents），并根据是否加密进行处理
         val outDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
@@ -394,8 +473,10 @@ object ExportUtil {
             wb.write(bos)
             wb.close()
 
-            val pkg = org.apache.poi.openxml4j.opc.OPCPackage.open(java.io.ByteArrayInputStream(bos.toByteArray()))
-            val info = org.apache.poi.poifs.crypt.EncryptionInfo(org.apache.poi.poifs.crypt.EncryptionMode.standard)
+            val pkg =
+                org.apache.poi.openxml4j.opc.OPCPackage.open(java.io.ByteArrayInputStream(bos.toByteArray()))
+            val info =
+                org.apache.poi.poifs.crypt.EncryptionInfo(org.apache.poi.poifs.crypt.EncryptionMode.standard)
             val encryptor = info.encryptor
             encryptor.confirmPassword(modifyPassword)
 
@@ -434,7 +515,8 @@ object ExportUtil {
     ): String = withContext(Dispatchers.IO) {
         // 查询时间窗口内所有实际记录（用于按 recordId 批量加载 items）
         val readOnlyRecommended = true
-        val actualRecords = db.inspectionDao().getRecordsInWindow(startTs, endTs).sortedBy { it.timestamp }
+        val actualRecords =
+            db.inspectionDao().getRecordsInWindow(startTs, endTs).sortedBy { it.timestamp }
 
         // 预取 session 信息（按 sessionId）
         val sessionIds = actualRecords.map { it.sessionId }.distinct()
@@ -498,7 +580,9 @@ object ExportUtil {
 
         // 写 header
         val hr = sheet.createRow(0)
-        header.forEachIndexed { i, t -> hr.createCell(i).apply { setCellValue(t); cellStyle = headStyle } }
+        header.forEachIndexed { i, t ->
+            hr.createCell(i).apply { setCellValue(t); cellStyle = headStyle }
+        }
 
         val sdfDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val sdfTime = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -528,12 +612,19 @@ object ExportUtil {
         }
 
         @SuppressLint("DefaultLocale")
-        fun formatDateTimeForRecord(ts: Long, windowStart: Long, windowEnd: Long): Pair<String, String> {
+        fun formatDateTimeForRecord(
+            ts: Long,
+            windowStart: Long,
+            windowEnd: Long
+        ): Pair<String, String> {
             val cTs = Calendar.getInstance().apply { timeInMillis = ts }
             // determine if window spans midnight (start day != end day)
             val cs = Calendar.getInstance().apply { timeInMillis = windowStart }
             val ce = Calendar.getInstance().apply { timeInMillis = windowEnd }
-            val spansMidnight = cs.get(Calendar.DAY_OF_YEAR) != ce.get(Calendar.DAY_OF_YEAR) || cs.get(Calendar.YEAR) != ce.get(Calendar.YEAR)
+            val spansMidnight =
+                cs.get(Calendar.DAY_OF_YEAR) != ce.get(Calendar.DAY_OF_YEAR) || cs.get(Calendar.YEAR) != ce.get(
+                    Calendar.YEAR
+                )
 
             if (spansMidnight && cTs.get(Calendar.HOUR_OF_DAY) == 0 && cTs.get(Calendar.MINUTE) < 30) {
                 // treat as 24:MM on previous day
@@ -554,7 +645,8 @@ object ExportUtil {
             val d = cal2.get(Calendar.DAY_OF_MONTH)
 
             fun msOf(hour: Int, minute: Int, dayOffset: Int = 0): Long {
-                val c = Calendar.getInstance().apply { clear(); set(y, m, d + dayOffset, hour, minute) }
+                val c =
+                    Calendar.getInstance().apply { clear(); set(y, m, d + dayOffset, hour, minute) }
                 return c.timeInMillis
             }
 
@@ -590,8 +682,10 @@ object ExportUtil {
         for (p in points) {
             // 按 point -> equipments -> checkitems 的关系计算该点的最高频次（即最短间隔）
             val equipments = db.equipmentDao().getByPoint(p.pointId)
-            val allCheckItems = equipments.flatMap { eq -> db.checkItemDao().getByEquipment(eq.equipmentId) }
-            val freq = if (allCheckItems.isNotEmpty()) allCheckItems.minOfOrNull { it.freqHours } ?: 8 else 8
+            val allCheckItems =
+                equipments.flatMap { eq -> db.checkItemDao().getByEquipment(eq.equipmentId) }
+            val freq = if (allCheckItems.isNotEmpty()) allCheckItems.minOfOrNull { it.freqHours }
+                ?: 8 else 8
             maxFreqByPoint[p.pointId] = freq
         }
 
@@ -611,7 +705,11 @@ object ExportUtil {
             }
             for (rec in systemLogsInWindow) {
                 val items = itemsByRecord[rec.recordId].orEmpty()
-                val (dateStr, timeStr) = formatDateTimeForRecord(rec.timestamp, windowStart, windowEnd)
+                val (dateStr, timeStr) = formatDateTimeForRecord(
+                    rec.timestamp,
+                    windowStart,
+                    windowEnd
+                )
                 val shiftNameRec = shiftNameFromWindowStart(windowStart)
 
                 if (items.isEmpty()) {
@@ -649,21 +747,30 @@ object ExportUtil {
 
             for (p in points) {
                 val freq = maxFreqByPoint[p.pointId] ?: 8
-                val nSlots = when (freq) { 2 -> 4; 4 -> 2; 8 -> 1; else -> 1 }
+                val nSlots = when (freq) {
+                    2 -> 4; 4 -> 2; 8 -> 1; else -> 1
+                }
                 for (slotIdx in 1..nSlots) {
                     // 查询该时间窗内该点位槽位的记录
-                    val recsInWindow = db.inspectionDao().getRecordsForPointSlotInWindow(p.pointId, slotIdx, windowStart, windowEnd)
+                    val recsInWindow = db.inspectionDao()
+                        .getRecordsForPointSlotInWindow(p.pointId, slotIdx, windowStart, windowEnd)
                     // 🚫 系统日志不参与任何点位/槽位的记录选择
                     val rec = recsInWindow.maxByOrNull { it.timestamp }
 
                     if (rec != null) {
                         val items = itemsByRecord[rec.recordId].orEmpty()
                         for (itm in items) {
-                            val itemLabel = db.checkItemDao().getItemNameById(itm.itemId) ?: itm.itemId
+                            val itemLabel =
+                                db.checkItemDao().getItemNameById(itm.itemId) ?: itm.itemId
                             val freqHours = db.checkItemDao().getById(itm.itemId)?.freqHours ?: 8
                             val equipName = getEquipmentName(itm.equipmentId)
-                            val (dateStr, timeStr) = formatDateTimeForRecord(rec.timestamp, windowStart, windowEnd)
-                            val shiftNameRec = sessionsMap[rec.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: ""
+                            val (dateStr, timeStr) = formatDateTimeForRecord(
+                                rec.timestamp,
+                                windowStart,
+                                windowEnd
+                            )
+                            val shiftNameRec =
+                                sessionsMap[rec.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: ""
 
                             val slotIdxForItem = when (freqHours) {
                                 2 -> {
@@ -671,11 +778,13 @@ object ExportUtil {
                                     var idx = ((rec.timestamp - windowStart) / slotLen + 1).toInt()
                                     idx.coerceIn(1, 4)
                                 }
+
                                 4 -> {
                                     val slotLen = ((windowEnd - windowStart) / 2.0)
                                     var idx = ((rec.timestamp - windowStart) / slotLen + 1).toInt()
                                     idx.coerceIn(1, 2)
                                 }
+
                                 8 -> 1
                                 else -> 1
                             }
@@ -700,7 +809,11 @@ object ExportUtil {
                         }
                     } else {
                         // 没有记录，输出未检行，包含日期和班次
-                        val (dateStr, _) = formatDateTimeForRecord(windowStart, windowStart, windowEnd)
+                        val (dateStr, _) = formatDateTimeForRecord(
+                            windowStart,
+                            windowStart,
+                            windowEnd
+                        )
                         val shiftNameCell = shiftNameFromWindowStart(windowStart)
                         val r = sheet.createRow(rowIdx++)
                         val cells = arrayOf(
@@ -726,7 +839,10 @@ object ExportUtil {
 
         // 自适应列宽（上限保护）
         for (i in header.indices) {
-            try { sheet.autoSizeColumn(i) } catch (_: Throwable) {}
+            try {
+                sheet.autoSizeColumn(i)
+            } catch (_: Throwable) {
+            }
             val w = sheet.getColumnWidth(i).coerceAtMost(80 * 256)
             sheet.setColumnWidth(i, w)
         }
@@ -740,7 +856,10 @@ object ExportUtil {
 
         // 文件名格式：SafePatrol_路线_YYYYMMDD-HHMMSS至YYYYMMDD-HHMMSS.xlsx
         val sdfFile = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault())
-        val safeRoute = if (currentRouteName.isNotBlank()) currentRouteName.replace(Regex("[/:*?\"<>|]"), "_") else ""
+        val safeRoute = if (currentRouteName.isNotBlank()) currentRouteName.replace(
+            Regex("[/:*?\"<>|]"),
+            "_"
+        ) else ""
         val startStr = sdfFile.format(Date(startTs))
         val endStr = sdfFile.format(Date(endTs))
         val filename = if (safeRoute.isNotBlank())
@@ -759,8 +878,10 @@ object ExportUtil {
             wb.write(bos)
             wb.close()
 
-            val pkg = org.apache.poi.openxml4j.opc.OPCPackage.open(java.io.ByteArrayInputStream(bos.toByteArray()))
-            val info = org.apache.poi.poifs.crypt.EncryptionInfo(org.apache.poi.poifs.crypt.EncryptionMode.standard)
+            val pkg =
+                org.apache.poi.openxml4j.opc.OPCPackage.open(java.io.ByteArrayInputStream(bos.toByteArray()))
+            val info =
+                org.apache.poi.poifs.crypt.EncryptionInfo(org.apache.poi.poifs.crypt.EncryptionMode.standard)
             val encryptor = info.encryptor
             encryptor.confirmPassword(modifyPassword)
 

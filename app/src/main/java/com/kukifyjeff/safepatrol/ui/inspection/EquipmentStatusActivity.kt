@@ -1,25 +1,23 @@
 package com.kukifyjeff.safepatrol.ui.inspection
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.lifecycleScope
 import com.kukifyjeff.safepatrol.AppDatabase
+import com.kukifyjeff.safepatrol.BaseActivity
 import com.kukifyjeff.safepatrol.R
+import com.kukifyjeff.safepatrol.data.db.entities.EquipmentEntity
 import com.kukifyjeff.safepatrol.data.db.entities.EquipmentStatusEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import android.content.res.ColorStateList
-import com.kukifyjeff.safepatrol.data.db.entities.EquipmentEntity
-import androidx.core.graphics.toColorInt
-import com.kukifyjeff.safepatrol.BaseActivity
-import kotlin.collections.forEach
 
 class EquipmentStatusActivity : BaseActivity() {
 
@@ -72,14 +70,16 @@ class EquipmentStatusActivity : BaseActivity() {
         }
 
         withContext(Dispatchers.Main) {
-            val blueColor = ContextCompat.getColor(this@EquipmentStatusActivity, R.color.blue_primary)
+            val blueColor =
+                ContextCompat.getColor(this@EquipmentStatusActivity, R.color.blue_primary)
             val colorRun = ColorStateList.valueOf("#E53935".toColorInt())
             val colorMaint = ColorStateList.valueOf("#43A047".toColorInt())
             val colorStandby = ColorStateList.valueOf("#9E9E9E".toColorInt())
             val colorBlue = ColorStateList.valueOf(blueColor)
 
             equipments.filter { it.statusRequired }.forEach { eq ->
-                val itemView = layoutInflater.inflate(R.layout.item_equipment_status, llEquipmentList, false)
+                val itemView =
+                    layoutInflater.inflate(R.layout.item_equipment_status, llEquipmentList, false)
 
                 val tvName = itemView.findViewById<TextView>(R.id.tvEquipmentName)
                 val btnRun = itemView.findViewById<Button>(R.id.btnRunning)
@@ -110,7 +110,8 @@ class EquipmentStatusActivity : BaseActivity() {
 
                 val updateStatus = { status: String ->
                     selectedStatuses[eq.equipmentId] = status
-                    btnConfirm.isEnabled = selectedStatuses.size == equipments.count { it.statusRequired }
+                    btnConfirm.isEnabled =
+                        selectedStatuses.size == equipments.count { it.statusRequired }
 
                     // Update button tint colors dynamically
                     when (status) {
@@ -119,11 +120,13 @@ class EquipmentStatusActivity : BaseActivity() {
                             btnMaint.setBackgroundTintList(colorBlue)
                             btnStandby.setBackgroundTintList(colorBlue)
                         }
+
                         "检修" -> {
                             btnRun.setBackgroundTintList(colorBlue)
                             btnMaint.setBackgroundTintList(colorMaint)
                             btnStandby.setBackgroundTintList(colorBlue)
                         }
+
                         "备用" -> {
                             btnRun.setBackgroundTintList(colorBlue)
                             btnMaint.setBackgroundTintList(colorBlue)
@@ -132,8 +135,10 @@ class EquipmentStatusActivity : BaseActivity() {
                     }
                 }
 
-                val lastStatusEntity: EquipmentStatusEntity? = withContext(Dispatchers.IO) { db.equipmentStatusDao().getByEquipmentId(eq.equipmentId) }
-                val currentStatus = when(lastStatusEntity?.status) {
+                val lastStatusEntity: EquipmentStatusEntity? = withContext(Dispatchers.IO) {
+                    db.equipmentStatusDao().getByEquipmentId(eq.equipmentId)
+                }
+                val currentStatus = when (lastStatusEntity?.status) {
                     "RUNNING" -> "运行"
                     "MAINTENANCE" -> "检修"
                     "STANDBY" -> "备用"
@@ -186,20 +191,28 @@ class EquipmentStatusActivity : BaseActivity() {
 
         // ✅ 保存成功后跳转
         withContext(Dispatchers.Main) {
-            Toast.makeText(this@EquipmentStatusActivity, "设备状态已保存", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@EquipmentStatusActivity, "设备状态已保存", Toast.LENGTH_SHORT)
+                .show()
 
             val pointName = intent.getStringExtra("pointName") ?: return@withContext
             val pointId = intent.getStringExtra("pointId") ?: return@withContext
 
-            val intent = Intent(this@EquipmentStatusActivity, InspectionActivity::class.java).apply {
-                putExtra("pointId", pointId)
-                putExtra("sessionId", sessionId)
-                putExtra("pointName", pointName)
-                putExtra("freqHours", freqHours)
-                putStringArrayListExtra("runningEquipments", ArrayList(runningEquipments))
-                putStringArrayListExtra("maintenanceEquipments", ArrayList(selectedStatuses.filter { it.value == "检修" }.keys))
-                putStringArrayListExtra("standbyEquipments", ArrayList(selectedStatuses.filter { it.value == "备用" }.keys))
-            }
+            val intent =
+                Intent(this@EquipmentStatusActivity, InspectionActivity::class.java).apply {
+                    putExtra("pointId", pointId)
+                    putExtra("sessionId", sessionId)
+                    putExtra("pointName", pointName)
+                    putExtra("freqHours", freqHours)
+                    putStringArrayListExtra("runningEquipments", ArrayList(runningEquipments))
+                    putStringArrayListExtra(
+                        "maintenanceEquipments",
+                        ArrayList(selectedStatuses.filter { it.value == "检修" }.keys)
+                    )
+                    putStringArrayListExtra(
+                        "standbyEquipments",
+                        ArrayList(selectedStatuses.filter { it.value == "备用" }.keys)
+                    )
+                }
             startActivity(intent)
             finish()
         }

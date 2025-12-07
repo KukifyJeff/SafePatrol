@@ -13,12 +13,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kukifyjeff.safepatrol.AppDatabase
 import com.kukifyjeff.safepatrol.BaseActivity
 import com.kukifyjeff.safepatrol.R
 import com.kukifyjeff.safepatrol.databinding.ActivityHomeBinding
+import com.kukifyjeff.safepatrol.export.ExportUtil.exportFromLastTimeXlsx
 import com.kukifyjeff.safepatrol.ui.inspection.InspectionActivity
 import com.kukifyjeff.safepatrol.utils.ShiftUtils
 import com.kukifyjeff.safepatrol.utils.SlotUtils
@@ -28,8 +30,6 @@ import kotlinx.coroutines.withContext
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import androidx.core.content.edit
-import com.kukifyjeff.safepatrol.export.ExportUtil.exportFromLastTimeXlsx
 
 class HomeActivity : BaseActivity() {
 
@@ -68,12 +68,24 @@ class HomeActivity : BaseActivity() {
         val operatorName = intent.getStringExtra("operatorName") ?: ""
 
         val shift = resolveCurrentShift()
-        val today = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(java.util.Date())
+        val today =
+            java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(java.util.Date())
         // 读取上次导出时间
         val prefs = getSharedPreferences("SafePatrolPrefs", MODE_PRIVATE)
         lastExportTs = prefs.getLong("lastExportTs", 0L)
-        val lastExportStr = if (lastExportTs > 0) java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(java.util.Date(lastExportTs)) else "无"
-        binding.tvHeader.text = getString(R.string.homepage_header, routeName, operatorName, shift.name, shift.rangeText, today, lastExportStr)
+        val lastExportStr = if (lastExportTs > 0) java.text.SimpleDateFormat(
+            "yyyy-MM-dd HH:mm",
+            Locale.getDefault()
+        ).format(java.util.Date(lastExportTs)) else "无"
+        binding.tvHeader.text = getString(
+            R.string.homepage_header,
+            routeName,
+            operatorName,
+            shift.name,
+            shift.rangeText,
+            today,
+            lastExportStr
+        )
         // RecyclerView 基本设置
         binding.rvPoints.layoutManager = LinearLayoutManager(this)
         adapter = PointStatusAdapter(emptyList()) { point ->
@@ -147,18 +159,24 @@ class HomeActivity : BaseActivity() {
                                             )
                                         }
                                         // 删除应用私有 Documents 文件夹下的所有文件
-                                        val docsDir = getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS)
+                                        val docsDir =
+                                            getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS)
                                         if (docsDir != null && docsDir.exists() && docsDir.isDirectory) {
                                             docsDir.listFiles()?.forEach { file ->
                                                 try {
                                                     file.deleteRecursively()
-                                                } catch (_: Exception) {}
+                                                } catch (_: Exception) {
+                                                }
                                             }
                                         }
                                         // 更新当前持有的 sessionId
                                         sessionId = newSessionId
 
-                                        Toast.makeText(this@HomeActivity, "已清除所有点检记录，并已创建新的会话", Toast.LENGTH_LONG).show()
+                                        Toast.makeText(
+                                            this@HomeActivity,
+                                            "已清除所有点检记录，并已创建新的会话",
+                                            Toast.LENGTH_LONG
+                                        ).show()
                                         // 刷新首页状态
                                         refreshPointStatuses()
                                     } catch (e: Exception) {
@@ -191,8 +209,12 @@ class HomeActivity : BaseActivity() {
                     AlertDialog.Builder(this@HomeActivity)
                         .setTitle("系统时间异常")
                         .setMessage(
-                            "检测到当前设备系统时间(${hhmm(now)}) 早于最近一次点检记录时间(${hhmm(latestTs)}).\n\n" +
-                            "若是因为修改了系统时间，可选择删除未来时间的点检记录，此操作会被记录。"
+                            "检测到当前设备系统时间(${hhmm(now)}) 早于最近一次点检记录时间(${
+                                hhmm(
+                                    latestTs
+                                )
+                            }).\n\n" +
+                                    "若是因为修改了系统时间，可选择删除未来时间的点检记录，此操作会被记录。"
                         )
                         .setNegativeButton("取消", null)
                         .setPositiveButton("删除冲突点检记录") { _, _ ->
@@ -279,7 +301,8 @@ class HomeActivity : BaseActivity() {
                     val modifyPwd = exportPassword
 
                     // 计算导出起止时间戳
-                    val startTs = if (lastExportTs > 0) lastExportTs else 1764086400000L // 从最后导出时间开始或从第一条记录
+                    val startTs =
+                        if (lastExportTs > 0) lastExportTs else 1764086400000L // 从最后导出时间开始或从第一条记录
                     val endTs = System.currentTimeMillis()
 
                     val path = exportFromLastTimeXlsx(
@@ -338,10 +361,12 @@ class HomeActivity : BaseActivity() {
 
                             // 刷新 tvHeader 上的最后导出时间显示
                             val shift = resolveCurrentShift()
-                            val today = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                .format(java.util.Date())
-                            val lastExportStr = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                                .format(java.util.Date(lastExportTs))
+                            val today =
+                                java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                    .format(java.util.Date())
+                            val lastExportStr =
+                                java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                                    .format(java.util.Date(lastExportTs))
                             binding.tvHeader.text = getString(
                                 R.string.homepage_header,
                                 routeName,
@@ -352,7 +377,8 @@ class HomeActivity : BaseActivity() {
                                 lastExportStr
                             )
                             dialog.dismiss()
-                            Toast.makeText(this@HomeActivity, "已记录导出时间", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@HomeActivity, "已记录导出时间", Toast.LENGTH_SHORT)
+                                .show()
                         }
                         .setNegativeButton("否") { dialog, _ ->
                             dialog.dismiss()
@@ -360,9 +386,13 @@ class HomeActivity : BaseActivity() {
                         .show()
                 } catch (t: Throwable) {
                     // 关闭加载对话框并恢复窗口交互
-                    try { progressDialog.dismiss() } catch (_: Throwable) {}
+                    try {
+                        progressDialog.dismiss()
+                    } catch (_: Throwable) {
+                    }
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                    Toast.makeText(this@HomeActivity, "导出失败：${t.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@HomeActivity, "导出失败：${t.message}", Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }
@@ -393,14 +423,18 @@ class HomeActivity : BaseActivity() {
                 }
 
                 // 获取频率最高（间隔最短）的频次
-                val highestFreq = if (allCheckItems.isNotEmpty()) allCheckItems.minOf { it.freqHours } else 8
+                val highestFreq =
+                    if (allCheckItems.isNotEmpty()) allCheckItems.minOf { it.freqHours } else 8
                 val expectedSlotCount = when (highestFreq) {
                     2 -> 4
                     4 -> 2
                     8 -> 1
                     else -> 1
                 }
-                android.util.Log.d("FuckHomeActivity", "→ Point=${point.pointId}, highestFreq=$highestFreq, expectedSlotCount=$expectedSlotCount")
+                android.util.Log.d(
+                    "FuckHomeActivity",
+                    "→ Point=${point.pointId}, highestFreq=$highestFreq, expectedSlotCount=$expectedSlotCount"
+                )
 
                 // 只保留最高频率的检查项
                 val targetCheckItems = allCheckItems.filter { it.freqHours == highestFreq }
@@ -430,7 +464,10 @@ class HomeActivity : BaseActivity() {
                     for (item in items) {
                         // 忽略系统日志条目
                         if (item.itemId == "-1" || item.equipmentId == "-1") {
-                            android.util.Log.d("FuckHomeActivity", "⏭ Skipped system item for point=${point.pointId}")
+                            android.util.Log.d(
+                                "FuckHomeActivity",
+                                "⏭ Skipped system item for point=${point.pointId}"
+                            )
                             continue
                         }
 
@@ -439,7 +476,10 @@ class HomeActivity : BaseActivity() {
                         val recTs = recordTimestampMap[item.recordId] ?: continue
                         val slotIdx = SlotUtils.getSlotIndex(highestFreq, recTs)
                         slotStatusMap[slotIdx] = recTs
-                        android.util.Log.d("FuckHomeActivity", "✅ Point=${point.pointId}, CheckItem=${checkItem.itemId}, Slot=$slotIdx (recordId=${item.recordId})")
+                        android.util.Log.d(
+                            "FuckHomeActivity",
+                            "✅ Point=${point.pointId}, CheckItem=${checkItem.itemId}, Slot=$slotIdx (recordId=${item.recordId})"
+                        )
                     }
                 }
 
@@ -447,7 +487,10 @@ class HomeActivity : BaseActivity() {
                 val slots = (1..expectedSlotCount).map { slotIdx ->
                     val ts = slotStatusMap[slotIdx]
                     val isChecked = ts != null
-                    android.util.Log.d("FuckHomeActivity", "Point ${point.pointId} slot $slotIdx -> ${if (isChecked) "✅ checked" else "⬜ unchecked"}")
+                    android.util.Log.d(
+                        "FuckHomeActivity",
+                        "Point ${point.pointId} slot $slotIdx -> ${if (isChecked) "✅ checked" else "⬜ unchecked"}"
+                    )
                     val slotChinese = slotIndexToChinese(slotIdx)
                     val title = if (isChecked) {
                         val timeStr = hhmm(ts)
@@ -473,6 +516,7 @@ class HomeActivity : BaseActivity() {
             adapter.submitList(uiList)
         }
     }
+
     // 将时间戳格式化为 HH:mm
     private fun hhmm(ts: Long): String = java.text.SimpleDateFormat("HH:mm", Locale.getDefault())
         .format(java.util.Date(ts))
@@ -493,14 +537,26 @@ class HomeActivity : BaseActivity() {
         return when {
             // 白班：08:30 <= now < 16:30
             !now.isBefore(t0830) && now.isBefore(t1630) ->
-                ShiftInfo(id = "S1", name = "白班", rangeText = "${t0830.format(fmt)}-${t1630.format(fmt)}")
+                ShiftInfo(
+                    id = "S1",
+                    name = "白班",
+                    rangeText = "${t0830.format(fmt)}-${t1630.format(fmt)}"
+                )
 
             // 中班：16:30 - 24:00 or 00:00 - 00:30
             (!now.isBefore(t1630)) || now.isBefore(t0030) ->
-                ShiftInfo(id = "S2", name = "中班", rangeText = "${t1630.format(fmt)}-次日${t0030.format(fmt)}")
+                ShiftInfo(
+                    id = "S2",
+                    name = "中班",
+                    rangeText = "${t1630.format(fmt)}-次日${t0030.format(fmt)}"
+                )
 
             // 夜班：00:30 <= now < 08:30
-            else -> ShiftInfo(id = "S3", name = "夜班", rangeText = "${t0030.format(fmt)}-${t0830.format(fmt)}")
+            else -> ShiftInfo(
+                id = "S3",
+                name = "夜班",
+                rangeText = "${t0030.format(fmt)}-${t0830.format(fmt)}"
+            )
         }
     }
 
@@ -510,13 +566,14 @@ class HomeActivity : BaseActivity() {
         val rangeText: String
     )
 }
-    // 槽位数字转中文：1->一, 2->二, 3->三, 4->四
-    private fun slotIndexToChinese(idx: Int): String {
-        return when (idx) {
-            1 -> "一"
-            2 -> "二"
-            3 -> "三"
-            4 -> "四"
-            else -> idx.toString()
-        }
+
+// 槽位数字转中文：1->一, 2->二, 3->三, 4->四
+private fun slotIndexToChinese(idx: Int): String {
+    return when (idx) {
+        1 -> "一"
+        2 -> "二"
+        3 -> "三"
+        4 -> "四"
+        else -> idx.toString()
     }
+}

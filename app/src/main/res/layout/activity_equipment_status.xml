@@ -8,22 +8,22 @@
         android:id="@+id/bgImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/home_bg"
+        android:alpha="0.3"
         android:scaleType="centerCrop"
-        android:alpha="0.3"/>
+        android:src="@drawable/home_bg" />
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="设备状态选择"
             android:background="@color/blue_primary"
             android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
-            app:titleCentered="true"/>
+            app:title="设备状态选择"
+            app:titleCentered="true" />
 
         <TextView
             android:id="@+id/tvPointName"
@@ -31,9 +31,8 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:text="点位名"
-            android:textStyle="bold"
             android:textSize="18sp"
-            />
+            android:textStyle="bold" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -42,26 +41,26 @@
 
             <LinearLayout
                 android:id="@+id/llContainer"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
 
                 <!-- 设备列表会动态生成，每个设备一行 -->
                 <LinearLayout
                     android:id="@+id/llEquipmentList"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
 
                 <Button
                     android:id="@+id/btnConfirm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="确认选择"
                     android:layout_marginTop="24dp"
-                    android:textSize="16dp"
-                    android:enabled="false" />
+                    android:enabled="false"
+                    android:text="确认选择"
+                    android:textSize="16dp" />
 
             </LinearLayout>
         </ScrollView>

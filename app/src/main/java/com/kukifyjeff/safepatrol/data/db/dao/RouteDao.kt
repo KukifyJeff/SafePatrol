@@ -8,7 +8,10 @@ import com.kukifyjeff.safepatrol.data.db.entities.RouteEntity
 
 @Dao
 interface RouteDao {
-    @Query("SELECT COUNT(*) FROM routes") fun countRoutes(): Int
-    @Query("SELECT * FROM routes") suspend fun getAll(): List<RouteEntity>
-    @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun upsertAll(list: List<RouteEntity>)
+    @Query("SELECT COUNT(*) FROM routes")
+    fun countRoutes(): Int
+    @Query("SELECT * FROM routes")
+    suspend fun getAll(): List<RouteEntity>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertAll(list: List<RouteEntity>)
 }

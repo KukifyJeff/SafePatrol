@@ -2,15 +2,11 @@ package com.kukifyjeff.safepatrol
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import kotlin.system.exitProcess
-import androidx.core.content.edit
-import com.kukifyjeff.safepatrol.ui.inspection.FormRow
 
 open class BaseActivity : AppCompatActivity() {
 

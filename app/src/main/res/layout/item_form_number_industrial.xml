@@ -4,88 +4,109 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/card_bg"
     app:cardCornerRadius="8dp"
-    app:strokeWidth="1dp"
     app:strokeColor="#DDDDDD"
-    app:cardBackgroundColor="@color/card_bg">
+    app:strokeWidth="1dp">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:padding="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/tvLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="• 数值项（单位）"
-            android:textStyle="bold" android:textSize="18sp"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvRange"
-            android:text="范围：- ~ -" android:textSize="13sp" android:textColor="#666"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            android:text="范围：- ~ -"
+            android:textColor="#666"
+            android:textSize="13sp" />
+
+        <EditText
+            android:id="@+id/etValue"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:hint="0"
+            android:inputType="numberDecimal|numberSigned"
+            android:textSize="18sp" />
+
 
         <LinearLayout
-            android:orientation="horizontal" android:layout_marginTop="8dp"
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/btnMinus"
-                android:text="−" android:minWidth="56dp" android:minHeight="56dp" android:textSize="22sp"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
-            <EditText
-                android:id="@+id/etValue"
-                android:hint="0"
-                android:inputType="numberDecimal|numberSigned"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
-                android:layout_width="0dp" android:layout_height="56dp" android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/btnPlus"
-                android:text="+" android:minWidth="56dp" android:minHeight="56dp" android:textSize="22sp"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal" android:layout_marginTop="6dp"
             android:id="@+id/llQuickAdjust"
-            android:layout_width="match_parent" android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnQuick0"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="48dp"
+                android:text="0" />
 
             <Button
                 android:id="@+id/btnQuick1"
-                android:text="-5" android:minHeight="48dp"
-                android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:minHeight="48dp"
+                android:text="-5" />
+
             <Button
                 android:id="@+id/btnQuick5"
-                android:text="+5" android:minHeight="48dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:minHeight="48dp"
+                android:text="+5" />
+
             <Button
                 android:id="@+id/btnQuick10"
-                android:text="+10" android:minHeight="48dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:minHeight="48dp"
+                android:text="+10" />
+
         </LinearLayout>
+
         <Button
             android:id="@+id/btnConfirmNumber"
-            android:text="确认数值"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:layout_gravity="center"
             android:layout_marginTop="12dp"
-            android:textSize="18sp"
             android:backgroundTint="@color/teal_700"
+            android:text="确认数值"
             android:textColor="@android:color/white"
-            android:layout_gravity="center" />
+            android:textSize="18sp" />
+
         <TextView
             android:id="@+id/tvStatus"
-            android:text="状态：--" android:textSize="13sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            android:text="状态：--"
+            android:textSize="13sp" />
 
 
     </LinearLayout>

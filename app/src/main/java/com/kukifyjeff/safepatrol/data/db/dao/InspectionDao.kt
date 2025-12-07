@@ -1,7 +1,11 @@
 package com.kukifyjeff.safepatrol.data.db.dao
 
-import androidx.room.*
-import com.kukifyjeff.safepatrol.data.db.entities.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordEntity
+import com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordItemEntity
+import com.kukifyjeff.safepatrol.data.db.entities.InspectionSessionEntity
 
 @Dao
 interface InspectionDao {
@@ -37,7 +41,6 @@ interface InspectionDao {
     ): InspectionRecordItemEntity?
 
 
-
     @Query("SELECT * FROM inspection_sessions WHERE sessionId = :id LIMIT 1")
     suspend fun getSessionById(id: Long): InspectionSessionEntity?
 
@@ -49,13 +52,15 @@ interface InspectionDao {
     suspend fun insertItem(item: InspectionRecordItemEntity)
 
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM inspection_record_items
         WHERE itemId = :itemId
           AND value NOT IN ('维修', '备用', '用户删除了冲突记录')
         ORDER BY id DESC
         LIMIT 1
-    """)
+    """
+    )
     suspend fun getLastRecordItemForItem(itemId: String): InspectionRecordItemEntity?
 
 
@@ -145,11 +150,13 @@ interface InspectionDao {
     @Query("DELETE FROM inspection_records WHERE timestamp > :now")
     suspend fun deleteRecordsAfter(now: Long)
 
-    @Query("""
+    @Query(
+        """
     DELETE FROM inspection_record_items 
     WHERE recordId IN (
         SELECT recordId FROM inspection_records WHERE timestamp > :now
     )
-""")
+"""
+    )
     suspend fun deleteRecordItemsAfter(now: Long)
 }

@@ -1,9 +1,7 @@
 package com.kukifyjeff.safepatrol
 
-import androidx.room.withTransaction
-
 import android.content.Context
-import android.util.Log
+import androidx.room.withTransaction
 import com.kukifyjeff.safepatrol.data.db.entities.EquipmentStatusEntity
 import com.kukifyjeff.safepatrol.utils.CsvReaders
 import java.io.File

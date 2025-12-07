@@ -18,11 +18,13 @@ interface EquipmentStatusDao {
     suspend fun getStatusByEquipment(equipId: String): EquipmentStatusEntity?
 
     // 查询某个点位下所有设备的状态
-    @Query("""
+    @Query(
+        """
         SELECT s.* FROM equipment_status s
         INNER JOIN equipments e ON s.equipmentId = e.equipmentId
         WHERE e.pointId = :pointId
-    """)
+    """
+    )
     suspend fun getStatusByPoint(pointId: String): List<EquipmentStatusEntity>
 
     // 获取所有设备状态（可用于调试或导出）

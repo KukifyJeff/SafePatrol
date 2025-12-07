@@ -1,6 +1,6 @@
 package com.kukifyjeff.safepatrol.utils
 
-import java.util.*
+import java.util.Calendar
 
 object SlotUtils {
 
@@ -9,7 +9,10 @@ object SlotUtils {
      * 返回当前时间下应显示的频率列表（单位小时）
      * 例如当前在第3个2h槽位时，返回 [2, 4]
      */
-    fun getActiveFrequenciesForCurrentSlot(freqHours: Int, currentTime: Long = System.currentTimeMillis()): List<Int> {
+    fun getActiveFrequenciesForCurrentSlot(
+        freqHours: Int,
+        currentTime: Long = System.currentTimeMillis()
+    ): List<Int> {
         val slotIndex = getSlotIndex(freqHours, currentTime)
         return when (freqHours) {
             // 最高频率为2h的情况：4个槽位
@@ -45,13 +48,30 @@ object SlotUtils {
 
         // today at 00:30, 08:30, 16:30
         val today = Calendar.getInstance().apply { timeInMillis = currentTime }
-        val t00_30 = Calendar.getInstance().apply { timeInMillis = currentTime; set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 30); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }
-        val t08_30 = Calendar.getInstance().apply { timeInMillis = currentTime; set(Calendar.HOUR_OF_DAY, 8); set(Calendar.MINUTE, 30); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }
-        val t16_30 = Calendar.getInstance().apply { timeInMillis = currentTime; set(Calendar.HOUR_OF_DAY, 16); set(Calendar.MINUTE, 30); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }
+        val t00_30 = Calendar.getInstance().apply {
+            timeInMillis = currentTime; set(Calendar.HOUR_OF_DAY, 0); set(
+            Calendar.MINUTE,
+            30
+        ); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+        }
+        val t08_30 = Calendar.getInstance().apply {
+            timeInMillis = currentTime; set(Calendar.HOUR_OF_DAY, 8); set(
+            Calendar.MINUTE,
+            30
+        ); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+        }
+        val t16_30 = Calendar.getInstance().apply {
+            timeInMillis = currentTime; set(Calendar.HOUR_OF_DAY, 16); set(
+            Calendar.MINUTE,
+            30
+        ); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+        }
 
         // tomorrow 00:30 and yesterday 16:30 for comparisons
-        val tTomorrow00_30 = Calendar.getInstance().apply { timeInMillis = t00_30.timeInMillis; add(Calendar.DAY_OF_MONTH, 1) }
-        val tYesterday16_30 = Calendar.getInstance().apply { timeInMillis = t16_30.timeInMillis; add(Calendar.DAY_OF_MONTH, -1) }
+        val tTomorrow00_30 = Calendar.getInstance()
+            .apply { timeInMillis = t00_30.timeInMillis; add(Calendar.DAY_OF_MONTH, 1) }
+        val tYesterday16_30 = Calendar.getInstance()
+            .apply { timeInMillis = t16_30.timeInMillis; add(Calendar.DAY_OF_MONTH, -1) }
 
         val cur = currentTime
 
@@ -77,7 +97,8 @@ object SlotUtils {
             // times between 00:00 and 00:30 belong to previous day's mid shift
             else -> {
                 // previous day's 16:30 to today 00:30
-                val prev16_30 = Calendar.getInstance().apply { timeInMillis = t16_30.timeInMillis; add(Calendar.DAY_OF_MONTH, -1) }
+                val prev16_30 = Calendar.getInstance()
+                    .apply { timeInMillis = t16_30.timeInMillis; add(Calendar.DAY_OF_MONTH, -1) }
                 val prev00_30 = Calendar.getInstance().apply { timeInMillis = t00_30.timeInMillis }
                 shiftStartMs = prev16_30.timeInMillis
                 shiftEndMs = prev00_30.timeInMillis

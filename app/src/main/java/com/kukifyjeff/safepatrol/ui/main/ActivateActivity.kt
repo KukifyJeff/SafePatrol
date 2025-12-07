@@ -6,8 +6,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.kukifyjeff.safepatrol.R
 import androidx.core.content.edit
+import com.kukifyjeff.safepatrol.R
 import com.kukifyjeff.safepatrol.ui.route.RouteSelectActivity
 
 class ActivateActivity : AppCompatActivity() {

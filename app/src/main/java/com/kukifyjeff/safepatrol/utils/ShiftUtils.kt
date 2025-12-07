@@ -10,9 +10,9 @@ object ShiftUtils {
     fun currentShiftWindowMillis(now: ZonedDateTime = ZonedDateTime.now()): Window {
         val zone = now.zone
         val today = now.toLocalDate()
-        val t0030 = ZonedDateTime.of(today, LocalTime.of(0,30), zone)
-        val t0830 = ZonedDateTime.of(today, LocalTime.of(8,30), zone)
-        val t1630 = ZonedDateTime.of(today, LocalTime.of(16,30), zone)
+        val t0030 = ZonedDateTime.of(today, LocalTime.of(0, 30), zone)
+        val t0830 = ZonedDateTime.of(today, LocalTime.of(8, 30), zone)
+        val t1630 = ZonedDateTime.of(today, LocalTime.of(16, 30), zone)
 
         val start = when {
             !now.isBefore(t0830) && now.isBefore(t1630) -> t0830 // 白

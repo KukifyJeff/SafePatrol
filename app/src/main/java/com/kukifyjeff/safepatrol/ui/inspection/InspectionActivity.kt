@@ -13,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.lifecycleScope
@@ -314,47 +313,41 @@ class InspectionActivity : BaseActivity() {
                             val max = row.item.maxValue ?: 100.0
                             val range = max - min
 
-                            // 左右微调按钮步长
-                            val smallStep = if (range < 1) 0.01 else 1.0
-                            view.findViewById<Button>(R.id.btnMinus)?.setOnClickListener {
-                                val current = et.text.toString().toDoubleOrNull() ?: min
-                                val newVal = current - smallStep
-                                et.setText(String.format("%.3f", newVal))
-                            }
-                            view.findViewById<Button>(R.id.btnPlus)?.setOnClickListener {
-                                val current = et.text.toString().toDoubleOrNull() ?: min
-                                val newVal = current + smallStep
-                                et.setText(String.format("%.3f", newVal))
-                            }
-
-                            // 中间三颗快捷按钮
+                            // 中间4颗快捷按钮
                             val quickSteps = when {
-                                range >= 40 -> listOf(-5.0, 5.0, 10.0)
-                                range >= 10 -> listOf(-2.0, 2.0, 5.0)
-                                range >= 1 -> listOf(-0.5, 0.5, 1.0)
-                                range >= 0.1 -> listOf(-0.05, 0.05, 0.1)
-                                else -> listOf(-0.01, 0.01, 0.02)
+                                range >= 40 -> listOf(-10.0, -2.0, 2.0, 10.0)
+                                range >= 10 -> listOf(-5.0, -1.0, 1.0, 5.0)
+                                range >= 1 -> listOf(-0.5, -0.1, 0.1, 0.5)
+                                range >= 0.1 -> listOf(-0.05, -0.01, 0.01, 0.05)
+                                else -> listOf(-0.02, -0.01, 0.01, 0.02)
                             }
+                            val btnQuick0 = view.findViewById<Button>(R.id.btnQuick0)
                             val btnQuick1 = view.findViewById<Button>(R.id.btnQuick1)
                             val btnQuick5 = view.findViewById<Button>(R.id.btnQuick5)
                             val btnQuick10 = view.findViewById<Button>(R.id.btnQuick10)
                             // 动态更新按钮文字
-                            btnQuick1?.text = if (quickSteps[0] >= 0) "+${quickSteps[0]}" else quickSteps[0].toString()
-                            btnQuick5?.text = if (quickSteps[1] >= 0) "+${quickSteps[1]}" else quickSteps[1].toString()
-                            btnQuick10?.text = if (quickSteps[2] >= 0) "+${quickSteps[2]}" else quickSteps[2].toString()
-                            btnQuick1?.setOnClickListener {
+                            btnQuick0?.text = if (quickSteps[0] >= 0) "+${quickSteps[0]}" else quickSteps[0].toString()
+                            btnQuick1?.text = if (quickSteps[1] >= 0) "+${quickSteps[1]}" else quickSteps[1].toString()
+                            btnQuick5?.text = if (quickSteps[2] >= 0) "+${quickSteps[2]}" else quickSteps[2].toString()
+                            btnQuick10?.text = if (quickSteps[3] >= 0) "+${quickSteps[3]}" else quickSteps[3].toString()
+                            btnQuick0?.setOnClickListener {
                                 val current = et.text.toString().toDoubleOrNull() ?: min
                                 val newVal = current + quickSteps[0]
                                 et.setText(String.format("%.3f", newVal))
                             }
-                            btnQuick5?.setOnClickListener {
+                            btnQuick1?.setOnClickListener {
                                 val current = et.text.toString().toDoubleOrNull() ?: min
                                 val newVal = current + quickSteps[1]
                                 et.setText(String.format("%.3f", newVal))
                             }
-                            btnQuick10?.setOnClickListener {
+                            btnQuick5?.setOnClickListener {
                                 val current = et.text.toString().toDoubleOrNull() ?: min
                                 val newVal = current + quickSteps[2]
+                                et.setText(String.format("%.3f", newVal))
+                            }
+                            btnQuick10?.setOnClickListener {
+                                val current = et.text.toString().toDoubleOrNull() ?: min
+                                val newVal = current + quickSteps[3]
                                 et.setText(String.format("%.3f", newVal))
                             }
 
@@ -463,7 +456,19 @@ class InspectionActivity : BaseActivity() {
             }
         }
 
-        findViewById<Button>(R.id.btnCancel).setOnClickListener { finish() }
+        findViewById<Button>(R.id.btnCancel).setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("确认返回")
+                .setMessage("确定要返回到主界面吗？未保存的数据将丢失。")
+                .setCancelable(false)
+                .setPositiveButton("确定") { _, _ ->
+                    finish()
+                }
+                .setNegativeButton("取消") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
         findViewById<Button>(R.id.btnSubmit).setOnClickListener { onSubmit() }
 
     }

@@ -3,6 +3,7 @@ package com.kukifyjeff.safepatrol.data.db.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordEntity
 import com.kukifyjeff.safepatrol.data.db.entities.InspectionRecordItemEntity
 import com.kukifyjeff.safepatrol.data.db.entities.InspectionSessionEntity
@@ -159,4 +160,7 @@ interface InspectionDao {
 """
     )
     suspend fun deleteRecordItemsAfter(now: Long)
+
+    @Update
+    suspend fun updateRecordItem(item: InspectionRecordItemEntity)
 }

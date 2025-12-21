@@ -23,6 +23,6 @@ data class InspectionRecordItemEntity(
     val equipmentId: String,
     val itemId: String,
     val slotIndex: Int,
-    val value: String,   // "TRUE"/"FALSE" 或数字/文本
-    val abnormal: Boolean
+    var value: String,   // "TRUE"/"FALSE" 或数字/文本
+    var abnormal: Boolean
 )

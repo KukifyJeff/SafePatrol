@@ -32,18 +32,42 @@
             android:textColor="#666"
             android:textSize="13sp" />
 
-        <EditText
-            android:id="@+id/etValue"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:hint="0"
-            android:inputType="numberDecimal|numberSigned"
-            android:textSize="18sp" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/btnMinus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="56dp"
+                android:minHeight="56dp"
+                android:text="−0.1"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/etValue"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:hint="0"
+                android:inputType="numberDecimal|numberSigned"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnPlus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="56dp"
+                android:minHeight="56dp"
+                android:text="+0.1"
+                android:textSize="14sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/llQuickAdjust"
@@ -56,9 +80,12 @@
                 android:id="@+id/btnQuick0"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+
                 android:layout_weight="1"
                 android:minHeight="48dp"
-                android:text="0" />
+                android:padding="6dp"
+                android:text="-0.10"
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/btnQuick1"
@@ -67,7 +94,9 @@
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
                 android:minHeight="48dp"
-                android:text="-5" />
+                android:padding="6dp"
+                android:text="-0.05"
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/btnQuick5"
@@ -76,7 +105,9 @@
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
                 android:minHeight="48dp"
-                android:text="+5" />
+                android:padding="6dp"
+                android:text="+0.05"
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/btnQuick10"
@@ -85,7 +116,10 @@
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
                 android:minHeight="48dp"
-                android:text="+10" />
+                android:padding="6dp"
+                android:text="+0.10"
+                android:textSize="14sp" />
+
 
         </LinearLayout>
 

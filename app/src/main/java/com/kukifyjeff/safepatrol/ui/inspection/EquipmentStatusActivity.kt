@@ -1,5 +1,6 @@
 package com.kukifyjeff.safepatrol.ui.inspection
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -159,6 +160,18 @@ class EquipmentStatusActivity : BaseActivity() {
     private suspend fun saveStatuses() {
         val db = AppDatabase.Companion.get(this)
         val runningEquipments = mutableListOf<String>()
+        // 至少需要一个运行中的设备，才能进入点检
+        val hasRunning = selectedStatuses.values.any { it == "运行" }
+        if (!hasRunning) {
+            withContext(Dispatchers.Main) {
+                AlertDialog.Builder(this@EquipmentStatusActivity)
+                    .setTitle("无法进入点检")
+                    .setMessage("至少需要一个设备处于运行状态，才能进行点检。")
+                    .setPositiveButton("知道了", null)
+                    .show()
+            }
+            return
+        }
 
         withContext(Dispatchers.IO) {
             selectedStatuses.forEach { (equipId, status) ->

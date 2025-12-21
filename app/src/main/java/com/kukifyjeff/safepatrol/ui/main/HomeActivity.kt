@@ -4,6 +4,7 @@ package com.kukifyjeff.safepatrol.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.WindowManager
 import android.widget.EditText
@@ -18,28 +19,21 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kukifyjeff.safepatrol.AppDatabase
 import com.kukifyjeff.safepatrol.BaseActivity
+import com.kukifyjeff.safepatrol.ui.review.PointRecordActivity
 import com.kukifyjeff.safepatrol.R
 import com.kukifyjeff.safepatrol.databinding.ActivityHomeBinding
 import com.kukifyjeff.safepatrol.export.ExportUtil.exportFromLastTimeXlsx
-import com.kukifyjeff.safepatrol.ui.inspection.InspectionActivity
 import com.kukifyjeff.safepatrol.utils.ShiftUtils
 import com.kukifyjeff.safepatrol.utils.SlotUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class HomeActivity : BaseActivity() {
 
     // 存储最后导出时间戳
     private var lastExportTs: Long = 0L
-
-    companion object {
-        // 开关：true 允许点击列表 item 进入模拟点检；false 只能通过 NFC 进入点检
-        const val ALLOW_SIMULATED_INSPECTION = false
-    }
 
     private lateinit var binding: ActivityHomeBinding
     private var sessionId: Long = 0L
@@ -67,7 +61,9 @@ class HomeActivity : BaseActivity() {
         operatorId = intent.getStringExtra("operatorId") ?: ""
         val operatorName = intent.getStringExtra("operatorName") ?: ""
 
-        val shift = resolveCurrentShift()
+        val shift = ShiftUtils.resolveCurrentShift()
+        val shiftValue = ShiftUtils.currentShiftValue()
+        Log.d("FuckShift", shiftValue)
         val today =
             java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(java.util.Date())
         // 读取上次导出时间
@@ -81,25 +77,30 @@ class HomeActivity : BaseActivity() {
             R.string.homepage_header,
             routeName,
             operatorName,
+            today,
+            shiftValue,
             shift.name,
             shift.rangeText,
-            today,
             lastExportStr
         )
         // RecyclerView 基本设置
         binding.rvPoints.layoutManager = LinearLayoutManager(this)
-        adapter = PointStatusAdapter(emptyList()) { point ->
-            if (ALLOW_SIMULATED_INSPECTION) {
-                val it = Intent(this, InspectionActivity::class.java)
-                    .putExtra("equipmentId", point.equipmentId)
-                    .putExtra("equipmentName", point.name)
-                    .putExtra("freqHours", point.freqHours)
-                    .putExtra("sessionId", sessionId)
-                startActivity(it)
-            } else {
-//                Toast.makeText(this, "请通过 NFC 标签进行点检", Toast.LENGTH_SHORT).show()
+        adapter = PointStatusAdapter(
+            data = emptyList(),
+            onClickPoint = { pointUi ->
+                // 可以先简单处理，例如弹个Toast
+//                Toast.makeText(this, "点击了点位：${pointUi.name}", Toast.LENGTH_SHORT).show()
+            },
+            onViewRecordsClick = { pointUi ->
+                val intent = Intent(this, PointRecordActivity::class.java).apply {
+                    putExtra("pointId", pointUi.equipmentId)
+                    putExtra("pointName", pointUi.name)
+                    putExtra("freqHours", pointUi.freqHours)
+                    putExtra("shiftName", shift.name + shift.rangeText)
+                }
+                startActivity(intent)
             }
-        }
+        )
         binding.rvPoints.adapter = adapter
 
         // 创建（或更新）本次巡检 session（按当前路线路线/工号/班次）
@@ -148,7 +149,7 @@ class HomeActivity : BaseActivity() {
                                             dao.deleteAllSessions()
 
                                             // 清空后立即创建一个新的 session，避免后续依赖 sessionId 的逻辑崩溃
-                                            val shiftNow = resolveCurrentShift()
+                                            val shiftNow = ShiftUtils.resolveCurrentShift()
                                             dao.insertSession(
                                                 com.kukifyjeff.safepatrol.data.db.entities.InspectionSessionEntity(
                                                     routeId = routeId,
@@ -302,7 +303,7 @@ class HomeActivity : BaseActivity() {
 
                     // 计算导出起止时间戳
                     val startTs =
-                        if (lastExportTs > 0) lastExportTs else 1764086400000L // 从最后导出时间开始或从第一条记录
+                        if (lastExportTs > 0) lastExportTs else 1765728000000L // 从最后导出时间开始或从第一条记录
                     val endTs = System.currentTimeMillis()
 
                     val path = exportFromLastTimeXlsx(
@@ -351,7 +352,6 @@ class HomeActivity : BaseActivity() {
 
                         .setPositiveButton("是") { dialog, _ ->
                             // 更新导出时间
-                            val endTs = System.currentTimeMillis()
                             lastExportTs = endTs
                             // 保存到 SharedPreferences
                             getSharedPreferences("SafePatrolPrefs", MODE_PRIVATE)
@@ -360,7 +360,9 @@ class HomeActivity : BaseActivity() {
                                 }
 
                             // 刷新 tvHeader 上的最后导出时间显示
-                            val shift = resolveCurrentShift()
+                            val shift = ShiftUtils.resolveCurrentShift()
+                            val shiftValue = ShiftUtils.currentShiftValue()
+                            Log.d("FuckShift", shiftValue)
                             val today =
                                 java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                                     .format(java.util.Date())
@@ -371,9 +373,10 @@ class HomeActivity : BaseActivity() {
                                 R.string.homepage_header,
                                 routeName,
                                 operatorName,
+                                today,
+                                shiftValue,
                                 shift.name,
                                 shift.rangeText,
-                                today,
                                 lastExportStr
                             )
                             dialog.dismiss()
@@ -521,50 +524,6 @@ class HomeActivity : BaseActivity() {
     private fun hhmm(ts: Long): String = java.text.SimpleDateFormat("HH:mm", Locale.getDefault())
         .format(java.util.Date(ts))
 
-    /**
-     * 班次规则（使用手机本地时间）：
-     * 08:30 - 16:30  白班
-     * 16:30 - 次日00:30 中班（跨天）
-     * 00:30 - 08:30  夜班
-     */
-    private fun resolveCurrentShift(): ShiftInfo {
-        val now = LocalTime.now()
-        val fmt = DateTimeFormatter.ofPattern("HH:mm")
-        val t0830 = LocalTime.of(8, 30)
-        val t1630 = LocalTime.of(16, 30)
-        val t0030 = LocalTime.of(0, 30)
-
-        return when {
-            // 白班：08:30 <= now < 16:30
-            !now.isBefore(t0830) && now.isBefore(t1630) ->
-                ShiftInfo(
-                    id = "S1",
-                    name = "白班",
-                    rangeText = "${t0830.format(fmt)}-${t1630.format(fmt)}"
-                )
-
-            // 中班：16:30 - 24:00 or 00:00 - 00:30
-            (!now.isBefore(t1630)) || now.isBefore(t0030) ->
-                ShiftInfo(
-                    id = "S2",
-                    name = "中班",
-                    rangeText = "${t1630.format(fmt)}-次日${t0030.format(fmt)}"
-                )
-
-            // 夜班：00:30 <= now < 08:30
-            else -> ShiftInfo(
-                id = "S3",
-                name = "夜班",
-                rangeText = "${t0030.format(fmt)}-${t0830.format(fmt)}"
-            )
-        }
-    }
-
-    data class ShiftInfo(
-        val id: String,
-        val name: String,
-        val rangeText: String
-    )
 }
 
 // 槽位数字转中文：1->一, 2->二, 3->三, 4->四

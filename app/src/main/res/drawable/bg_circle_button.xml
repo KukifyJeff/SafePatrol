@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 按下状态 -->
+    <item android:state_pressed="true">
+        <layer-list>
+            <!-- 深色圆形背景 -->
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="?attr/colorSurfaceVariant"/>
+                </shape>
+            </item>
+
+            <item
+                android:width="20dp"
+                android:height="20dp"
+                android:gravity="center">
+                <bitmap
+                    android:src="@drawable/icon_review"
+                    android:antialias="true"
+                    android:filter="true"
+                    android:dither="true"/>
+            </item>
+        </layer-list>
+    </item>
+
+    <!-- 默认状态 -->
+    <item>
+        <layer-list>
+            <!-- 浅色圆形背景 -->
+            <item>
+                <shape android:shape="oval">
+                    <solid android:color="@color/button_bg"/>
+                </shape>
+            </item>
+
+            <item
+                android:width="20dp"
+                android:height="20dp"
+                android:gravity="center">
+                <bitmap
+                    android:src="@drawable/icon_review"
+                    android:antialias="true"
+                    android:filter="true"
+                    android:dither="true"/>
+            </item>
+        </layer-list>
+    </item>
+
+</selector>

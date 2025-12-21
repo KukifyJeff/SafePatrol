@@ -5,6 +5,7 @@
     <color name="text_primary">#FF000000</color>
     <color name="text_secondary">#FFFFFFFF</color>
     <color name="card_bg">#B3FFFFFF</color>
+    <color name="button_bg">#D1D0CFCF</color>
 
     <!-- 主题主色 -->
     <color name="blue_primary">#0D47A1</color>

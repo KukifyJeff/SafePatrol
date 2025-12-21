@@ -98,6 +98,7 @@ object ExportUtil {
             "时间",
             "路线名",
             "点检员",
+            "值",
             "班次",
             "点位id",
             "点位名",
@@ -562,6 +563,7 @@ object ExportUtil {
             "时间",
             "路线名",
             "点检员",
+            "值",
             "班次",
             "点位id",
             "点位名",
@@ -636,7 +638,13 @@ object ExportUtil {
         }
 
         // 计算窗口：与月导出一致，按班次分割（夜班/白班/中班）
-        val windows = mutableListOf<Pair<Long, Long>>()
+        data class ShiftWindow(
+            val start: Long,
+            val end: Long,
+            val shiftName: String
+        )
+
+        val windows = mutableListOf<ShiftWindow>()
         val cal2 = Calendar.getInstance().apply { timeInMillis = startTs }
         val sdfFull = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
         while (cal2.timeInMillis <= endTs) {
@@ -654,21 +662,39 @@ object ExportUtil {
             val s0 = msOf(0, 30)
             val e0 = msOf(8, 30)
             if (e0 >= startTs && s0 <= endTs) {
-                windows.add(Pair(s0.coerceAtLeast(startTs), e0.coerceAtMost(endTs)))
+                windows.add(
+                    ShiftWindow(
+                        start = s0.coerceAtLeast(startTs),
+                        end = e0.coerceAtMost(endTs),
+                        shiftName = "夜班"
+                    )
+                )
             }
 
             // 白班：08:30 - 16:30
             val s1 = msOf(8, 30)
             val e1 = msOf(16, 30)
             if (e1 >= startTs && s1 <= endTs) {
-                windows.add(Pair(s1.coerceAtLeast(startTs), e1.coerceAtMost(endTs)))
+                windows.add(
+                    ShiftWindow(
+                        start = s1.coerceAtLeast(startTs),
+                        end = e1.coerceAtMost(endTs),
+                        shiftName = "白班"
+                    )
+                )
             }
 
             // 中班：16:30 - 次日00:30
             val s2 = msOf(16, 30)
             val e2 = msOf(0, 30, 1)
             if (e2 >= startTs && s2 <= endTs) {
-                windows.add(Pair(s2.coerceAtLeast(startTs), e2.coerceAtMost(endTs)))
+                windows.add(
+                    ShiftWindow(
+                        start = s2.coerceAtLeast(startTs),
+                        end = e2.coerceAtMost(endTs),
+                        shiftName = "中班"
+                    )
+                )
             }
 
             cal2.add(Calendar.DAY_OF_MONTH, 1)
@@ -696,8 +722,10 @@ object ExportUtil {
             .groupBy { it.recordId }
 
         // 3️⃣ 遍历所有时间段（window）、点位及槽位
-        for ((windowStart, windowEnd) in windows) {
-            val shiftName = shiftNameFromWindowStart(windowStart)
+        for (window in windows) {
+            val windowStart = window.start
+            val windowEnd = window.end
+            val shiftName = window.shiftName
 
             // --- Export system logs that fall inside this window, before points ---
             val systemLogsInWindow = records.filter {
@@ -710,7 +738,15 @@ object ExportUtil {
                     windowStart,
                     windowEnd
                 )
-                val shiftNameRec = shiftNameFromWindowStart(windowStart)
+                val shiftNameRec = shiftName
+                // Compute shiftValue using ShiftUtils.getValueOnShift
+                val date = Calendar.getInstance().apply { timeInMillis = rec.timestamp }
+                val localDate = java.time.LocalDate.of(
+                    date.get(Calendar.YEAR),
+                    date.get(Calendar.MONTH) + 1,
+                    date.get(Calendar.DAY_OF_MONTH)
+                )
+                val shiftValue = com.kukifyjeff.safepatrol.utils.ShiftUtils.getValueOnShift(localDate, shiftName)
 
                 if (items.isEmpty()) {
                     val r = sheet.createRow(rowIdx++)
@@ -718,7 +754,8 @@ object ExportUtil {
                         dateStr, timeStr,
                         sessionsMap[rec.sessionId]?.routeName ?: currentRouteName,
                         sessionsMap[rec.sessionId]?.operatorId ?: "",
-                        shiftNameRec,
+                        shiftValue,
+                        shiftName,
                         "", "", "",
                         "用户删除了冲突记录",
                         "0", "0",
@@ -733,7 +770,8 @@ object ExportUtil {
                             dateStr, timeStr,
                             sessionsMap[rec.sessionId]?.routeName ?: currentRouteName,
                             sessionsMap[rec.sessionId]?.operatorId ?: "",
-                            shiftNameRec,
+                            shiftValue,
+                            shiftName,
                             "", "", "",
                             "用户删除了冲突记录",
                             "0", "0",
@@ -770,7 +808,16 @@ object ExportUtil {
                                 windowEnd
                             )
                             val shiftNameRec =
-                                sessionsMap[rec.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: ""
+                                sessionsMap[rec.sessionId]?.shiftId?.let { shiftIdToName(it) } ?: shiftName
+
+                            // Compute shiftValue using ShiftUtils.getValueOnShift
+                            val date = Calendar.getInstance().apply { timeInMillis = rec.timestamp }
+                            val localDate = java.time.LocalDate.of(
+                                date.get(Calendar.YEAR),
+                                date.get(Calendar.MONTH) + 1,
+                                date.get(Calendar.DAY_OF_MONTH)
+                            )
+                            val shiftValue = com.kukifyjeff.safepatrol.utils.ShiftUtils.getValueOnShift(localDate, shiftName)
 
                             val slotIdxForItem = when (freqHours) {
                                 2 -> {
@@ -795,7 +842,8 @@ object ExportUtil {
                                 timeStr,
                                 sessionsMap[rec.sessionId]?.routeName ?: currentRouteName,
                                 sessionsMap[rec.sessionId]?.operatorId ?: "",
-                                shiftNameRec,
+                                shiftValue,
+                                shiftName,
                                 p.pointId,
                                 p.name,
                                 equipName,
@@ -814,14 +862,23 @@ object ExportUtil {
                             windowStart,
                             windowEnd
                         )
-                        val shiftNameCell = shiftNameFromWindowStart(windowStart)
+                        val shiftNameCell = shiftName
+                        // 计算未检行的班次对应值
+                        val dateForShift = Calendar.getInstance().apply { timeInMillis = windowStart }
+                        val localDateForShift = java.time.LocalDate.of(
+                            dateForShift.get(Calendar.YEAR),
+                            dateForShift.get(Calendar.MONTH) + 1,
+                            dateForShift.get(Calendar.DAY_OF_MONTH)
+                        )
+                        val shiftValue = com.kukifyjeff.safepatrol.utils.ShiftUtils.getValueOnShift(localDateForShift, shiftName)
                         val r = sheet.createRow(rowIdx++)
                         val cells = arrayOf(
                             dateStr, // 日期
                             "",      // 时间
                             currentRouteName,
                             "",      // 点检员
-                            shiftNameCell, // 班次
+                            shiftValue,
+                            shiftName, // 班次
                             p.pointId,
                             p.name,
                             "",      // 设备名

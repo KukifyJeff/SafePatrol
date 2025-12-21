@@ -27,5 +27,8 @@ data class CheckItemEntity(
     val requiredInStandby: Boolean,
     val minValue: Double?,
     val maxValue: Double?,
-    val freqHours: Int   // 2， 4 或 8
+    val freqHours: Int,   // 2， 4 或 8
+    val adjustValue: Double?,
+    val fastAdjust1: Double?,
+    val fastAdjust2: Double?
 )

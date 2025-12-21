@@ -11,13 +11,15 @@ import com.kukifyjeff.safepatrol.R
 
 class PointStatusAdapter(
     private var data: List<PointStatusUi>,
-    private val onClickPoint: (PointStatusUi) -> Unit // 点击卡片可进入点检
+    private val onClickPoint: (PointStatusUi) -> Unit, // 点击卡片可进入点检
+    private val onViewRecordsClick: (PointStatusUi) -> Unit // btnViewRecords点击
 ) : RecyclerView.Adapter<PointStatusAdapter.VH>() {
 
     class VH(view: View) : RecyclerView.ViewHolder(view) {
         val tvTitle: TextView = view.findViewById(R.id.tvTitle)
         val tvSub: TextView = view.findViewById(R.id.tvSub)
         val slotContainer: LinearLayout = view.findViewById(R.id.slotContainer)
+        val btnViewRecords: View = view.findViewById(R.id.btnViewRecords)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -49,7 +51,8 @@ class PointStatusAdapter(
             holder.slotContainer.addView(makeSlotRow(holder.slotContainer, slot))
         }
 
-        holder.itemView.setOnClickListener { onClickPoint(item) }
+        // Bind click listener only to btnViewRecords
+        holder.btnViewRecords.setOnClickListener { onViewRecordsClick(item) }
     }
 
     @SuppressLint("NotifyDataSetChanged")

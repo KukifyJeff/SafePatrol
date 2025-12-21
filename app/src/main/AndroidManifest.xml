@@ -26,6 +26,7 @@
         <activity android:name=".ui.inspection.NfcReaderActivity" />
         <activity android:name=".ui.inspection.InspectionActivity" />
         <activity android:name=".ui.main.ActivateActivity" />
+        <activity android:name=".ui.review.PointRecordActivity"/>
         <activity android:name=".ui.main.ConfirmSystemTimeActivity" />
         <activity
             android:name=".ui.inspection.EquipmentStatusActivity"

@@ -36,14 +36,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <!-- 槽位区：4h显示两行；8h显示一行 -->
+        <!-- 槽位区与查看按钮 -->
         <LinearLayout
-            android:id="@+id/slotContainer"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_marginTop="8dp"
             android:layout_width="match_parent"
-            android:textColor="@color/text_secondary"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/slotContainer"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textColor="@color/text_secondary"
+                android:layout_height="wrap_content"/>
+
+            <ImageButton
+                android:id="@+id/btnViewRecords"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_circle_button"
+                android:padding="8dp"
+                android:contentDescription="查看点检记录"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

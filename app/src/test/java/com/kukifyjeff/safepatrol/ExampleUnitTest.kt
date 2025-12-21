@@ -1,17 +1,18 @@
 package com.kukifyjeff.safepatrol
 
 import org.junit.Test
+import java.time.LocalDateTime
+import java.time.ZoneId
 
-import org.junit.Assert.*
-
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 class ExampleUnitTest {
+
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun printTimestamp() {
+        // 指定日期 2025-12-15 00:00:00
+        val localDateTime = LocalDateTime.of(2025, 12, 15, 0, 0, 0)
+        // 转换为东八区
+        val zoneId = ZoneId.of("Asia/Shanghai")
+        val timestamp = localDateTime.atZone(zoneId).toInstant().toEpochMilli()
+        println("Timestamp for 2025-12-15 00:00:00 UTC+8: $timestamp")
     }
 }

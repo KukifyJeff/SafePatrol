@@ -62,7 +62,7 @@ class InspectionActivity : BaseActivity() {
     // 调试开关：true 使用 minValue 作为默认值
     private val useMinValueAsDefault: Boolean = true
     // 使用上次记录作为默认值（跨班次）
-    private val useLastRecordAsDefault: Boolean = true
+    private val useLastRecordAsDefault: Boolean = false
 
     // 计算当前时间在班次窗口中的槽位：8h->1; 4h->2; 2h->4
 
@@ -245,6 +245,38 @@ class InspectionActivity : BaseActivity() {
                                 // 先移除所有监听，避免重复
                                 btnNg?.setOnClickListener(null)
                                 btnOk?.setOnClickListener(null)
+
+                                // --- 恢复确认状态（按钮样式，但允许再次点击修改） ---
+                                when (row.ok) {
+                                    true -> {
+                                        btnOk.isEnabled = true
+                                        btnNg.isEnabled = true
+                                        btnOk.backgroundTintList = android.content.res.ColorStateList.valueOf("#2E7D32".toColorInt())
+                                        btnNg.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
+                                        btnOk.setTextColor(Color.WHITE)
+                                        btnNg.setTextColor(Color.BLACK)
+                                    }
+                                    false -> {
+                                        btnOk.isEnabled = true
+                                        btnNg.isEnabled = true
+                                        btnNg.backgroundTintList = android.content.res.ColorStateList.valueOf("#C62828".toColorInt())
+                                        btnOk.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
+                                        btnNg.setTextColor(Color.WHITE)
+                                        btnOk.setTextColor(Color.BLACK)
+                                    }
+                                    else -> {
+                                        btnOk.isEnabled = true
+                                        btnNg.isEnabled = true
+                                        val neutralBg = "#EEEEEE".toColorInt()
+                                        btnOk.backgroundTintList =
+                                            android.content.res.ColorStateList.valueOf(neutralBg)
+                                        btnNg.backgroundTintList =
+                                            android.content.res.ColorStateList.valueOf(neutralBg)
+                                        btnOk.setTextColor(Color.BLACK)
+                                        btnNg.setTextColor(Color.BLACK)
+                                    }
+                                }
+
                                 // “异常”按钮点击弹出输入框
                                 btnNg?.setOnClickListener {
                                     val builder = AlertDialog.Builder(this@InspectionActivity)
@@ -256,7 +288,12 @@ class InspectionActivity : BaseActivity() {
                                         val remark = input.text.toString().trim()
                                         remarkMap[row.item.itemId] = remark
                                         row.ok = false
-                                        // 触发刷新（如需）
+
+                                        btnNg.backgroundTintList = android.content.res.ColorStateList.valueOf("#C62828".toColorInt())
+                                        btnOk.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
+                                        btnNg.setTextColor(Color.WHITE)
+                                        btnOk.setTextColor(Color.BLACK)
+
                                         adapter.notifyItemChanged(pos)
                                     }
                                     builder.setNegativeButton("取消", null)
@@ -264,10 +301,14 @@ class InspectionActivity : BaseActivity() {
                                 }
                                 // “正常”按钮点击时移除备注
                                 btnOk?.setOnClickListener {
-                                    if (remarkMap.containsKey(row.item.itemId)) {
-                                        remarkMap.remove(row.item.itemId)
-                                    }
+                                    remarkMap.remove(row.item.itemId)
                                     row.ok = true
+
+                                    btnOk.backgroundTintList = android.content.res.ColorStateList.valueOf("#2E7D32".toColorInt())
+                                    btnNg.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
+                                    btnOk.setTextColor(Color.WHITE)
+                                    btnNg.setTextColor(Color.BLACK)
+
                                     adapter.notifyItemChanged(pos)
                                 }
                                 if (row.ok == false) {
@@ -304,6 +345,26 @@ class InspectionActivity : BaseActivity() {
                             } else if (!useLastRecordAsDefault && useMinValueAsDefault && row is FormRow.Number && row.item.minValue != null && et.text.isNullOrBlank()) {
                                 et.setText(row.item.minValue.toString())
                             }
+                            // ====== 基础加减按钮（adjustValue） ======
+                            val btnMinus = view.findViewById<Button>(R.id.btnMinus)
+                            val btnPlus = view.findViewById<Button>(R.id.btnPlus)
+                            val adjust = row.item.adjustValue ?: 0.0
+                            // 同步按钮显示文本
+                            btnMinus?.text = if (adjust > 0) "-$adjust" else "-"
+                            btnPlus?.text = if (adjust > 0) "+$adjust" else "+"
+                            // 先清空旧监听，防止 RecyclerView 复用导致多次叠加
+                            btnMinus?.setOnClickListener(null)
+                            btnPlus?.setOnClickListener(null)
+                            btnMinus?.setOnClickListener {
+                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
+                                val newValue = current - adjust
+                                et.setText(String.format("%.3f", newValue))
+                            }
+                            btnPlus?.setOnClickListener {
+                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
+                                val newValue = current + adjust
+                                et.setText(String.format("%.3f", newValue))
+                            }
                             val btn = view.findViewById<Button>(R.id.btnConfirmNumber)
                             val tvStatus = view.findViewById<TextView>(R.id.tvStatus)
                             if (et == null || btn == null || tvStatus == null) return
@@ -311,44 +372,39 @@ class InspectionActivity : BaseActivity() {
                             // ====== 自适应快捷按钮调节 ======
                             val min = row.item.minValue ?: 0.0
                             val max = row.item.maxValue ?: 100.0
-                            val range = max - min
 
-                            // 中间4颗快捷按钮
-                            val quickSteps = when {
-                                range >= 40 -> listOf(-10.0, -2.0, 2.0, 10.0)
-                                range >= 10 -> listOf(-5.0, -1.0, 1.0, 5.0)
-                                range >= 1 -> listOf(-0.5, -0.1, 0.1, 0.5)
-                                range >= 0.1 -> listOf(-0.05, -0.01, 0.01, 0.05)
-                                else -> listOf(-0.02, -0.01, 0.01, 0.02)
-                            }
                             val btnQuick0 = view.findViewById<Button>(R.id.btnQuick0)
                             val btnQuick1 = view.findViewById<Button>(R.id.btnQuick1)
                             val btnQuick5 = view.findViewById<Button>(R.id.btnQuick5)
                             val btnQuick10 = view.findViewById<Button>(R.id.btnQuick10)
-                            // 动态更新按钮文字
-                            btnQuick0?.text = if (quickSteps[0] >= 0) "+${quickSteps[0]}" else quickSteps[0].toString()
-                            btnQuick1?.text = if (quickSteps[1] >= 0) "+${quickSteps[1]}" else quickSteps[1].toString()
-                            btnQuick5?.text = if (quickSteps[2] >= 0) "+${quickSteps[2]}" else quickSteps[2].toString()
-                            btnQuick10?.text = if (quickSteps[3] >= 0) "+${quickSteps[3]}" else quickSteps[3].toString()
+                            val adj = row.item.adjustValue ?: 0.0
+                            val f1 = row.item.fastAdjust1 ?: adj
+                            val f2 = row.item.fastAdjust2 ?: adj
+
+
+                            btnQuick0?.text = "-${f2}"
+                            btnQuick1?.text = "-${f1}"
+                            btnQuick5?.text = "+${f1}"
+                            btnQuick10?.text = "+${f2}"
+
                             btnQuick0?.setOnClickListener {
-                                val current = et.text.toString().toDoubleOrNull() ?: min
-                                val newVal = current + quickSteps[0]
-                                et.setText(String.format("%.3f", newVal))
+                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
+                                et.setText(String.format("%.3f", current - f2))
                             }
+
                             btnQuick1?.setOnClickListener {
-                                val current = et.text.toString().toDoubleOrNull() ?: min
-                                val newVal = current + quickSteps[1]
-                                et.setText(String.format("%.3f", newVal))
+                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
+                                et.setText(String.format("%.3f", current - f1))
                             }
+
                             btnQuick5?.setOnClickListener {
-                                val current = et.text.toString().toDoubleOrNull() ?: min
-                                val newVal = current + quickSteps[2]
-                                et.setText(String.format("%.3f", newVal))
+                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
+                                et.setText(String.format("%.3f", current + f1))
                             }
+
                             btnQuick10?.setOnClickListener {
-                                val current = et.text.toString().toDoubleOrNull() ?: min
-                                val newVal = current + quickSteps[3]
-                                et.setText(String.format("%.3f", newVal))
+                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
+                                et.setText(String.format("%.3f", current + f2))
                             }
 
                             // 更新 tvRange 显示范围

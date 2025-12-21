@@ -41,6 +41,7 @@ object SlotUtils {
     /**
      * 根据频率计算当前槽位 index。
      * 2h → 4 槽, 4h → 2 槽, 8h → 1 槽。
+     * freqHours：当前点位/设备 的最高检测频率，currentTime是该点位的时间。
      */
     fun getSlotIndex(freqHours: Int, currentTime: Long): Int {
         // determine shift start and end based on defined boundaries

@@ -1,796 +1,685 @@
-equipmentId,itemId,itemName,type,unit,required,minValue,maxValue,freqHours,"requiredInStandby
-"
-QH1-O-P01E01,QH1-O-P01E01I01,火炬燃烧情况：有无冒黑烟、喷黑水现象,BOOLEAN,,yes,,,4,no
-QH1-O-P01E02,QH1-O-P01E02I01,火炬燃烧情况：有无冒黑烟、喷黑水现象,BOOLEAN,,yes,,,4,no
-QH1-O-P01E03,QH1-O-P01E03I01,切排水情况：排污是否正常，有无堵塞,BOOLEAN,,yes,,,4,no
-QH1-O-P01E04,QH1-O-P01E04I01,切排水情况：排污是否正常，有无堵塞,BOOLEAN,,yes,,,4,no
-QH1-O-P01E05,QH1-O-P01E05I01,切排水情况：排污是否正常，有无堵塞,BOOLEAN,,yes,,,4,no
-QH1-O-P01E06,QH1-O-P01E06I01,运行情况：排污是否正常，有无堵塞,BOOLEAN,,yes,,,4,no
-QH1-O-P01E07,QH1-O-P01E07I01,天然气表计管道：有无泄漏，流量表显示正常,BOOLEAN,,yes,,,8,no
-QH1-O-P01E07,QH1-O-P01E07I02,天然气流量：耗量是否正常,NUMBER,m3/h,yes,5,25,8,no
-QH1-O-P01E07,QH1-O-P01E07I03,天然气减压阀后压力：是否正常，低于0.45MPa汇报,NUMBER,MPa,yes,0.4,0.6,8,no
-QH1-O-P02E01,QH1-O-P02E01I01,泵驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E01,QH1-O-P02E01I02,泵非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E01,QH1-O-P02E01I03,泵驱动端轴承振动（水平）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E01,QH1-O-P02E01I04,泵驱动端轴承振动（垂直）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E01,QH1-O-P02E01I05,泵驱动端轴承振动（轴向）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E01,QH1-O-P02E01I06,泵非驱动端轴承振动（水平）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E01,QH1-O-P02E01I07,泵非驱动端轴承振动（垂直）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E01,QH1-O-P02E01I08,泵非驱动端轴承振动（轴向）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E01,QH1-O-P02E01I09,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E01,QH1-O-P02E01I10,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E01,QH1-O-P02E01I11,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E01,QH1-O-P02E01I12,电机驱动端轴承振动（水平）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E01,QH1-O-P02E01I13,电机驱动端轴承振动（垂直）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E01,QH1-O-P02E01I14,电机驱动端轴承振动（轴向）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E01,QH1-O-P02E01I15,电机非驱动端轴承振动（水平）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E01,QH1-O-P02E01I16,电机非驱动端轴承振动（垂直）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E01,QH1-O-P02E01I17,电机非驱动端轴承振动（轴向）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E01,QH1-O-P02E01I18,出口压力：是否正常,NUMBER,MPa,yes,0.2,0.5,8,no
-QH1-O-P02E01,QH1-O-P02E01I19,密封水投入情况：是否投用，有无泄漏,BOOLEAN,,yes,,,2,yes
-QH1-O-P02E01,QH1-O-P02E01I20,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,yes
-QH1-O-P02E02,QH1-O-P02E02I01,泵驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E02,QH1-O-P02E02I02,泵非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E02,QH1-O-P02E02I03,泵驱动端轴承振动（水平）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E02,QH1-O-P02E02I04,泵驱动端轴承振动（垂直）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E02,QH1-O-P02E02I05,泵驱动端轴承振动（轴向）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E02,QH1-O-P02E02I06,泵非驱动端轴承振动（水平）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E02,QH1-O-P02E02I07,泵非驱动端轴承振动（垂直）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E02,QH1-O-P02E02I08,泵非驱动端轴承振动（轴向）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E02,QH1-O-P02E02I09,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E02,QH1-O-P02E02I10,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E02,QH1-O-P02E02I11,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E02,QH1-O-P02E02I12,电机驱动端轴承振动（水平）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E02,QH1-O-P02E02I13,电机驱动端轴承振动（垂直）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E02,QH1-O-P02E02I14,电机驱动端轴承振动（轴向）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E02,QH1-O-P02E02I15,电机非驱动端轴承振动（水平）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E02,QH1-O-P02E02I16,电机非驱动端轴承振动（垂直）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E02,QH1-O-P02E02I17,电机非驱动端轴承振动（轴向）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E02,QH1-O-P02E02I18,出口压力：是否正常,NUMBER,MPa,yes,0.2,0.5,8,no
-QH1-O-P02E02,QH1-O-P02E02I19,密封水投入情况：是否投用，有无泄漏,BOOLEAN,,yes,,,2,yes
-QH1-O-P02E02,QH1-O-P02E02I20,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,yes
-QH1-O-P02E03,QH1-O-P02E03I01,泵驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E03,QH1-O-P02E03I02,泵非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E03,QH1-O-P02E03I03,泵驱动端轴承振动（水平）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E03,QH1-O-P02E03I04,泵驱动端轴承振动（垂直）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E03,QH1-O-P02E03I05,泵驱动端轴承振动（轴向）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E03,QH1-O-P02E03I06,泵非驱动端轴承振动（水平）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E03,QH1-O-P02E03I07,泵非驱动端轴承振动（垂直）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E03,QH1-O-P02E03I08,泵非驱动端轴承振动（轴向）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E03,QH1-O-P02E03I09,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E03,QH1-O-P02E03I10,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E03,QH1-O-P02E03I11,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P02E03,QH1-O-P02E03I12,电机驱动端轴承振动（水平）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E03,QH1-O-P02E03I13,电机驱动端轴承振动（垂直）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E03,QH1-O-P02E03I14,电机驱动端轴承振动（轴向）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E03,QH1-O-P02E03I15,电机非驱动端轴承振动（水平）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E03,QH1-O-P02E03I16,电机非驱动端轴承振动（垂直）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E03,QH1-O-P02E03I17,电机非驱动端轴承振动（轴向）：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P02E03,QH1-O-P02E03I18,出口压力：是否正常,NUMBER,MPa,yes,0.2,0.5,8,no
-QH1-O-P02E03,QH1-O-P02E03I19,密封水投入情况：是否投用，有无泄漏,BOOLEAN,,yes,,,2,yes
-QH1-O-P02E03,QH1-O-P02E03I20,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,yes
-QH1-O-P02E04,QH1-O-P02E04I01,无积水,BOOLEAN,,yes,,,8,no
-QH1-O-P03E01,QH1-O-P03E01I01,地坑内设备运行情况：有无跑冒滴漏、管道振动,BOOLEAN,,yes,,,2,no
-QH1-O-P03E02,QH1-O-P03E02I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P03E02,QH1-O-P03E02I02,机封水换热器温度：冷却水是否投运，机封水换热器温度超过50°C汇报,NUMBER,°C,yes,20,50,4,no
-QH1-O-P03E02,QH1-O-P03E02I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P03E02,QH1-O-P03E02I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P03E02,QH1-O-P03E02I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P03E02,QH1-O-P03E02I06,出口压力：是否正常,NUMBER,MPa,yes,0.1,0.8,8,no
-QH1-O-P03E03,QH1-O-P03E03I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P03E03,QH1-O-P03E03I02,机封水换热器温度：冷却水是否投运，机封水换热器温度超过50°C汇报,NUMBER,°C,yes,20,50,4,no
-QH1-O-P03E03,QH1-O-P03E03I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P03E03,QH1-O-P03E03I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P03E03,QH1-O-P03E03I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P03E03,QH1-O-P03E03I06,出口压力：是否正常,NUMBER,MPa,yes,0.1,0.8,8,no
-QH1-O-P03E04,QH1-O-P03E04I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P03E04,QH1-O-P03E04I02,机封水换热器温度：冷却水是否投运，机封水换热器温度超过50°C汇报,NUMBER,°C,yes,20,50,4,no
-QH1-O-P03E04,QH1-O-P03E04I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P03E04,QH1-O-P03E04I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P03E04,QH1-O-P03E04I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P03E04,QH1-O-P03E04I06,出口压力：是否正常,NUMBER,MPa,yes,0.1,0.8,8,no
-QH1-O-P04E01,QH1-O-P04E01I01,过滤反吹器反吹压力：是否投用，压力低于0.5MPa汇报,BOOLEAN,,yes,,,8,no
-QH1-O-P04E01,QH1-O-P04E01I02,过滤反吹器反吹阀运行情况：反吹阀有无泄漏、不动作情况,BOOLEAN,,yes,,,8,no
-QH1-O-P04E02,QH1-O-P04E02I01,灰库顶部呼吸阀运行情况：有无泄漏、有无漏灰情况,BOOLEAN,,yes,,,8,no
-QH1-O-P04E03,QH1-O-P04E03I01,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,8,no
-QH1-O-P04E03,QH1-O-P04E03I02,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,8,no
-QH1-O-P04E03,QH1-O-P04E03I03,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,8,no
-QH1-O-P04E03,QH1-O-P04E03I04,风机/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P04E04,QH1-O-P04E04I01,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P04E04,QH1-O-P04E04I02,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P04E04,QH1-O-P04E04I03,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P04E04,QH1-O-P04E04I04,搅拌器/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P04E04,QH1-O-P04E04I05,搅拌器运行情况：有无卡涩，有无堵塞,BOOLEAN,,yes,,,4,no
-QH1-O-P04E05,QH1-O-P04E05I01,密封气投运情况：是否正常投运，压力≧0.1MPa,BOOLEAN,,yes,,,4,no
-QH1-O-P04E05,QH1-O-P04E05I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P04E05,QH1-O-P04E05I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P04E05,QH1-O-P04E05I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P04E05,QH1-O-P04E05I05,给料机/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P04E04,QH1-O-P04E04I06,灰库底部流化板运行情况：流化氮气是否过流，流化板有无泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P04E04,QH1-O-P04E04I07,灰库二层卫生情况：地面有无积灰,BOOLEAN,,yes,,,4,no
-QH1-O-P04E06,QH1-O-P04E06I01,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P04E06,QH1-O-P04E06I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P04E06,QH1-O-P04E06I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P04E06,QH1-O-P04E06I04,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P04E07,QH1-O-P04E07I01,捞渣机刮板/链条运行情况：有无卡涩，有无异音,BOOLEAN,,yes,,,4,no
-QH1-O-P04E07,QH1-O-P04E07I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P04E07,QH1-O-P04E07I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P04E07,QH1-O-P04E07I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P04E07,QH1-O-P04E07I05,电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P04E07,QH1-O-P04E07I06,渣池内积水液位：有无积水,BOOLEAN,,yes,,,4,no
-QH1-O-P04E07,QH1-O-P04E07I07,渣池潜水泵运行情况：泵液位自动控制是否投入,BOOLEAN,,yes,,,4,no
-QH1-O-P04E07,QH1-O-P04E07I08,渣池潜水泵电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P04E07,QH1-O-P04E07I09,渣池潜水泵电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P04E07,QH1-O-P04E07I10,渣池潜水泵电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH1-O-P04E07,QH1-O-P04E07I11,渣池潜水泵泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P04E08,QH1-O-P04E08I01,消防炮运行情况：是否正常，有无泄漏,BOOLEAN,,yes,,,8,no
-QH1-O-P05E01,QH1-O-P05E01I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E01,QH1-O-P05E01I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E01,QH1-O-P05E01I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E01,QH1-O-P05E01I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E01,QH1-O-P05E01I05,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P05E01,QH1-O-P05E01I06,泵运行情况：有无异音，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P05E01,QH1-O-P05E01I07,冷却水换热器就地温度：是否正常，超过50°C汇报,NUMBER,°C,yes,20,50,2,no
-QH1-O-P05E01,QH1-O-P05E01I08,冷却水回路：是否畅通，事故冷却水是否投运，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P05E01,QH1-O-P05E01I09,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P05E01,QH1-O-P05E01I10,出口压力：是否正常,NUMBER,MPa,yes,4.5,6.5,4,no
-QH1-O-P05E02,QH1-O-P05E02I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E02,QH1-O-P05E02I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E02,QH1-O-P05E02I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E02,QH1-O-P05E02I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E02,QH1-O-P05E02I05,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P05E02,QH1-O-P05E02I06,泵运行情况：有无异音，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P05E02,QH1-O-P05E02I07,冷却水换热器就地温度：是否正常，超过50°C汇报,NUMBER,°C,yes,20,50,2,no
-QH1-O-P05E02,QH1-O-P05E02I08,冷却水回路：是否畅通，事故冷却水是否投运，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P05E02,QH1-O-P05E02I09,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P05E02,QH1-O-P05E02I10,出口压力：是否正常,NUMBER,MPa,yes,4.5,6.5,4,no
-QH1-O-P05E03,QH1-O-P05E03I01,备用泵的泵体温度：是否正常，超过50°C汇报,NUMBER,°C,yes,20,50,8,no
-QH1-O-P05E04,QH1-O-P05E04I01,投用情况：水流是否正常，排水温度超过40°C汇报,BOOLEAN,,yes,,,4,no
-QH1-O-P05E05,QH1-O-P05E05I01,泵运行情况：有无异音，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P05E05,QH1-O-P05E05I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P05E05,QH1-O-P05E05I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E05,QH1-O-P05E05I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E05,QH1-O-P05E05I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E05,QH1-O-P05E05I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E05,QH1-O-P05E05I07,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P05E05,QH1-O-P05E05I08,出口压力：是否正常,NUMBER,MPa,yes,0.4,1.2,4,no
-QH1-O-P05E06,QH1-O-P05E06I01,泵运行情况：有无异音，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P05E06,QH1-O-P05E06I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P05E06,QH1-O-P05E06I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E06,QH1-O-P05E06I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E06,QH1-O-P05E06I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E06,QH1-O-P05E06I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P05E06,QH1-O-P05E06I07,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P05E06,QH1-O-P05E06I08,出口压力：是否正常,NUMBER,MPa,yes,0.4,1.2,4,no
-QH1-O-P06E01,QH1-O-P06E01I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E01,QH1-O-P06E01I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E01,QH1-O-P06E01I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E01,QH1-O-P06E01I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E01,QH1-O-P06E01I05,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P06E01,QH1-O-P06E01I06,泵运行情况：有无异音，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E01,QH1-O-P06E01I07,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E01,QH1-O-P06E01I08,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E01,QH1-O-P06E01I09,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E01,QH1-O-P06E01I10,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P06E02,QH1-O-P06E02I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E02,QH1-O-P06E02I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E02,QH1-O-P06E02I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E02,QH1-O-P06E02I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E02,QH1-O-P06E02I05,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P06E02,QH1-O-P06E02I06,泵运行情况：有无异音，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E02,QH1-O-P06E02I07,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E02,QH1-O-P06E02I08,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E02,QH1-O-P06E02I09,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E02,QH1-O-P06E02I10,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P06E03,QH1-O-P06E03I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E03,QH1-O-P06E03I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E03,QH1-O-P06E03I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E03,QH1-O-P06E03I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E03,QH1-O-P06E03I05,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P06E03,QH1-O-P06E03I06,泵运行情况：有无异音，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E03,QH1-O-P06E03I07,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E03,QH1-O-P06E03I08,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E03,QH1-O-P06E03I09,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P06E04,QH1-O-P06E04I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E04,QH1-O-P06E04I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E04,QH1-O-P06E04I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E04,QH1-O-P06E04I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P06E04,QH1-O-P06E04I05,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P06E04,QH1-O-P06E04I06,泵运行情况：有无异音，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E04,QH1-O-P06E04I07,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E04,QH1-O-P06E04I08,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P06E04,QH1-O-P06E04I09,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P07E01,QH1-O-P07E01I01,磨煤机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P07E01,QH1-O-P07E01I02,磨煤机排矸情况：有无异物卡涩排矸斗，有无过多原煤颗粒排出,BOOLEAN,,yes,,,2,no
-QH1-O-P07E01,QH1-O-P07E01I03,润滑油回路：油箱油位不低于2/3，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P07E01,QH1-O-P07E01I04,润滑油出口温度：是否正常，正常温度在35°C～45°C,NUMBER,°C,yes,20,50,2,no
-QH1-O-P07E01,QH1-O-P07E01I05,润滑油过滤器前压力：是否正常，正常压力在0.3MPa～0.4MPa,NUMBER,MPa,yes,0.2,0.5,2,no
-QH1-O-P07E01,QH1-O-P07E01I06,润滑油过滤器后（冷却器前）压力：是否正常，低于0.25MPa汇报,NUMBER,MPa,yes,0.25,,2,no
-QH1-O-P07E01,QH1-O-P07E01I07,润滑油过滤器压差：是否正常，高于0.1MPa汇报,NUMBER,MPa,yes,,0.1,2,no
-QH1-O-P07E01,QH1-O-P07E01I08,润滑油冷却器后压力：是否正常，低于0.2MPa汇报,NUMBER,MPa,yes,0.2,,2,no
-QH1-O-P07E01,QH1-O-P07E01I09,润滑油冷却器后流量：是否正常，低于140L/min汇报,NUMBER,L/min,yes,140,,2,no
-QH1-O-P07E01,QH1-O-P07E01I10,润滑油泵电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E01,QH1-O-P07E01I11,润滑油泵电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E01,QH1-O-P07E01I12,润滑油泵电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E01,QH1-O-P07E01I13,电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P07E02,QH1-O-P07E02I01,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E02,QH1-O-P07E02I02,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E02,QH1-O-P07E02I03,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E02,QH1-O-P07E02I04,风机/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P07E02,QH1-O-P07E02I05,出口压力：是否正常，压力低于6KPa汇报,NUMBER,kPa,yes,6,,4,no
-QH1-O-P07E03,QH1-O-P07E03I01,风机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P07E03,QH1-O-P07E03I02,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P07E03,QH1-O-P07E03I03,风机轴承箱风机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E03,QH1-O-P07E03I04,风机轴承箱电机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E03,QH1-O-P07E03I05,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E03,QH1-O-P07E03I06,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E03,QH1-O-P07E03I07,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E03,QH1-O-P07E03I08,风机/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P07E04,QH1-O-P07E04I01,磨煤机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P07E04,QH1-O-P07E04I02,润滑油回路：油箱油位不低于2/3，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P07E04,QH1-O-P07E04I03,润滑油出口温度：是否正常，正常温度在35°C～45°C,NUMBER,°C,yes,20,50,2,no
-QH1-O-P07E04,QH1-O-P07E04I04,润滑油过滤器前压力：是否正常，正常压力在0.3MPa～0.4MPa,NUMBER,MPa,yes,0.2,0.5,2,no
-QH1-O-P07E04,QH1-O-P07E04I05,润滑油过滤器后（冷却器前）压力：是否正常，低于0.25MPa汇报,NUMBER,MPa,yes,0.25,,2,no
-QH1-O-P07E04,QH1-O-P07E04I06,润滑油过滤器压差：是否正常，高于0.1MPa汇报,NUMBER,MPa,yes,,0.1,2,no
-QH1-O-P07E04,QH1-O-P07E04I07,润滑油冷却器后压力：是否正常，低于0.2MPa汇报,NUMBER,MPa,yes,0.2,,2,no
-QH1-O-P07E04,QH1-O-P07E04I08,润滑油冷却器后流量：是否正常，低于140L/min汇报,NUMBER,L/min,yes,140,,2,no
-QH1-O-P07E04,QH1-O-P07E04I09,润滑油泵电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E04,QH1-O-P07E04I10,润滑油泵电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E04,QH1-O-P07E04I11,润滑油泵电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E04,QH1-O-P07E04I12,电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P07E05,QH1-O-P07E05I01,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E05,QH1-O-P07E05I02,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E05,QH1-O-P07E05I03,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E05,QH1-O-P07E05I04,风机/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P07E05,QH1-O-P07E05I05,出口压力：是否正常，压力低于6KPa汇报,NUMBER,kPa,yes,6,,4,no
-QH1-O-P07E06,QH1-O-P07E06I01,风机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P07E06,QH1-O-P07E06I02,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P07E06,QH1-O-P07E06I03,风机轴承箱风机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E06,QH1-O-P07E06I04,风机轴承箱电机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E06,QH1-O-P07E06I05,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E06,QH1-O-P07E06I06,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E06,QH1-O-P07E06I07,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E06,QH1-O-P07E06I08,风机/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P07E07,QH1-O-P07E07I01,磨煤机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P07E07,QH1-O-P07E07I02,润滑油回路：油箱油位不低于2/3，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P07E07,QH1-O-P07E07I03,润滑油出口温度：是否正常，正常温度在35°C～45°C,NUMBER,°C,yes,20,50,2,no
-QH1-O-P07E07,QH1-O-P07E07I04,润滑油过滤器前压力：是否正常，正常压力在0.3MPa～0.4MPa,NUMBER,MPa,yes,0.2,0.5,2,no
-QH1-O-P07E07,QH1-O-P07E07I05,润滑油过滤器后（冷却器前）压力：是否正常，低于0.25MPa汇报,NUMBER,MPa,yes,0.25,,2,no
-QH1-O-P07E07,QH1-O-P07E07I06,润滑油过滤器压差：是否正常，高于0.1MPa汇报,NUMBER,MPa,yes,,0.1,2,no
-QH1-O-P07E07,QH1-O-P07E07I07,润滑油冷却器后压力：是否正常，低于0.2MPa汇报,NUMBER,MPa,yes,0.2,,2,no
-QH1-O-P07E07,QH1-O-P07E07I08,润滑油冷却器后流量：是否正常，低于140L/min汇报,NUMBER,L/min,yes,140,,2,no
-QH1-O-P07E07,QH1-O-P07E07I09,润滑油泵电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E07,QH1-O-P07E07I10,润滑油泵电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E07,QH1-O-P07E07I11,润滑油泵电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E07,QH1-O-P07E07I12,电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P07E08,QH1-O-P07E08I01,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E08,QH1-O-P07E08I02,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E08,QH1-O-P07E08I03,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E08,QH1-O-P07E08I04,风机/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P07E08,QH1-O-P07E08I05,出口压力：是否正常，压力低于6KPa汇报,NUMBER,kPa,yes,6,,4,no
-QH1-O-P07E09,QH1-O-P07E09I01,风机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P07E09,QH1-O-P07E09I02,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P07E09,QH1-O-P07E09I03,风机轴承箱风机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E09,QH1-O-P07E09I04,风机轴承箱电机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E09,QH1-O-P07E09I05,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E09,QH1-O-P07E09I06,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E09,QH1-O-P07E09I07,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P07E09,QH1-O-P07E09I08,风机/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P08E01,QH1-O-P08E01I01,风机轴承箱风机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P08E01,QH1-O-P08E01I02,风机轴承箱电机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P08E01,QH1-O-P08E01I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P08E01,QH1-O-P08E01I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P08E01,QH1-O-P08E01I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P08E01,QH1-O-P08E01I06,风机/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P08E01,QH1-O-P08E01I07,润滑油回路：油箱油位不低于红线值，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P08E01,QH1-O-P08E01I08,润滑油过滤器后母管压力：是否正常，低于0.15NPa汇报,NUMBER,MPa,yes,0.15,,2,no
-QH1-O-P08E01,QH1-O-P08E01I09,#1润滑油泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P08E01,QH1-O-P08E01I10,#1润滑油泵电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P08E01,QH1-O-P08E01I11,#1润滑油泵电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P08E01,QH1-O-P08E01I12,#1润滑油泵电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P08E01,QH1-O-P08E01I13,#2润滑油泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P08E01,QH1-O-P08E01I14,#2润滑油泵电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P08E01,QH1-O-P08E01I15,#2润滑油泵电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P08E01,QH1-O-P08E01I16,#2润滑油泵电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P08E01,QH1-O-P08E01I17,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P08E01,QH1-O-P08E01I18,干气密封回路：是否投用，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P08E01,QH1-O-P08E01I19,电机冷却器泄漏情况：电机基座排水孔是否向外流水,BOOLEAN,,yes,,,2,no
-QH1-O-P08E01,QH1-O-P08E01I20,高位油箱回油情况：回油是否正常,BOOLEAN,,yes,,,2,no
-QH1-O-P09E01,QH1-O-P09E01I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P09E01,QH1-O-P09E01I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E01,QH1-O-P09E01I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E01,QH1-O-P09E01I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E01,QH1-O-P09E01I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E01,QH1-O-P09E01I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E01,QH1-O-P09E01I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E01,QH1-O-P09E01I08,泵运行情况：有无异音，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E01,QH1-O-P09E01I09,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P09E02,QH1-O-P09E02I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P09E02,QH1-O-P09E02I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E02,QH1-O-P09E02I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E02,QH1-O-P09E02I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E02,QH1-O-P09E02I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E02,QH1-O-P09E02I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E02,QH1-O-P09E02I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E02,QH1-O-P09E02I08,泵运行情况：有无异音，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E02,QH1-O-P09E02I09,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P09E03,QH1-O-P09E03I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P09E03,QH1-O-P09E03I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E03,QH1-O-P09E03I03,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E03,QH1-O-P09E03I04,齿轮箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E03,QH1-O-P09E03I05,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E03,QH1-O-P09E03I06,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E03,QH1-O-P09E03I07,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E03,QH1-O-P09E03I08,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E03,QH1-O-P09E03I09,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P09E04,QH1-O-P09E04I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P09E04,QH1-O-P09E04I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E04,QH1-O-P09E04I03,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E04,QH1-O-P09E04I04,齿轮箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E04,QH1-O-P09E04I05,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E04,QH1-O-P09E04I06,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E04,QH1-O-P09E04I07,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E04,QH1-O-P09E04I08,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E04,QH1-O-P09E04I09,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P09E05,QH1-O-P09E05I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P09E05,QH1-O-P09E05I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E05,QH1-O-P09E05I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E05,QH1-O-P09E05I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E05,QH1-O-P09E05I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E05,QH1-O-P09E05I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E05,QH1-O-P09E05I07,出口压力：是否正常,NUMBER,MPa,yes,0.5,1.2,4,no
-QH1-O-P09E06,QH1-O-P09E06I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P09E06,QH1-O-P09E06I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E06,QH1-O-P09E06I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E06,QH1-O-P09E06I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E06,QH1-O-P09E06I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E06,QH1-O-P09E06I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E06,QH1-O-P09E06I07,出口压力：是否正常,NUMBER,MPa,yes,0.5,1.2,4,no
-QH1-O-P09E07,QH1-O-P09E07I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P09E07,QH1-O-P09E07I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E07,QH1-O-P09E07I03,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E07,QH1-O-P09E07I04,齿轮箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E07,QH1-O-P09E07I05,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E07,QH1-O-P09E07I06,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E07,QH1-O-P09E07I07,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E07,QH1-O-P09E07I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P09E08,QH1-O-P09E08I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P09E08,QH1-O-P09E08I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E08,QH1-O-P09E08I03,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P09E08,QH1-O-P09E08I04,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E08,QH1-O-P09E08I05,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E08,QH1-O-P09E08I06,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E08,QH1-O-P09E08I07,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P09E08,QH1-O-P09E08I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P09E09,QH1-O-P09E09I01,投用情况：水流是否正常，排水温度超过40°C汇报,BOOLEAN,,yes,,,4,no
-QH1-O-P10E01,QH1-O-P10E01I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P10E01,QH1-O-P10E01I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P10E01,QH1-O-P10E01I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E01,QH1-O-P10E01I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E01,QH1-O-P10E01I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E01,QH1-O-P10E01I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E01,QH1-O-P10E01I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P10E01,QH1-O-P10E01I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P10E02,QH1-O-P10E02I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P10E02,QH1-O-P10E02I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P10E02,QH1-O-P10E02I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E02,QH1-O-P10E02I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E02,QH1-O-P10E02I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E02,QH1-O-P10E02I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E02,QH1-O-P10E02I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P10E02,QH1-O-P10E02I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P10E03,QH1-O-P10E03I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P10E03,QH1-O-P10E03I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P10E03,QH1-O-P10E03I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E03,QH1-O-P10E03I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E03,QH1-O-P10E03I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E03,QH1-O-P10E03I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E03,QH1-O-P10E03I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P10E03,QH1-O-P10E03I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P10E04,QH1-O-P10E04I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P10E04,QH1-O-P10E04I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P10E04,QH1-O-P10E04I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E04,QH1-O-P10E04I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E04,QH1-O-P10E04I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E04,QH1-O-P10E04I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E04,QH1-O-P10E04I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P10E04,QH1-O-P10E04I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P10E05,QH1-O-P10E05I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P10E05,QH1-O-P10E05I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P10E05,QH1-O-P10E05I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E05,QH1-O-P10E05I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E05,QH1-O-P10E05I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E05,QH1-O-P10E05I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E05,QH1-O-P10E05I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P10E05,QH1-O-P10E05I08,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P10E05,QH1-O-P10E05I09,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P10E06,QH1-O-P10E06I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P10E06,QH1-O-P10E06I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P10E06,QH1-O-P10E06I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E06,QH1-O-P10E06I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E06,QH1-O-P10E06I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E06,QH1-O-P10E06I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P10E06,QH1-O-P10E06I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P10E06,QH1-O-P10E06I08,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P10E06,QH1-O-P10E06I09,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P11E01,QH1-O-P11E01I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P11E01,QH1-O-P11E01I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P11E01,QH1-O-P11E01I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P11E01,QH1-O-P11E01I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P11E01,QH1-O-P11E01I05,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P11E01,QH1-O-P11E01I06,泵/电机运行情况：有无异音，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P11E01,QH1-O-P11E01I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P11E01,QH1-O-P11E01I08,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P11E01,QH1-O-P11E01I09,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P11E02,QH1-O-P11E02I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P11E02,QH1-O-P11E02I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P11E02,QH1-O-P11E02I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P11E02,QH1-O-P11E02I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P11E02,QH1-O-P11E02I05,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P11E02,QH1-O-P11E02I06,泵/电机运行情况：有无异音，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P11E02,QH1-O-P11E02I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P11E02,QH1-O-P11E02I08,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P11E02,QH1-O-P11E02I09,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P11E03,QH1-O-P11E03I01,投用情况：水流是否正常，排水温度超过40°C汇报,BOOLEAN,,yes,,,4,no
-QH1-O-P12E01,QH1-O-P12E01I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P12E01,QH1-O-P12E01I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P12E01,QH1-O-P12E01I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E01,QH1-O-P12E01I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E01,QH1-O-P12E01I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E01,QH1-O-P12E01I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E01,QH1-O-P12E01I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P12E01,QH1-O-P12E01I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P12E02,QH1-O-P12E02I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P12E02,QH1-O-P12E02I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P12E02,QH1-O-P12E02I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E02,QH1-O-P12E02I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E02,QH1-O-P12E02I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E02,QH1-O-P12E02I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E02,QH1-O-P12E02I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P12E02,QH1-O-P12E02I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P12E03,QH1-O-P12E03I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P12E03,QH1-O-P12E03I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P12E03,QH1-O-P12E03I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E03,QH1-O-P12E03I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E03,QH1-O-P12E03I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E03,QH1-O-P12E03I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E03,QH1-O-P12E03I07,电机冷却风扇运行情况：是否运行，有无异音,BOOLEAN,,yes,,,2,no
-QH1-O-P12E03,QH1-O-P12E03I08,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P12E03,QH1-O-P12E03I09,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P12E04,QH1-O-P12E04I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P12E04,QH1-O-P12E04I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P12E04,QH1-O-P12E04I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E04,QH1-O-P12E04I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E04,QH1-O-P12E04I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E04,QH1-O-P12E04I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P12E04,QH1-O-P12E04I07,电机冷却风扇运行情况：是否运行，有无异音,BOOLEAN,,yes,,,2,no
-QH1-O-P12E04,QH1-O-P12E04I08,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P12E04,QH1-O-P12E04I09,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P12E05,QH1-O-P12E05I01,投用情况：水流是否正常，排水温度超过40°C汇报,BOOLEAN,,yes,,,4,no
-QH1-O-P12E06,QH1-O-P12E06I01,投用情况：水流是否正常，排水温度超过40°C汇报,BOOLEAN,,yes,,,4,no
-QH1-O-P12E07,QH1-O-P12E07I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P12E08,QH1-O-P12E08I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P12E09,QH1-O-P12E09I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P12E10,QH1-O-P12E10I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P12E11,QH1-O-P12E11I01,现场液位计：有无泄漏,NUMBER,m,yes,,,4,no
-QH1-O-P12E12,QH1-O-P12E12I01,现场液位计：有无泄漏,NUMBER,m,yes,,,4,no
-QH1-O-P13E01,QH1-O-P13E01I01,地坑积水情况：是否积水,BOOLEAN,,yes,,,4,no
-QH1-O-P13E02,QH1-O-P13E02I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P13E03,QH1-O-P13E03I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P13E04,QH1-O-P13E04I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P13E04,QH1-O-P13E04I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P13E04,QH1-O-P13E04I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P13E04,QH1-O-P13E04I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P13E04,QH1-O-P13E04I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P13E04,QH1-O-P13E04I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P13E04,QH1-O-P13E04I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P13E04,QH1-O-P13E04I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P13E05,QH1-O-P13E05I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P13E05,QH1-O-P13E05I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P13E05,QH1-O-P13E05I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P13E05,QH1-O-P13E05I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P13E05,QH1-O-P13E05I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P13E05,QH1-O-P13E05I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P13E05,QH1-O-P13E05I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P13E05,QH1-O-P13E05I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P14E01,QH1-O-P14E01I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P14E02,QH1-O-P14E02I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P14E03,QH1-O-P14E03I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P14E04,QH1-O-P14E04I01,搅拌器运行情况：有无异音，有无过大振动,BOOLEAN,,yes,,,4,no
-QH1-O-P14E04,QH1-O-P14E04I02,絮凝剂加药机运行情况：有无异音，是否堵塞,BOOLEAN,,yes,,,4,no
-QH1-O-P14E05,QH1-O-P14E05I01,离心机情况：现场是否有振动、异音、跑冒情况,BOOLEAN,,yes,,,4,no
-QH1-O-P14E05,QH1-O-P14E05I02,离心机润滑油情况：现场油量指示值是否正常,NUMBER,L/h,yes,120,140,4,no
-QH1-O-P14E06,QH1-O-P14E06I01,搅拌器运行情况：有无异音，有无过大振动,BOOLEAN,,yes,,,8,no
-QH1-O-P14E07,QH1-O-P14E07I01,搅拌器运行情况：有无异音，有无过大振动,BOOLEAN,,yes,,,8,no
-QH1-O-P14E08,QH1-O-P14E08I01,搅拌器运行情况：有无异音，有无过大振动,BOOLEAN,,yes,,,8,no
-QH1-O-P15E01,QH1-O-P15E01I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P15E01,QH1-O-P15E01I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P15E01,QH1-O-P15E01I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P15E01,QH1-O-P15E01I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P15E01,QH1-O-P15E01I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P15E01,QH1-O-P15E01I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P15E01,QH1-O-P15E01I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P15E01,QH1-O-P15E01I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P15E02,QH1-O-P15E02I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P15E02,QH1-O-P15E02I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,4,no
-QH1-O-P15E02,QH1-O-P15E02I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P15E02,QH1-O-P15E02I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P15E02,QH1-O-P15E02I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P15E02,QH1-O-P15E02I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P15E02,QH1-O-P15E02I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,yes,,,2,no
-QH1-O-P15E02,QH1-O-P15E02I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P16E01,QH1-O-P16E01I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P16E01,QH1-O-P16E01I02,机封水换热器温度：冷却水是否投运，机封水换热器温度超过50°C汇报,NUMBER,°C,yes,20,50,2,no
-QH1-O-P16E01,QH1-O-P16E01I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P16E01,QH1-O-P16E01I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P16E01,QH1-O-P16E01I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P16E01,QH1-O-P16E01I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P16E01,QH1-O-P16E01I07,电机冷却风扇运行情况：是否运行，有无异音,NUMBER,°C,yes,20,60,2,no
-QH1-O-P16E01,QH1-O-P16E01I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P16E02,QH1-O-P16E02I01,泵/电机轴承振动最大值：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH1-O-P16E02,QH1-O-P16E02I02,机封水换热器温度：冷却水是否投运，机封水换热器温度超过50°C汇报,NUMBER,°C,yes,20,50,2,no
-QH1-O-P16E02,QH1-O-P16E02I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P16E02,QH1-O-P16E02I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P16E02,QH1-O-P16E02I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P16E02,QH1-O-P16E02I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH1-O-P16E02,QH1-O-P16E02I07,电机冷却风扇运行情况：是否运行，有无异音,NUMBER,°C,yes,20,60,2,no
-QH1-O-P16E02,QH1-O-P16E02I08,出口压力：是否正常,NUMBER,MPa,yes,,,4,no
-QH1-O-P16E03,QH1-O-P16E03I01,除铁器运行情况：有无异音，阀门状态是否正确，PLC面板有无报警,BOOLEAN,,yes,,,4,no
-QH1-O-P16E03,QH1-O-P16E03I02,出口凝液电导：在线电导表工作是否正常，冷却水是否畅通,NUMBER,us/cm,yes,,,4,no
-QH1-O-P16E04,QH1-O-P16E04I01,冷却器运行情况：有无跑冒滴漏、振动,BOOLEAN,,yes,,,4,no
-QH1-O-P16E05,QH1-O-P16E05I01,闪蒸罐运行情况：有无跑冒滴漏、振动，安全阀有无起跳，现场液位计显示与DCS是否一致,BOOLEAN,,yes,,,4,no
-QH2-O-P01E01,QH2-O-P01E01I01,汽包及附属管线 ：无跑冒、无泄漏、无异常放空,BOOLEAN,,yes,,,4,no
-QH2-O-P01E02,QH2-O-P01E02I01,反吹PLC控制柜 ：是否正常,BOOLEAN,,yes,,,4,no
-QH2-O-P01E02,QH2-O-P01E02I02,95米层框架 ：无跑冒、无泄漏、无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P02E01,QH2-O-P02E01I01,放空无煤粉 ：是否正常,BOOLEAN,,yes,,,4,no
-QH2-O-P02E01,QH2-O-P02E01I02,反吹阀前压力 ：≧0.4MPa,NUMBER,MPa,yes,0.4,0.5,4,no
-QH2-O-P02E01,QH2-O-P02E01I03,反吹声音正常 ：是否正常,BOOLEAN,,yes,,,4,no
-QH2-O-P02E02,QH2-O-P02E02I01,放空无煤粉 ：是否正常,BOOLEAN,,yes,,,4,no
-QH2-O-P02E02,QH2-O-P02E02I02,反吹阀前压力 ：≧0.4MPa,NUMBER,MPa,yes,0.4,0.5,4,no
-QH2-O-P02E02,QH2-O-P02E02I03,反吹声音正常 ：是否正常,BOOLEAN,,yes,,,4,no
-QH2-O-P02E03,QH2-O-P02E03I01,放空无煤粉 ：是否正常,BOOLEAN,,yes,,,4,no
-QH2-O-P02E03,QH2-O-P02E03I02,反吹阀前压力 ：≧0.4MPa,NUMBER,MPa,yes,0.4,0.5,4,no
-QH2-O-P02E03,QH2-O-P02E03I03,反吹声音正常 ：是否正常,BOOLEAN,,yes,,,4,no
-QH2-O-P02E04,QH2-O-P02E04I01,反吹阀前压力 ：≧0.4MPa,NUMBER,MPa,yes,0.4,0.5,4,no
-QH2-O-P02E04,QH2-O-P02E04I02,反吹声音正常 ：是否正常,BOOLEAN,,yes,,,4,no
-QH2-O-P02E05,QH2-O-P02E05I01,反吹阀前压力 ：≧0.4MPa,NUMBER,MPa,yes,0.4,0.5,4,no
-QH2-O-P02E05,QH2-O-P02E05I02,反吹声音正常 ：是否正常,BOOLEAN,,yes,,,4,no
-QH2-O-P02E06,QH2-O-P02E06I01,反吹阀前压力 ：≧0.4MPa,NUMBER,MPa,yes,0.4,0.5,4,no
-QH2-O-P02E06,QH2-O-P02E06I02,反吹声音正常 ：是否正常,BOOLEAN,,yes,,,4,no
-QH2-O-P02E07,QH2-O-P02E07I01,合成气管道 ：无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P02E07,QH2-O-P02E07I02,82米层框架 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P03E01,QH2-O-P03E01I01,运行情况 ：运行无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P03E01,QH2-O-P03E01I02,运行情况 ：运行无漏粉,BOOLEAN,,yes,,,2,no
-QH2-O-P03E01,QH2-O-P03E01I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,MPa,yes,0.1,0.5,2,no
-QH2-O-P03E01,QH2-O-P03E01I04,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P03E01,QH2-O-P03E01I05,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P03E01,QH2-O-P03E01I06,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P03E01,QH2-O-P03E01I07,电机驱动端/非驱动端轴承振动 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P03E02,QH2-O-P03E02I01,运行无异音 ：运行无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P03E02,QH2-O-P03E02I02,运行无漏粉 ：运行无漏粉,BOOLEAN,,yes,,,2,no
-QH2-O-P03E02,QH2-O-P03E02I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,MPa,yes,0.1,0.5,2,no
-QH2-O-P03E02,QH2-O-P03E02I04,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P03E02,QH2-O-P03E02I05,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P03E02,QH2-O-P03E02I06,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P03E02,QH2-O-P03E02I07,电机驱动端/非驱动端轴承振动 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P03E03,QH2-O-P03E03I01,运行无异音 ：运行无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P03E03,QH2-O-P03E03I02,运行无漏粉 ：运行无漏粉,BOOLEAN,,yes,,,2,no
-QH2-O-P03E03,QH2-O-P03E03I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,MPa,yes,0.1,0.5,2,no
-QH2-O-P03E03,QH2-O-P03E03I04,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P03E03,QH2-O-P03E03I05,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P03E03,QH2-O-P03E03I06,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P03E03,QH2-O-P03E03I07,电机驱动端/非驱动端轴承振动 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P03E04,QH2-O-P03E04I01,泄压无跑粉 ：泄压无跑粉,BOOLEAN,,yes,,,4,no
-QH2-O-P03E05,QH2-O-P03E05I01,泄压无跑粉 ：泄压无跑粉,BOOLEAN,,yes,,,4,no
-QH2-O-P03E06,QH2-O-P03E06I01,泄压无跑粉 ：泄压无跑粉,BOOLEAN,,yes,,,4,no
-QH2-O-P03E07,QH2-O-P03E07I01,73米层框架 ：无跑冒、无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P04E01,QH2-O-P04E01I01,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P04E01,QH2-O-P04E01I02,运行无异音 ：运行无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P04E01,QH2-O-P04E01I03,电机驱动端/非驱动端轴承振动 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P04E01,QH2-O-P04E01I04,节轴承密封气已投入，运行无异音 ：无异音、密封气流量6～10m3/h,NUMBER,m3/h,yes,5,15,2,no
-QH2-O-P04E01,QH2-O-P04E01I05,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P04E01,QH2-O-P04E01I06,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P04E01,QH2-O-P04E01I07,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P04E02,QH2-O-P04E02I01,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P04E02,QH2-O-P04E02I02,运行无异音 ：运行无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P04E02,QH2-O-P04E02I03,电机驱动端/非驱动端轴承振动 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P04E02,QH2-O-P04E02I04,节轴承密封气已投入，运行无异音 ：无异音、密封气流量6～10m3/h,NUMBER,m3/h,yes,5,15,2,no
-QH2-O-P04E02,QH2-O-P04E02I05,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P04E02,QH2-O-P04E02I06,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P04E02,QH2-O-P04E02I07,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P04E03,QH2-O-P04E03I01,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P04E03,QH2-O-P04E03I02,运行无异音 ：运行无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P04E03,QH2-O-P04E03I03,电机驱动端/非驱动端轴承振动 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P04E03,QH2-O-P04E03I04,节轴承密封气已投入，运行无异音 ：无异音、密封气流量6～10m3/h,NUMBER,m3/h,yes,5,15,2,no
-QH2-O-P04E03,QH2-O-P04E03I05,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P04E03,QH2-O-P04E03I06,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P04E03,QH2-O-P04E03I07,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P04E04,QH2-O-P04E04I01,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P04E04,QH2-O-P04E04I02,运行无异音 ：运行无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P04E04,QH2-O-P04E04I03,电机驱动端/非驱动端轴承振动 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P04E04,QH2-O-P04E04I04,节轴承密封气已投入，运行无异音 ：无异音、密封气流量6～10m3/h,NUMBER,m3/h,yes,5,15,2,no
-QH2-O-P04E04,QH2-O-P04E04I05,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P04E04,QH2-O-P04E04I06,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P04E04,QH2-O-P04E04I07,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P04E05,QH2-O-P04E05I01,各螺旋输送机与旋转卸料阀处 ：无漏粉现象,BOOLEAN,,yes,,,2,no
-QH2-O-P04E06,QH2-O-P04E06I01,运行无异音 ：运行无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P04E06,QH2-O-P04E06I02,无漏粉现象 ：无漏粉现象,BOOLEAN,,yes,,,2,no
-QH2-O-P04E06,QH2-O-P04E06I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,,yes,0.1,0.5,2,no
-QH2-O-P04E07,QH2-O-P04E07I01,运行无异音 ：运行无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P04E07,QH2-O-P04E07I02,无漏粉现象 ：无漏粉现象,BOOLEAN,,yes,,,2,no
-QH2-O-P04E07,QH2-O-P04E07I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,,yes,0.1,0.5,2,no
-QH2-O-P04E08,QH2-O-P04E08I01,运行无异音 ：运行无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P04E08,QH2-O-P04E08I02,无漏粉现象 ：无漏粉现象,BOOLEAN,,yes,,,2,no
-QH2-O-P04E08,QH2-O-P04E08I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,,yes,0.1,0.5,2,no
-QH2-O-P04E09,QH2-O-P04E09I01,运行无异音 ：运行无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P04E09,QH2-O-P04E09I02,无漏粉现象 ：无漏粉现象,BOOLEAN,,yes,,,2,no
-QH2-O-P04E09,QH2-O-P04E09I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,,yes,0.1,0.5,2,no
-QH2-O-P04E10,QH2-O-P04E10I01,运行无异音 ：运行无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P04E10,QH2-O-P04E10I02,无漏粉现象 ：无漏粉现象,BOOLEAN,,yes,,,2,no
-QH2-O-P04E10,QH2-O-P04E10I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,,yes,0.1,0.5,2,no
-QH2-O-P04E11,QH2-O-P04E11I01,运行无异音 ：运行无异音,BOOLEAN,,yes,,,2,no
-QH2-O-P04E11,QH2-O-P04E11I02,无漏粉现象 ：无漏粉现象,BOOLEAN,,yes,,,2,no
-QH2-O-P04E11,QH2-O-P04E11I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,,yes,0.1,0.5,2,no
-QH2-O-P04E12,QH2-O-P04E12I01,65米层框架 ：无跑冒、无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P05E01,QH2-O-P05E01I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P05E02,QH2-O-P05E02I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P05E03,QH2-O-P05E03I01,管道及阀门：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P05E04,QH2-O-P05E04I01,57米层框架 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P06E01,QH2-O-P06E01I01,风机/电机轴承振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P06E01,QH2-O-P06E01I02,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH2-O-P06E01,QH2-O-P06E01I03,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH2-O-P06E01,QH2-O-P06E01I04,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH2-O-P06E01,QH2-O-P06E01I05,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P06E02,QH2-O-P06E02I01,反吹投运情况 ：反吹正常,BOOLEAN,,yes,,,4,no
-QH2-O-P06E03,QH2-O-P06E03I01,风机/电机轴承振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P06E03,QH2-O-P06E03I02,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH2-O-P06E03,QH2-O-P06E03I03,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH2-O-P06E03,QH2-O-P06E03I04,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH2-O-P06E03,QH2-O-P06E03I05,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P06E04,QH2-O-P06E04I01,反吹投运情况 ：反吹正常,BOOLEAN,,yes,,,4,no
-QH2-O-P06E05,QH2-O-P06E05I01,风机/电机轴承振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P06E05,QH2-O-P06E05I02,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH2-O-P06E05,QH2-O-P06E05I03,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH2-O-P06E05,QH2-O-P06E05I04,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,4,no
-QH2-O-P06E05,QH2-O-P06E05I05,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P06E06,QH2-O-P06E06I01,反吹投运情况 ：反吹正常,BOOLEAN,,yes,,,4,no
-QH2-O-P06E07,QH2-O-P06E07I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P06E08,QH2-O-P06E08I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P06E09,QH2-O-P06E09I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P06E10,QH2-O-P06E10I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P06E11,QH2-O-P06E11I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P06E12,QH2-O-P06E12I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P06E13,QH2-O-P06E13I01,48米层框架 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P07E01,QH2-O-P07E01I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P07E02,QH2-O-P07E02I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P07E03,QH2-O-P07E03I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P07E04,QH2-O-P07E04I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P07E05,QH2-O-P07E05I01,43米层框架 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P08E01,QH2-O-P08E01I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P08E02,QH2-O-P08E02I01,33TG0003就地温度 ：是否正常,NUMBER,°C,yes,,260,4,no
-QH2-O-P08E03,QH2-O-P08E03I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P08E04,QH2-O-P08E04I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P08E05,QH2-O-P08E05I01,33PG0044 就地压力 ：是否正常,NUMBER,MPa,yes,,,4,no
-QH2-O-P08E06,QH2-O-P08E06I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P08E07,QH2-O-P08E07I01,38米层框架 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P09E01,QH2-O-P09E01I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P09E02,QH2-O-P09E02I01,33PG0001 就地压力 ：是否正常,NUMBER,MPa,yes,3.5,3.9,4,no
-QH2-O-P09E02,QH2-O-P09E02I02,33TG0001 就地温度 ：是否正常,NUMBER,°C,yes,15,50,4,no
-QH2-O-P09E03,QH2-O-P09E03I01,35FG0014 就地流量 ：是否正常,NUMBER,Nm3/h,yes,60,150,4,no
-QH2-O-P09E04,QH2-O-P09E04I01,35FG0064 就地流量 ：是否正常,NUMBER,Nm3/h,yes,60,150,4,no
-QH2-O-P09E05,QH2-O-P09E05I01,疏水器及管道 ：无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P09E06,QH2-O-P09E06I01,32米层框架 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P10E01,QH2-O-P10E01I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P10E02,QH2-O-P10E02I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P10E03,QH2-O-P10E03I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P10E04,QH2-O-P10E04I01,管道及阀门 ：无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P10E05,QH2-O-P10E05I01,33LG1001 就地液位 ：是否正常,NUMBER,cm,yes,,,4,no
-QH2-O-P10E06,QH2-O-P10E06I01,运行情况 ：无异音、无异常振动,BOOLEAN,,yes,,,4,no
-QH2-O-P10E07,QH2-O-P10E07I01,运行情况 ：无异音、无异常振动,BOOLEAN,,yes,,,4,no
-QH2-O-P10E08,QH2-O-P10E08I01,39LG5005 就地液位 ：是否正常,NUMBER,cm,yes,,,4,no
-QH2-O-P10E09,QH2-O-P10E09I01,合成气管道 ：无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P10E09,QH2-O-P10E09I02,24米层框架 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
-QH2-O-P11E01,QH2-O-P11E01I01,电机轴承振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P11E01,QH2-O-P11E01I02,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E01,QH2-O-P11E01I03,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E01,QH2-O-P11E01I04,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E01,QH2-O-P11E01I05,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E01,QH2-O-P11E01I06,泵轴承振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P11E01,QH2-O-P11E01I07,电机驱动端/非驱动轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E01,QH2-O-P11E01I08,泵驱动端/非驱动轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E01,QH2-O-P11E01I09,驱动端机封冷却器温度 ：是否正常，超过50°C汇报,NUMBER,°C,yes,20,50,2,no
-QH2-O-P11E01,QH2-O-P11E01I10,非驱动端机封冷却器 ：是否正常，超过50°C汇报,NUMBER,°C,yes,20,50,2,no
-QH2-O-P11E01,QH2-O-P11E01I11,冷却水回路 ：是否畅通，事故冷却水是否投运，有无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E02,QH2-O-P11E02I01,电机轴承振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P11E02,QH2-O-P11E02I02,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E02,QH2-O-P11E02I03,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E02,QH2-O-P11E02I04,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E02,QH2-O-P11E02I05,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E02,QH2-O-P11E02I06,泵轴承振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P11E02,QH2-O-P11E02I07,电机驱动端/非驱动轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E02,QH2-O-P11E02I08,泵驱动端/非驱动轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E02,QH2-O-P11E02I09,驱动端机封冷却器温度 ：是否正常，超过50°C汇报,NUMBER,°C,yes,20,50,2,no
-QH2-O-P11E02,QH2-O-P11E02I10,非驱动端机封冷却器 ：是否正常，超过50°C汇报,NUMBER,°C,yes,20,50,2,no
-QH2-O-P11E02,QH2-O-P11E02I11,冷却水回路 ：是否畅通，事故冷却水是否投运，有无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E03,QH2-O-P11E03I01,电机轴承振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P11E03,QH2-O-P11E03I02,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E03,QH2-O-P11E03I03,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E03,QH2-O-P11E03I04,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E03,QH2-O-P11E03I05,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E03,QH2-O-P11E03I06,泵轴承振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,8,no
-QH2-O-P11E03,QH2-O-P11E03I07,电机驱动端/非驱动轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E03,QH2-O-P11E03I08,泵驱动端/非驱动轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E03,QH2-O-P11E03I09,驱动端机封冷却器温度 ：是否正常，超过50°C汇报,NUMBER,°C,yes,20,50,2,no
-QH2-O-P11E03,QH2-O-P11E03I10,非驱动端机封冷却器 ：是否正常，超过50°C汇报,NUMBER,°C,yes,20,50,2,no
-QH2-O-P11E03,QH2-O-P11E03I11,冷却水回路 ：是否畅通，事故冷却水是否投运，有无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E04,QH2-O-P11E04I01,投用情况 ：水流是否正常，排水温度超过40°C汇报,NUMBER,°C,yes,,40,2,no
-QH2-O-P11E05,QH2-O-P11E05I01,柴油管道及阀门 ：无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E05,QH2-O-P11E05I02,燃料气管道及阀门 ：无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E05,QH2-O-P11E05I03,天然气管道及阀门 ：无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E06,QH2-O-P11E06I01,风机/电机振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,2,no
-QH2-O-P11E06,QH2-O-P11E06I02,润滑油油位 ：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E06,QH2-O-P11E06I03,轴承箱温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E06,QH2-O-P11E06I04,电机驱动端温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E06,QH2-O-P11E06I05,电机非驱动端温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E06,QH2-O-P11E06I06,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E06,QH2-O-P11E06I07,风机运行情况 ：风机及出口软连接无漏风现象,BOOLEAN,,yes,,,2,no
-QH2-O-P11E07,QH2-O-P11E07I01,给煤机/电机振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,2,no
-QH2-O-P11E07,QH2-O-P11E07I02,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E07,QH2-O-P11E07I03,电机非驱动端轴承 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E07,QH2-O-P11E07I04,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E07,QH2-O-P11E07I05,清扫电机振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,2,no
-QH2-O-P11E07,QH2-O-P11E07I06,清扫电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E07,QH2-O-P11E07I07,清扫电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E07,QH2-O-P11E07I08,清扫电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E07,QH2-O-P11E07I09,给煤机尾部就地温度 ：是否正常，超过40°C汇报,NUMBER,°C,yes,15,40,2,no
-QH2-O-P11E07,QH2-O-P11E07I10,给煤机运行情况 ：密封氮气是否投入，头尾部照明是否正常，皮带有无划痕,BOOLEAN,,yes,,,2,no
-QH2-O-P11E07,QH2-O-P11E07I11,清扫链运行情况 ：清扫链是否打“2”位运行，清扫链工作正常,BOOLEAN,,yes,,,2,no
-QH2-O-P11E08,QH2-O-P11E08I01,柴油管道及阀门 ：无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E08,QH2-O-P11E08I02,燃料气管道及阀门 ：无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E08,QH2-O-P11E08I03,天然气管道及阀门 ：无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E09,QH2-O-P11E09I01,风机/电机振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,2,no
-QH2-O-P11E09,QH2-O-P11E09I02,润滑油油位 ：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E10,QH2-O-P11E10I01,轴承箱温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E09,QH2-O-P11E09I03,电机驱动端温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E09,QH2-O-P11E09I04,电机非驱动端温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E09,QH2-O-P11E09I05,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E09,QH2-O-P11E09I06,风机运行情况 ：风机及出口软连接无漏风现象,BOOLEAN,,yes,,,2,no
-QH2-O-P11E11,QH2-O-P11E11I01,给煤机/电机振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,2,no
-QH2-O-P11E11,QH2-O-P11E11I02,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E11,QH2-O-P11E11I03,电机非驱动端轴承 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E11,QH2-O-P11E11I04,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E11,QH2-O-P11E11I05,清扫电机振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,2,no
-QH2-O-P11E11,QH2-O-P11E11I06,清扫电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E11,QH2-O-P11E11I07,清扫电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E11,QH2-O-P11E11I08,清扫电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E11,QH2-O-P11E11I09,给煤机尾部就地温度 ：是否正常，超过40°C汇报,NUMBER,°C,yes,15,40,2,no
-QH2-O-P11E11,QH2-O-P11E11I10,给煤机运行情况 ：密封氮气是否投入，头尾部照明是否正常，皮带有无划痕,BOOLEAN,,yes,,,2,no
-QH2-O-P11E11,QH2-O-P11E11I11,清扫链运行情况 ：清扫链是否打“2”位运行，清扫链工作正常,BOOLEAN,,yes,,,2,no
-QH2-O-P11E12,QH2-O-P11E12I01,柴油管道及阀门 ：无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E12,QH2-O-P11E12I02,燃料气管道及阀门 ：无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E12,QH2-O-P11E12I03,天然气管道及阀门 ：无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E13,QH2-O-P11E13I01,风机/电机振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,2,no
-QH2-O-P11E13,QH2-O-P11E13I02,润滑油油位 ：油位不低于1/2，有无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P11E13,QH2-O-P11E13I03,轴承箱温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E13,QH2-O-P11E13I04,电机驱动端温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E13,QH2-O-P11E13I05,电机非驱动端温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E13,QH2-O-P11E13I06,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E13,QH2-O-P11E13I07,风机运行情况 ：风机及出口软连接无漏风现象,BOOLEAN,,yes,,,2,no
-QH2-O-P11E14,QH2-O-P11E14I01,给煤机/电机振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,2,no
-QH2-O-P11E14,QH2-O-P11E14I02,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E14,QH2-O-P11E14I03,电机非驱动端轴承 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E14,QH2-O-P11E14I04,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E14,QH2-O-P11E14I05,清扫电机振动最大值 ：振动是否过大，有无异音,NUMBER,mm,yes,0.005,0.1,2,no
-QH2-O-P11E14,QH2-O-P11E14I06,清扫电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E14,QH2-O-P11E14I07,清扫电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E14,QH2-O-P11E14I08,清扫电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,yes,20,60,2,no
-QH2-O-P11E14,QH2-O-P11E14I09,给煤机尾部就地温度 ：是否正常，超过40°C汇报,NUMBER,°C,yes,15,40,2,no
-QH2-O-P11E14,QH2-O-P11E14I10,给煤机运行情况 ：密封氮气是否投入，头尾部照明是否正常，皮带有无划痕,BOOLEAN,,yes,,,2,no
-QH2-O-P11E14,QH2-O-P11E14I11,清扫链运行情况 ：清扫链是否打“2”位运行，清扫链工作正常,BOOLEAN,,yes,,,2,no
-QH2-O-P11E15,QH2-O-P11E15I01,16米层框架 ：无跑冒、无泄漏,BOOLEAN,,yes,,,2,no
-QH2-O-P12E01,QH2-O-P12E01I01,33LG0001 就地液位 ：是否正常,NUMBER,cm,yes,,,4,no
-QH2-O-P12E02,QH2-O-P12E02I01,管道及阀门 ：无漏灰、漏气,BOOLEAN,,yes,,,4,no
-QH2-O-P12E03,QH2-O-P12E03I01,36LG0002 就地液位 ：是否正常,NUMBER,cm,yes,,,4,no
-QH2-O-P12E04,QH2-O-P12E04I01,39TG5006 就地温度 ：是否正常,NUMBER,°C,yes,,100,4,no
-QH2-O-P12E05,QH2-O-P12E05I01,39TG5007 就地温度 ：是否正常,NUMBER,°C,yes,15,40,4,no
-QH2-O-P12E06,QH2-O-P12E06I01,8米层框架 ：无跑冒、无泄漏,BOOLEAN,,yes,,,4,no
+﻿equipmentId,itemId,itemName,type,unit,required,minValue,maxValue,freqHours,requiredInStandby,adjustValue,fastAdjust1,fastAdjust2
+QH1-O-P01E01,QH1-O-P01E01I01,火炬燃烧情况：有无冒黑烟、喷黑水现象,BOOLEAN,,1,,,4,no,,,
+QH1-O-P01E02,QH1-O-P01E02I01,火炬燃烧情况：有无冒黑烟、喷黑水现象,BOOLEAN,,1,,,4,no,,,
+QH1-O-P01E03,QH1-O-P01E03I01,切排水情况：排污是否正常，有无堵塞,BOOLEAN,,1,,,4,no,,,
+QH1-O-P01E04,QH1-O-P01E04I01,切排水情况：排污是否正常，有无堵塞,BOOLEAN,,1,,,4,no,,,
+QH1-O-P01E05,QH1-O-P01E05I01,切排水情况：排污是否正常，有无堵塞,BOOLEAN,,1,,,4,no,,,
+QH1-O-P01E06,QH1-O-P01E06I01,运行情况：排污是否正常，有无堵塞,BOOLEAN,,1,,,4,no,,,
+QH1-O-P01E07,QH1-O-P01E07I01,天然气表计管道：有无泄漏，流量表显示正常,BOOLEAN,,1,,,8,no,,,
+QH1-O-P01E07,QH1-O-P01E07I02,天然气流量：耗量是否正常,NUMBER,m3/h,1,5.0,50.0,4,no,0.1,5.0,10.0
+QH1-O-P01E07,QH1-O-P01E07I03,天然气减压阀后压力：是否正常，低于0.45MPa汇报,NUMBER,MPa,1,0.4,0.6,8,no,0.01,0.05,0.1
+QH1-O-P02E01,QH1-O-P02E01I01,泵驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E01,QH1-O-P02E01I02,泵非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E01,QH1-O-P02E01I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E01,QH1-O-P02E01I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E01,QH1-O-P02E01I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E01,QH1-O-P02E01I06,出口压力：是否正常,NUMBER,MPa,1,0.2,0.5,8,no,0.01,0.05,0.1
+QH1-O-P02E01,QH1-O-P02E01I07,密封水投入情况：是否投用，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P02E01,QH1-O-P02E01I08,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P02E02,QH1-O-P02E02I01,泵驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E02,QH1-O-P02E02I02,泵非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E02,QH1-O-P02E02I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E02,QH1-O-P02E02I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E02,QH1-O-P02E02I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E02,QH1-O-P02E02I06,出口压力：是否正常,NUMBER,MPa,1,0.2,0.5,8,no,0.01,0.05,0.1
+QH1-O-P02E02,QH1-O-P02E02I07,密封水投入情况：是否投用，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P02E02,QH1-O-P02E02I08,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P02E03,QH1-O-P02E03I01,泵驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E03,QH1-O-P02E03I02,泵非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E03,QH1-O-P02E03I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E03,QH1-O-P02E03I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E03,QH1-O-P02E03I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P02E03,QH1-O-P02E03I06,出口压力：是否正常,NUMBER,MPa,1,0.2,0.5,8,no,0.01,0.05,0.1
+QH1-O-P02E03,QH1-O-P02E03I07,密封水投入情况：是否投用，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P02E03,QH1-O-P02E03I08,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P02E04,QH1-O-P02E04I01,积水情况：是否积水,BOOLEAN,,1,,,8,no,,,
+QH1-O-P03E01,QH1-O-P03E01I01,地坑内设备运行情况：有无跑冒滴漏、管道振动,BOOLEAN,,1,,,4,no,,,
+QH1-O-P03E02,QH1-O-P03E02I01,机封水换热器温度：冷却水是否投运，机封水换热器温度超过50°C汇报,NUMBER,°C,1,20.0,50.0,4,no,1.0,5.0,10.0
+QH1-O-P03E02,QH1-O-P03E02I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P03E02,QH1-O-P03E02I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P03E02,QH1-O-P03E02I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P03E02,QH1-O-P03E02I05,出口压力：是否正常,NUMBER,MPa,1,0.1,1.0,8,no,0.01,0.05,0.1
+QH1-O-P03E03,QH1-O-P03E03I01,机封水换热器温度：冷却水是否投运，机封水换热器温度超过50°C汇报,NUMBER,°C,1,20.0,50.0,4,no,1.0,5.0,10.0
+QH1-O-P03E03,QH1-O-P03E03I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P03E03,QH1-O-P03E03I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P03E03,QH1-O-P03E03I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P03E03,QH1-O-P03E03I05,出口压力：是否正常,NUMBER,MPa,1,0.1,1.0,8,no,0.01,0.05,0.1
+QH1-O-P03E04,QH1-O-P03E04I01,机封水换热器温度：冷却水是否投运，机封水换热器温度超过50°C汇报,NUMBER,°C,1,20.0,50.0,4,no,1.0,5.0,10.0
+QH1-O-P03E04,QH1-O-P03E04I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P03E04,QH1-O-P03E04I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P03E04,QH1-O-P03E04I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P03E04,QH1-O-P03E04I05,出口压力：是否正常,NUMBER,MPa,1,0.1,1.0,8,no,0.01,0.05,0.1
+QH1-O-P04E01,QH1-O-P04E01I01,过滤反吹器反吹压力：是否投用，压力低于0.5MPa汇报,BOOLEAN,,1,,,8,no ,,,
+QH1-O-P04E01,QH1-O-P04E01I02,过滤反吹器反吹阀运行情况：反吹阀有无泄漏、不动作情况,BOOLEAN,,1,,,8,no ,,,
+QH1-O-P04E02,QH1-O-P04E02I01,灰库顶部呼吸阀运行情况：有无泄漏、有无漏灰情况,BOOLEAN,,1,,,8,no ,,,
+QH1-O-P04E03,QH1-O-P04E03I01,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,8,no ,1.0,5.0,10.0
+QH1-O-P04E03,QH1-O-P04E03I02,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,8,no ,1.0,5.0,10.0
+QH1-O-P04E03,QH1-O-P04E03I03,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,8,no ,1.0,5.0,10.0
+QH1-O-P04E04,QH1-O-P04E04I01,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no ,1.0,5.0,10.0
+QH1-O-P04E04,QH1-O-P04E04I02,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no ,1.0,5.0,10.0
+QH1-O-P04E04,QH1-O-P04E04I03,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no ,1.0,5.0,10.0
+QH1-O-P04E04,QH1-O-P04E04I04,搅拌器运行情况：有无卡涩，有无堵塞,BOOLEAN,,1,,,4,no ,,,
+QH1-O-P04E05,QH1-O-P04E05I01,密封气投运情况：是否正常投运，压力≧0.1MPa,BOOLEAN,,1,,,4,no ,,,
+QH1-O-P04E05,QH1-O-P04E05I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no ,1.0,5.0,10.0
+QH1-O-P04E05,QH1-O-P04E05I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no ,1.0,5.0,10.0
+QH1-O-P04E05,QH1-O-P04E05I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no ,1.0,5.0,10.0
+QH1-O-P04E06,QH1-O-P04E06I01,灰库底部流化板运行情况：流化氮气是否过流，流化板有无泄漏,BOOLEAN,,1,,,4,no ,,,
+QH1-O-P04E06,QH1-O-P04E06I02,灰库二层卫生情况：地面有无积灰,BOOLEAN,,1,,,4,no ,,,
+QH1-O-P04E07,QH1-O-P04E07I01,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no ,1.0,5.0,10.0
+QH1-O-P04E07,QH1-O-P04E07I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no ,1.0,5.0,10.0
+QH1-O-P04E07,QH1-O-P04E07I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no ,1.0,5.0,10.0
+QH1-O-P04E08,QH1-O-P04E08I01,捞渣机刮板/链条运行情况：有无卡涩，有无异音,BOOLEAN,,1,,,4,no ,,,
+QH1-O-P04E08,QH1-O-P04E08I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no ,1.0,5.0,10.0
+QH1-O-P04E08,QH1-O-P04E08I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no ,1.0,5.0,10.0
+QH1-O-P04E08,QH1-O-P04E08I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no ,1.0,5.0,10.0
+QH1-O-P04E08,QH1-O-P04E08I05,渣池内积水液位：有无积水,BOOLEAN,,1,,,4,no ,,,
+QH1-O-P04E08,QH1-O-P04E08I06,渣池潜水泵运行情况：泵液位自动控制是否投入,BOOLEAN,,1,,,4,no ,,,
+QH1-O-P04E08,QH1-O-P04E08I07,渣池潜水泵电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no ,1.0,5.0,10.0
+QH1-O-P04E08,QH1-O-P04E08I08,渣池潜水泵电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no ,1.0,5.0,10.0
+QH1-O-P04E08,QH1-O-P04E08I09,渣池潜水泵电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no ,1.0,5.0,10.0
+QH1-O-P04E09,QH1-O-P04E09I01,消防炮运行情况：是否正常，有无泄漏,BOOLEAN,,1,,,8,no ,,,
+QH1-O-P05E01,QH1-O-P05E01I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E01,QH1-O-P05E01I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E01,QH1-O-P05E01I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E01,QH1-O-P05E01I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E01,QH1-O-P05E01I05,泵运行情况：有无异音，有无泄漏,BOOLEAN,,1,,,2,no,,,
+QH1-O-P05E01,QH1-O-P05E01I06,机封水换热器就地温度：是否正常，超过50°C汇报,NUMBER,°C,1,20.0,50.0,2,yes,1.0,5.0,10.0
+QH1-O-P05E01,QH1-O-P05E01I07,冷却水回路：是否畅通，事故冷却水是否投运，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P05E01,QH1-O-P05E01I08,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P05E01,QH1-O-P05E01I09,出口压力：是否正常,NUMBER,MPa,1,4.5,6.5,4,no,0.1,0.3,0.5
+QH1-O-P05E02,QH1-O-P05E02I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E02,QH1-O-P05E02I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E02,QH1-O-P05E02I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E02,QH1-O-P05E02I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E02,QH1-O-P05E02I05,泵运行情况：有无异音，有无泄漏,BOOLEAN,,1,,,2,no,,,
+QH1-O-P05E02,QH1-O-P05E02I06,机封水换热器就地温度：是否正常，超过50°C汇报,NUMBER,°C,1,20.0,50.0,2,yes,1.0,5.0,10.0
+QH1-O-P05E02,QH1-O-P05E02I07,冷却水回路：是否畅通，事故冷却水是否投运，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P05E02,QH1-O-P05E02I08,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P05E02,QH1-O-P05E02I09,出口压力：是否正常,NUMBER,MPa,1,4.5,6.5,4,no,0.1,0.3,0.5
+QH1-O-P05E03,QH1-O-P05E03I01,备用泵的泵体温度：是否正常，超过50°C汇报,NUMBER,°C,1,20.0,50.0,8,yes,1.0,5.0,10.0
+QH1-O-P05E04,QH1-O-P05E04I01,投用情况：水流是否正常，排水温度超过40°C汇报,BOOLEAN,,1,,,4,no,,,
+QH1-O-P05E05,QH1-O-P05E05I01,泵运行情况：有无异音，有无泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P05E05,QH1-O-P05E05I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P05E05,QH1-O-P05E05I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E05,QH1-O-P05E05I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E05,QH1-O-P05E05I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E05,QH1-O-P05E05I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E05,QH1-O-P05E05I07,出口压力：是否正常,NUMBER,MPa,1,0.4,1.2,4,no,0.1,0.2,0.5
+QH1-O-P05E06,QH1-O-P05E06I01,泵运行情况：有无异音，有无泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P05E06,QH1-O-P05E06I02,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P05E06,QH1-O-P05E06I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E06,QH1-O-P05E06I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E06,QH1-O-P05E06I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E06,QH1-O-P05E06I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P05E06,QH1-O-P05E06I07,出口压力：是否正常,NUMBER,MPa,1,0.4,1.2,4,no,0.1,0.2,0.5
+QH1-O-P06E01,QH1-O-P06E01I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E01,QH1-O-P06E01I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E01,QH1-O-P06E01I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E01,QH1-O-P06E01I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E01,QH1-O-P06E01I05,泵运行情况：有无异音，有无泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P06E01,QH1-O-P06E01I06,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P06E01,QH1-O-P06E01I07,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P06E01,QH1-O-P06E01I08,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P06E01,QH1-O-P06E01I09,出口压力：是否正常,NUMBER,MPa,1,3.2,4.5,4,no,0.1,0.3,0.5
+QH1-O-P06E02,QH1-O-P06E02I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E02,QH1-O-P06E02I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E02,QH1-O-P06E02I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E02,QH1-O-P06E02I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E02,QH1-O-P06E02I05,泵运行情况：有无异音，有无泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P06E02,QH1-O-P06E02I06,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P06E02,QH1-O-P06E02I07,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P06E02,QH1-O-P06E02I08,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P06E02,QH1-O-P06E02I09,出口压力：是否正常,NUMBER,MPa,1,3.2,4.5,4,no,0.1,0.3,0.5
+QH1-O-P06E03,QH1-O-P06E03I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E03,QH1-O-P06E03I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E03,QH1-O-P06E03I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E03,QH1-O-P06E03I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E03,QH1-O-P06E03I05,泵运行情况：有无异音，有无泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P06E03,QH1-O-P06E03I06,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P06E03,QH1-O-P06E03I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P06E03,QH1-O-P06E03I08,出口压力：是否正常,NUMBER,MPa,1,3.2,4.5,4,yes,0.1,0.3,0.5
+QH1-O-P06E04,QH1-O-P06E04I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E04,QH1-O-P06E04I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E04,QH1-O-P06E04I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E04,QH1-O-P06E04I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P06E04,QH1-O-P06E04I05,泵运行情况：有无异音，有无泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P06E04,QH1-O-P06E04I06,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P06E04,QH1-O-P06E04I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P06E04,QH1-O-P06E04I08,出口压力：是否正常,NUMBER,MPa,1,3.2,4.5,4,yes,0.1,0.3,0.5
+QH1-O-P07E01,QH1-O-P07E01I01,磨煤机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,2,no,,,
+QH1-O-P07E01,QH1-O-P07E01I02,磨煤机排矸情况：有无异物卡涩排矸斗，有无过多原煤颗粒排出,BOOLEAN,,1,,,4,no,,,
+QH1-O-P07E01,QH1-O-P07E01I03,润滑油回路：油箱油位不低于2/3，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P07E01,QH1-O-P07E01I04,润滑油出口温度：是否正常，正常温度在35°C～45°C,NUMBER,°C,1,20.0,50.0,4,yes,1.0,5.0,10.0
+QH1-O-P07E01,QH1-O-P07E01I05,润滑油过滤器前压力：是否正常，正常压力在0.3MPa～0.4MPa,NUMBER,MPa,1,0.2,0.5,2,yes,0.01,0.05,0.1
+QH1-O-P07E01,QH1-O-P07E01I06,润滑油过滤器后（冷却器前）压力：是否正常，低于0.25MPa汇报,NUMBER,MPa,1,0.25,0.5,2,yes,0.01,0.05,0.1
+QH1-O-P07E01,QH1-O-P07E01I07,润滑油过滤器压差：是否正常，高于0.1MPa汇报,NUMBER,MPa,1,0.03,0.1,2,yes,0.01,0.02,0.05
+QH1-O-P07E01,QH1-O-P07E01I08,润滑油冷却器后压力：是否正常，低于0.2MPa汇报,NUMBER,MPa,1,0.2,0.5,2,yes,0.01,0.05,0.1
+QH1-O-P07E01,QH1-O-P07E01I09,润滑油冷却器后流量：是否正常，低于140L/min汇报,NUMBER,L/min,1,140.0,200.0,4,yes,1.0,5.0,10.0
+QH1-O-P07E01,QH1-O-P07E01I10,润滑油泵电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P07E01,QH1-O-P07E01I11,润滑油泵电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P07E01,QH1-O-P07E01I12,润滑油泵电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P07E02,QH1-O-P07E02I01,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E02,QH1-O-P07E02I02,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E02,QH1-O-P07E02I03,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E02,QH1-O-P07E02I04,出口压力：是否正常，压力低于6KPa汇报,NUMBER,KPa,1,6.0,8.0,4,no,0.1,0.2,0.5
+QH1-O-P07E03,QH1-O-P07E03I01,风机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,2,no,,,
+QH1-O-P07E03,QH1-O-P07E03I02,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P07E03,QH1-O-P07E03I03,风机轴承箱风机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E03,QH1-O-P07E03I04,风机轴承箱电机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E03,QH1-O-P07E03I05,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E03,QH1-O-P07E03I06,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E03,QH1-O-P07E03I07,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E04,QH1-O-P07E04I01,磨煤机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,2,no,,,
+QH1-O-P07E04,QH1-O-P07E04I02,磨煤机排矸情况：有无异物卡涩排矸斗，有无过多原煤颗粒排出,BOOLEAN,,1,,,4,no,,,
+QH1-O-P07E04,QH1-O-P07E04I03,润滑油回路：油箱油位不低于2/3，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P07E04,QH1-O-P07E04I04,润滑油出口温度：是否正常，正常温度在35°C～45°C,NUMBER,°C,1,20.0,50.0,4,yes,1.0,5.0,10.0
+QH1-O-P07E04,QH1-O-P07E04I05,润滑油过滤器前压力：是否正常，正常压力在0.3MPa～0.4MPa,NUMBER,MPa,1,0.2,0.5,2,yes,0.01,0.05,0.1
+QH1-O-P07E04,QH1-O-P07E04I06,润滑油过滤器后（冷却器前）压力：是否正常，低于0.25MPa汇报,NUMBER,MPa,1,0.25,0.5,2,yes,0.01,0.05,0.1
+QH1-O-P07E04,QH1-O-P07E04I07,润滑油过滤器压差：是否正常，高于0.1MPa汇报,NUMBER,MPa,1,0.05,0.1,2,yes,0.01,0.02,0.05
+QH1-O-P07E04,QH1-O-P07E04I08,润滑油冷却器后压力：是否正常，低于0.2MPa汇报,NUMBER,MPa,1,0.2,0.5,2,yes,0.01,0.05,0.1
+QH1-O-P07E04,QH1-O-P07E04I09,润滑油冷却器后流量：是否正常，低于140L/min汇报,NUMBER,L/min,1,140.0,200.0,4,yes,1.0,5.0,10.0
+QH1-O-P07E04,QH1-O-P07E04I10,润滑油泵电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P07E04,QH1-O-P07E04I11,润滑油泵电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P07E04,QH1-O-P07E04I12,润滑油泵电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P07E05,QH1-O-P07E05I01,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E05,QH1-O-P07E05I02,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E05,QH1-O-P07E05I03,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E05,QH1-O-P07E05I04,出口压力：是否正常，压力低于6KPa汇报,NUMBER,KPa,1,6.0,8.0,4,no,0.1,0.2,0.5
+QH1-O-P07E06,QH1-O-P07E06I01,风机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,2,no,,,
+QH1-O-P07E06,QH1-O-P07E06I02,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P07E06,QH1-O-P07E06I03,风机轴承箱风机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E06,QH1-O-P07E06I04,风机轴承箱电机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E06,QH1-O-P07E06I05,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E06,QH1-O-P07E06I06,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E06,QH1-O-P07E06I07,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E07,QH1-O-P07E07I01,磨煤机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,2,no,,,
+QH1-O-P07E07,QH1-O-P07E07I02,磨煤机排矸情况：有无异物卡涩排矸斗，有无过多原煤颗粒排出,BOOLEAN,,1,,,4,no,,,
+QH1-O-P07E07,QH1-O-P07E07I03,润滑油回路：油箱油位不低于2/3，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P07E07,QH1-O-P07E07I04,润滑油出口温度：是否正常，正常温度在35°C～45°C,NUMBER,°C,1,20.0,50.0,4,yes,1.0,5.0,10.0
+QH1-O-P07E07,QH1-O-P07E07I05,润滑油过滤器前压力：是否正常，正常压力在0.3MPa～0.4MPa,NUMBER,MPa,1,0.2,0.5,2,yes,0.01,0.05,0.1
+QH1-O-P07E07,QH1-O-P07E07I06,润滑油过滤器后（冷却器前）压力：是否正常，低于0.25MPa汇报,NUMBER,MPa,1,0.25,0.5,2,yes,0.01,0.05,0.1
+QH1-O-P07E07,QH1-O-P07E07I07,润滑油过滤器压差：是否正常，高于0.1MPa汇报,NUMBER,MPa,1,0.05,0.1,2,yes,0.01,0.02,0.05
+QH1-O-P07E07,QH1-O-P07E07I08,润滑油冷却器后压力：是否正常，低于0.2MPa汇报,NUMBER,MPa,1,0.2,0.5,2,yes,0.01,0.05,0.1
+QH1-O-P07E07,QH1-O-P07E07I09,润滑油冷却器后流量：是否正常，低于140L/min汇报,NUMBER,L/min,1,140.0,200.0,4,yes,1.0,5.0,10.0
+QH1-O-P07E07,QH1-O-P07E07I10,润滑油泵电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P07E07,QH1-O-P07E07I11,润滑油泵电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P07E07,QH1-O-P07E07I12,润滑油泵电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P07E08,QH1-O-P07E08I01,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E08,QH1-O-P07E08I02,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E08,QH1-O-P07E08I03,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E08,QH1-O-P07E08I04,出口压力：是否正常，压力低于6KPa汇报,NUMBER,KPa,1,6.0,8.0,4,no,0.1,0.2,0.5
+QH1-O-P07E09,QH1-O-P07E09I01,风机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,2,no,,,
+QH1-O-P07E09,QH1-O-P07E09I02,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P07E09,QH1-O-P07E09I03,风机轴承箱风机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E09,QH1-O-P07E09I04,风机轴承箱电机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E09,QH1-O-P07E09I05,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E09,QH1-O-P07E09I06,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P07E09,QH1-O-P07E09I07,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P08E01,QH1-O-P08E01I01,轴承箱风机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P08E01,QH1-O-P08E01I02,轴承箱电机侧就地温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P08E01,QH1-O-P08E01I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P08E01,QH1-O-P08E01I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P08E01,QH1-O-P08E01I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P08E01,QH1-O-P08E01I06,润滑油回路：油箱油位不低于红线值，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P08E01,QH1-O-P08E01I07,润滑油过滤器后母管压力：是否正常，低于0.15NPa汇报,NUMBER,MPa,1,0.15,0.25,4,yes,0.01,0.03,0.05
+QH1-O-P08E01,QH1-O-P08E01I08,#1润滑油泵电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P08E01,QH1-O-P08E01I09,#1润滑油泵电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P08E01,QH1-O-P08E01I10,#1润滑油泵电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P08E01,QH1-O-P08E01I11,#2润滑油泵电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P08E01,QH1-O-P08E01I12,#2润滑油泵电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P08E01,QH1-O-P08E01I13,#2润滑油泵电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH1-O-P08E01,QH1-O-P08E01I14,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P08E01,QH1-O-P08E01I15,干气密封回路：是否投用，有无泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P08E01,QH1-O-P08E01I16,电机冷却器泄漏情况：电机基座排水孔是否向外流水,BOOLEAN,,1,,,4,no,,,
+QH1-O-P08E01,QH1-O-P08E01I17,高位油箱回油情况：回油是否正常,BOOLEAN,,1,,,8,no,,,
+QH1-O-P09E01,QH1-O-P09E01I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P09E01,QH1-O-P09E01I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E01,QH1-O-P09E01I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E01,QH1-O-P09E01I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E01,QH1-O-P09E01I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E01,QH1-O-P09E01I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P09E01,QH1-O-P09E01I07,泵运行情况：有无异音，有无泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P09E01,QH1-O-P09E01I08,出口压力：是否正常,NUMBER,MPa,1,0.4,1.2,4,no,0.01,0.2,0.5
+QH1-O-P09E02,QH1-O-P09E02I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P09E02,QH1-O-P09E02I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E02,QH1-O-P09E02I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E02,QH1-O-P09E02I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E02,QH1-O-P09E02I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E02,QH1-O-P09E02I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P09E02,QH1-O-P09E02I07,泵运行情况：有无异音，有无泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P09E02,QH1-O-P09E02I08,出口压力：是否正常,NUMBER,MPa,1,0.4,1.2,4,no,0.01,0.2,0.5
+QH1-O-P09E03,QH1-O-P09E03I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P09E03,QH1-O-P09E03I02,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P09E03,QH1-O-P09E03I03,齿轮箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E03,QH1-O-P09E03I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E03,QH1-O-P09E03I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E03,QH1-O-P09E03I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E03,QH1-O-P09E03I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P09E03,QH1-O-P09E03I08,出口压力：是否正常,NUMBER,MPa,1,4.0,5.5,4,no,0.1,0.3,0.5
+QH1-O-P09E04,QH1-O-P09E04I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P09E04,QH1-O-P09E04I02,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P09E04,QH1-O-P09E04I03,齿轮箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E04,QH1-O-P09E04I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E04,QH1-O-P09E04I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E04,QH1-O-P09E04I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E04,QH1-O-P09E04I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P09E04,QH1-O-P09E04I08,出口压力：是否正常,NUMBER,MPa,1,4.0,5.5,4,no,0.1,0.3,0.5
+QH1-O-P09E05,QH1-O-P09E05I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P09E05,QH1-O-P09E05I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E05,QH1-O-P09E05I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E05,QH1-O-P09E05I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E05,QH1-O-P09E05I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E05,QH1-O-P09E05I06,出口压力：是否正常,NUMBER,MPa,1,0.5,1.2,4,no,0.1,0.2,0.5
+QH1-O-P09E06,QH1-O-P09E06I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P09E06,QH1-O-P09E06I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E06,QH1-O-P09E06I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E06,QH1-O-P09E06I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E06,QH1-O-P09E06I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E06,QH1-O-P09E06I06,出口压力：是否正常,NUMBER,MPa,1,0.5,1.2,4,no,0.1,0.2,0.5
+QH1-O-P09E07,QH1-O-P09E07I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P09E07,QH1-O-P09E07I02,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P09E07,QH1-O-P09E07I03,齿轮箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E07,QH1-O-P09E07I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E07,QH1-O-P09E07I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E07,QH1-O-P09E07I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E07,QH1-O-P09E07I07,出口压力：是否正常,NUMBER,MPa,1,4.0,6.0,4,no,0.1,0.3,0.5
+QH1-O-P09E08,QH1-O-P09E08I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P09E08,QH1-O-P09E08I02,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P09E08,QH1-O-P09E08I03,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E08,QH1-O-P09E08I04,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E08,QH1-O-P09E08I05,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E08,QH1-O-P09E08I06,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P09E08,QH1-O-P09E08I07,出口压力：是否正常,NUMBER,MPa,1,4.0,6.0,4,no,0.1,0.3,0.5
+QH1-O-P09E09,QH1-O-P09E09I01,投用情况：水流是否正常，排水温度超过40°C汇报,BOOLEAN,,1,,,4,no,,,
+QH1-O-P10E01,QH1-O-P10E01I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P10E01,QH1-O-P10E01I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P10E01,QH1-O-P10E01I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E01,QH1-O-P10E01I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E01,QH1-O-P10E01I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E01,QH1-O-P10E01I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P10E01,QH1-O-P10E01I07,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P10E02,QH1-O-P10E02I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P10E02,QH1-O-P10E02I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P10E02,QH1-O-P10E02I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E02,QH1-O-P10E02I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E02,QH1-O-P10E02I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E02,QH1-O-P10E02I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P10E02,QH1-O-P10E02I07,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P10E03,QH1-O-P10E03I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P10E03,QH1-O-P10E03I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P10E03,QH1-O-P10E03I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E03,QH1-O-P10E03I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E03,QH1-O-P10E03I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E03,QH1-O-P10E03I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P10E03,QH1-O-P10E03I07,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P10E04,QH1-O-P10E04I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P10E04,QH1-O-P10E04I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P10E04,QH1-O-P10E04I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E04,QH1-O-P10E04I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E04,QH1-O-P10E04I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E04,QH1-O-P10E04I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P10E04,QH1-O-P10E04I07,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P10E05,QH1-O-P10E05I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P10E05,QH1-O-P10E05I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P10E05,QH1-O-P10E05I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E05,QH1-O-P10E05I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E05,QH1-O-P10E05I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E05,QH1-O-P10E05I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P10E05,QH1-O-P10E05I07,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P10E05,QH1-O-P10E05I08,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P10E06,QH1-O-P10E06I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P10E06,QH1-O-P10E06I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P10E06,QH1-O-P10E06I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E06,QH1-O-P10E06I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E06,QH1-O-P10E06I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P10E06,QH1-O-P10E06I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P10E06,QH1-O-P10E06I07,冷却水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P10E06,QH1-O-P10E06I08,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P11E01,QH1-O-P11E01I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no ,1.0,5.0,10.0
+QH1-O-P11E01,QH1-O-P11E01I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no ,1.0,5.0,10.0
+QH1-O-P11E01,QH1-O-P11E01I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no ,1.0,5.0,10.0
+QH1-O-P11E01,QH1-O-P11E01I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no ,1.0,5.0,10.0
+QH1-O-P11E01,QH1-O-P11E01I05,泵/电机运行情况：有无异音，有无泄漏,BOOLEAN,,1,,,2,no ,,,
+QH1-O-P11E01,QH1-O-P11E01I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,2,yes,,,
+QH1-O-P11E01,QH1-O-P11E01I07,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P11E01,QH1-O-P11E01I08,出口压力：是否正常,NUMBER,MPa,1,3.0,4.5,4,no ,0.1,0.3,0.5
+QH1-O-P11E02,QH1-O-P11E02I01,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no ,1.0,5.0,10.0
+QH1-O-P11E02,QH1-O-P11E02I02,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no ,1.0,5.0,10.0
+QH1-O-P11E02,QH1-O-P11E02I03,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no ,1.0,5.0,10.0
+QH1-O-P11E02,QH1-O-P11E02I04,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no ,1.0,5.0,10.0
+QH1-O-P11E02,QH1-O-P11E02I05,泵/电机运行情况：有无异音，有无泄漏,BOOLEAN,,1,,,2,no ,,,
+QH1-O-P11E02,QH1-O-P11E02I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,2,yes,,,
+QH1-O-P11E02,QH1-O-P11E02I07,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P11E02,QH1-O-P11E02I08,出口压力：是否正常,NUMBER,MPa,1,3.0,4.5,4,no ,0.1,0.3,0.5
+QH1-O-P11E03,QH1-O-P11E03I01,投用情况：水流是否正常，排水温度超过40°C汇报,BOOLEAN,,1,,,4,no ,,,
+QH1-O-P12E01,QH1-O-P12E01I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P12E01,QH1-O-P12E01I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P12E01,QH1-O-P12E01I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P12E01,QH1-O-P12E01I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P12E01,QH1-O-P12E01I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P12E01,QH1-O-P12E01I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P12E01,QH1-O-P12E01I07,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P12E02,QH1-O-P12E02I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P12E02,QH1-O-P12E02I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P12E02,QH1-O-P12E02I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P12E02,QH1-O-P12E02I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P12E02,QH1-O-P12E02I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P12E02,QH1-O-P12E02I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,2,yes,,,
+QH1-O-P12E02,QH1-O-P12E02I07,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P12E03,QH1-O-P12E03I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P12E03,QH1-O-P12E03I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P12E03,QH1-O-P12E03I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P12E03,QH1-O-P12E03I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P12E03,QH1-O-P12E03I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P12E03,QH1-O-P12E03I06,电机冷却风扇运行情况：是否运行，有无异音,BOOLEAN,,1,,,2,no,,,
+QH1-O-P12E03,QH1-O-P12E03I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P12E03,QH1-O-P12E03I08,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P12E04,QH1-O-P12E04I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P12E04,QH1-O-P12E04I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P12E04,QH1-O-P12E04I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P12E04,QH1-O-P12E04I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P12E04,QH1-O-P12E04I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P12E04,QH1-O-P12E04I06,电机冷却风扇运行情况：是否运行，有无异音,BOOLEAN,,1,,,2,no,,,
+QH1-O-P12E04,QH1-O-P12E04I07,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P12E04,QH1-O-P12E04I08,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P12E05,QH1-O-P12E05I01,投用情况：水流是否正常，排水温度超过40°C汇报,BOOLEAN,,1,,,4,no,,,
+QH1-O-P12E06,QH1-O-P12E06I01,投用情况：水流是否正常，排水温度超过40°C汇报,BOOLEAN,,1,,,4,no,,,
+QH1-O-P12E07,QH1-O-P12E07I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P12E08,QH1-O-P12E08I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P12E09,QH1-O-P12E09I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P12E10,QH1-O-P12E10I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P12E11,QH1-O-P12E11I01,围堰：罐体或设备管道有无泄漏，地面有无碱液残留,BOOLEAN,,1,,,4,no,,,
+QH1-O-P12E12,QH1-O-P12E12I01,围堰：罐体或设备管道有无泄漏，地面有无酸液残留,BOOLEAN,,1,,,4,no,,,
+QH1-O-P13E01,QH1-O-P13E01I01,地坑积水情况：是否积水,BOOLEAN,,1,,,4,no,,,
+QH1-O-P13E02,QH1-O-P13E02I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P13E03,QH1-O-P13E03I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P13E04,QH1-O-P13E04I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P13E04,QH1-O-P13E04I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P13E04,QH1-O-P13E04I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P13E04,QH1-O-P13E04I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P13E04,QH1-O-P13E04I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P13E04,QH1-O-P13E04I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P13E04,QH1-O-P13E04I07,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P13E05,QH1-O-P13E05I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P13E05,QH1-O-P13E05I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P13E05,QH1-O-P13E05I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P13E05,QH1-O-P13E05I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P13E05,QH1-O-P13E05I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P13E05,QH1-O-P13E05I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P13E05,QH1-O-P13E05I07,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P14E01,QH1-O-P14E01I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P14E02,QH1-O-P14E02I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P14E03,QH1-O-P14E03I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P14E04,QH1-O-P14E04I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P14E05,QH1-O-P14E05I01,泵/电机运行情况：有无异音，有无过大振动与泄漏,BOOLEAN,,1,,,4,no,,,
+QH1-O-P14E06,QH1-O-P14E06I01,搅拌器运行情况：有无异音，有无过大振动,BOOLEAN,,1,,,4,no,,,
+QH1-O-P14E06,QH1-O-P14E06I02,絮凝剂加药机运行情况：有无异音，是否堵塞,BOOLEAN,,1,,,4,no,,,
+QH1-O-P14E07,QH1-O-P14E07I01,搅拌器运行情况：有无异音，有无过大振动，液位是否正常,BOOLEAN,,1,,,4,no,,,
+QH1-O-P14E08,QH1-O-P14E08I01,离心机情况：现场有无过大振动、异音、跑冒情况,BOOLEAN,,1,,,4,no,,,
+QH1-O-P14E08,QH1-O-P14E08I02,离心机润滑油情况：现场油量指示值是否正常,NUMBER,L/h,1,120.0,140.0,4,no,1.0,5.0,10.0
+QH1-O-P14E09,QH1-O-P14E09I01,搅拌器运行情况：有无异音，有无过大振动,BOOLEAN,,1,,,8,no,,,
+QH1-O-P14E10,QH1-O-P14E10I01,搅拌器运行情况：有无异音，有无过大振动,BOOLEAN,,1,,,8,no,,,
+QH1-O-P14E11,QH1-O-P14E11I01,搅拌器运行情况：有无异音，有无过大振动,BOOLEAN,,1,,,8,no,,,
+QH1-O-P15E01,QH1-O-P15E01I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P15E01,QH1-O-P15E01I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P15E01,QH1-O-P15E01I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P15E01,QH1-O-P15E01I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P15E01,QH1-O-P15E01I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P15E01,QH1-O-P15E01I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P15E01,QH1-O-P15E01I07,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P15E02,QH1-O-P15E02I01,润滑油回路：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH1-O-P15E02,QH1-O-P15E02I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH1-O-P15E02,QH1-O-P15E02I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P15E02,QH1-O-P15E02I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P15E02,QH1-O-P15E02I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P15E02,QH1-O-P15E02I06,密封水回路：是否畅通，有无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH1-O-P15E02,QH1-O-P15E02I07,出口压力：是否正常,NUMBER,MPa,1,0.2,0.7,4,no,0.01,0.05,0.1
+QH1-O-P15E03,QH1-O-P15E03I01,罐体焊缝、人孔门有无泄漏，房间内有无异味,BOOLEAN,,1,,,4,no,,,
+QH1-O-P16E01,QH1-O-P16E01I01,机封水换热器温度：冷却水是否投运，机封水换热器温度超过50°C汇报,NUMBER,°C,1,20.0,50.0,4,yes,1.0,5.0,10.0
+QH1-O-P16E01,QH1-O-P16E01I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P16E01,QH1-O-P16E01I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P16E01,QH1-O-P16E01I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P16E01,QH1-O-P16E01I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P16E01,QH1-O-P16E01I06,电机冷却风扇运行情况：是否运行，有无异音,BOOLEAN,,0,,,4,no,,,
+QH1-O-P16E01,QH1-O-P16E01I07,出口压力：是否正常,NUMBER,MPa,1,0.3,1.5,4,no,0.1,0.2,0.5
+QH1-O-P16E02,QH1-O-P16E02I01,机封水换热器温度：冷却水是否投运，机封水换热器温度超过50°C汇报,NUMBER,°C,1,20.0,50.0,4,yes,1.0,5.0,10.0
+QH1-O-P16E02,QH1-O-P16E02I02,轴承箱润滑油温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P16E02,QH1-O-P16E02I03,电机驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P16E02,QH1-O-P16E02I04,电机非驱动端轴承温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P16E02,QH1-O-P16E02I05,电机本体温度：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH1-O-P16E02,QH1-O-P16E02I06,电机冷却风扇运行情况：是否运行，有无异音,BOOLEAN,,0,,,4,no,,,
+QH1-O-P16E02,QH1-O-P16E02I07,出口压力：是否正常,NUMBER,MPa,1,0.3,1.5,4,no,0.1,0.2,0.5
+QH1-O-P16E03,QH1-O-P16E03I01,除铁器运行情况：有无异音，阀门状态是否正确，PLC面板有无报警,BOOLEAN,,1,,,4,no,,,
+QH1-O-P16E03,QH1-O-P16E03I02,出口凝液电导：在线电导表工作是否正常，冷却水是否畅通,BOOLEAN,,1,,,4,no,,,
+QH1-O-P16E04,QH1-O-P16E04I01,冷却器运行情况：有无跑冒滴漏、振动,BOOLEAN,,1,,,8,no,,,
+QH1-O-P16E05,QH1-O-P16E05I01,闪蒸罐运行情况：有无跑冒滴漏、振动，安全阀有无起跳，现场液位计显示与DCS是否一致,BOOLEAN,,1,,,8,no,,,
+QH2-O-P01E01,QH2-O-P01E01I01,汽包及附属管线 ：无跑冒、无泄漏、无异常放空,BOOLEAN,,1,,,4,no,,,
+QH2-O-P01E02,QH2-O-P01E02I01,反吹PLC控制柜 ：是否正常,BOOLEAN,,1,,,4,no,,,
+QH2-O-P01E02,QH2-O-P01E02I02,95米层框架 ：无跑冒、无泄漏、无异音,BOOLEAN,,1,,,2,no,,,
+QH2-O-P02E01,QH2-O-P02E01I01,放空无煤粉 ：是否正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P02E01,QH2-O-P02E01I02,反吹阀前压力 ：≧0.4MPa,NUMBER,MPa,1,0.4,0.5,4,yes,0.01,0.05,0.1
+QH2-O-P02E01,QH2-O-P02E01I03,反吹声音正常 ：是否正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P02E02,QH2-O-P02E02I01,放空无煤粉 ：是否正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P02E02,QH2-O-P02E02I02,反吹阀前压力 ：≧0.4MPa,NUMBER,MPa,1,0.4,0.5,4,yes,0.01,0.05,0.1
+QH2-O-P02E02,QH2-O-P02E02I03,反吹声音正常 ：是否正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P02E03,QH2-O-P02E03I01,放空无煤粉 ：是否正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P02E03,QH2-O-P02E03I02,反吹阀前压力 ：≧0.4MPa,NUMBER,MPa,1,0.4,0.5,4,yes,0.01,0.05,0.1
+QH2-O-P02E03,QH2-O-P02E03I03,反吹声音正常 ：是否正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P02E04,QH2-O-P02E04I01,反吹阀前压力 ：≧0.4MPa,NUMBER,MPa,1,0.4,0.5,4,yes,0.01,0.05,0.1
+QH2-O-P02E04,QH2-O-P02E04I02,反吹声音正常 ：是否正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P02E05,QH2-O-P02E05I01,反吹阀前压力 ：≧0.4MPa,NUMBER,MPa,1,0.4,0.5,4,yes,0.01,0.05,0.1
+QH2-O-P02E05,QH2-O-P02E05I02,反吹声音正常 ：是否正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P02E06,QH2-O-P02E06I01,反吹阀前压力 ：≧0.4MPa,NUMBER,MPa,1,0.4,0.5,4,yes,0.01,0.05,0.1
+QH2-O-P02E06,QH2-O-P02E06I02,反吹声音正常 ：是否正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P02E07,QH2-O-P02E07I01,合成气管道 ：无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P02E07,QH2-O-P02E07I02,82米层框架 ：无跑冒、无泄漏,BOOLEAN,,1,,,2,no,,,
+QH2-O-P03E01,QH2-O-P03E01I01,运行情况 ：运行无异音,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P03E01,QH2-O-P03E01I02,运行情况 ：运行无漏粉,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P03E01,QH2-O-P03E01I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,MPa,1,0.1,0.5,4,yes,0.01,0.02,0.1
+QH2-O-P03E01,QH2-O-P03E01I04,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P03E01,QH2-O-P03E01I05,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P03E01,QH2-O-P03E01I06,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P03E02,QH2-O-P03E02I01,运行无异音 ：运行无异音,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P03E02,QH2-O-P03E02I02,运行无漏粉 ：运行无漏粉,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P03E02,QH2-O-P03E02I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,MPa,1,0.1,0.5,4,yes,0.01,0.02,0.1
+QH2-O-P03E02,QH2-O-P03E02I04,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P03E02,QH2-O-P03E02I05,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P03E02,QH2-O-P03E02I06,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P03E03,QH2-O-P03E03I01,运行无异音 ：运行无异音,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P03E03,QH2-O-P03E03I02,运行无漏粉 ：运行无漏粉,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P03E03,QH2-O-P03E03I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,MPa,1,0.1,0.5,4,yes,0.01,0.02,0.1
+QH2-O-P03E03,QH2-O-P03E03I04,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P03E03,QH2-O-P03E03I05,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P03E03,QH2-O-P03E03I06,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P03E04,QH2-O-P03E04I01,泄压无跑粉 ：泄压阀门平台处无跑粉、无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P03E05,QH2-O-P03E05I01,泄压无跑粉 ：泄压阀门平台处无跑粉、无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P03E06,QH2-O-P03E06I01,泄压无跑粉 ：泄压阀门平台处无跑粉、无泄漏,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P03E07,QH2-O-P03E07I01,73米层框架 ：无跑冒、无泄漏,BOOLEAN,,1,,,2,no,,,
+QH2-O-P04E01,QH2-O-P04E01I01,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH2-O-P04E01,QH2-O-P04E01I02,运行无异音 ：运行无异音,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E01,QH2-O-P04E01I03,节轴承密封气已投入，运行无异音 ：无异音、密封气流量6～10m3/h,NUMBER,m3/h,1,5.0,15.0,4,yes,0.1,2.0,5.0
+QH2-O-P04E01,QH2-O-P04E01I04,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P04E01,QH2-O-P04E01I05,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P04E01,QH2-O-P04E01I06,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P04E02,QH2-O-P04E02I01,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH2-O-P04E02,QH2-O-P04E02I02,运行无异音 ：运行无异音,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E02,QH2-O-P04E02I03,节轴承密封气已投入，运行无异音 ：无异音、密封气流量6～10m3/h,NUMBER,m3/h,1,5.0,15.0,4,yes,0.1,2.0,5.0
+QH2-O-P04E02,QH2-O-P04E02I04,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P04E02,QH2-O-P04E02I05,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P04E02,QH2-O-P04E02I06,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P04E03,QH2-O-P04E03I01,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH2-O-P04E03,QH2-O-P04E03I02,运行无异音 ：运行无异音,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E03,QH2-O-P04E03I03,节轴承密封气已投入，运行无异音 ：无异音、密封气流量6～10m3/h,NUMBER,m3/h,1,5.0,15.0,4,yes,0.1,2.0,5.0
+QH2-O-P04E03,QH2-O-P04E03I04,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P04E03,QH2-O-P04E03I05,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P04E03,QH2-O-P04E03I06,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P04E04,QH2-O-P04E04I01,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH2-O-P04E04,QH2-O-P04E04I02,运行无异音 ：运行无异音,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E04,QH2-O-P04E04I03,节轴承密封气已投入，运行无异音 ：无异音、密封气流量6～10m3/h,NUMBER,m3/h,1,5.0,15.0,4,yes,0.1,2.0,5.0
+QH2-O-P04E04,QH2-O-P04E04I04,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P04E04,QH2-O-P04E04I05,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P04E04,QH2-O-P04E04I06,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,yes,1.0,5.0,10.0
+QH2-O-P04E05,QH2-O-P04E05I01,各螺旋输送机与旋转卸料阀处 ：无漏粉现象,BOOLEAN,,1,,,2,no,,,
+QH2-O-P04E06,QH2-O-P04E06I01,运行无异音 ：运行无异音,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E06,QH2-O-P04E06I02,无漏粉现象 ：无漏粉现象,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E06,QH2-O-P04E06I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,MPa,1,0.1,0.5,4,yes,0.01,0.03,0.05
+QH2-O-P04E07,QH2-O-P04E07I01,运行无异音 ：运行无异音,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E07,QH2-O-P04E07I02,无漏粉现象 ：无漏粉现象,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E07,QH2-O-P04E07I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,MPa,1,0.1,0.5,4,yes,0.01,0.03,0.05
+QH2-O-P04E08,QH2-O-P04E08I01,运行无异音 ：运行无异音,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E08,QH2-O-P04E08I02,无漏粉现象 ：无漏粉现象,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E08,QH2-O-P04E08I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,MPa,1,0.1,0.5,4,yes,0.01,0.03,0.05
+QH2-O-P04E09,QH2-O-P04E09I01,运行无异音 ：运行无异音,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E09,QH2-O-P04E09I02,无漏粉现象 ：无漏粉现象,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E09,QH2-O-P04E09I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,MPa,1,0.1,0.5,4,yes,0.01,0.03,0.05
+QH2-O-P04E10,QH2-O-P04E10I01,运行无异音 ：运行无异音,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E10,QH2-O-P04E10I02,无漏粉现象 ：无漏粉现象,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E10,QH2-O-P04E10I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,MPa,1,0.1,0.5,4,yes,0.01,0.03,0.05
+QH2-O-P04E11,QH2-O-P04E11I01,运行无异音 ：运行无异音,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E11,QH2-O-P04E11I02,无漏粉现象 ：无漏粉现象,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P04E11,QH2-O-P04E11I03,密封气投运情况 ：是否正常投运，压力≧0.1MPa,NUMBER,MPa,1,0.1,0.5,4,yes,0.01,0.03,0.05
+QH2-O-P04E12,QH2-O-P04E12I01,65米层框架 ：无跑冒、无泄漏,BOOLEAN,,1,,,2,no,,,
+QH2-O-P05E01,QH2-O-P05E01I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P05E02,QH2-O-P05E02I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P05E03,QH2-O-P05E03I01,管道及阀门：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P05E04,QH2-O-P05E04I01,57米层框架 ：无跑冒、无泄漏,BOOLEAN,,1,,,2,no,,,
+QH2-O-P06E01,QH2-O-P06E01I01,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH2-O-P06E01,QH2-O-P06E01I02,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH2-O-P06E01,QH2-O-P06E01I03,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH2-O-P06E01,QH2-O-P06E01I04,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH2-O-P06E02,QH2-O-P06E02I01,反吹投运情况 ：反吹正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P06E03,QH2-O-P06E03I01,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH2-O-P06E03,QH2-O-P06E03I02,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH2-O-P06E03,QH2-O-P06E03I03,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH2-O-P06E03,QH2-O-P06E03I04,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH2-O-P06E04,QH2-O-P06E04I01,反吹投运情况 ：反吹正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P06E05,QH2-O-P06E05I01,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH2-O-P06E05,QH2-O-P06E05I02,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH2-O-P06E05,QH2-O-P06E05I03,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,4,no,1.0,5.0,10.0
+QH2-O-P06E05,QH2-O-P06E05I04,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH2-O-P06E06,QH2-O-P06E06I01,反吹投运情况 ：反吹正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P06E07,QH2-O-P06E07I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P06E08,QH2-O-P06E08I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P06E09,QH2-O-P06E09I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P06E10,QH2-O-P06E10I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P06E11,QH2-O-P06E11I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P06E12,QH2-O-P06E12I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P06E13,QH2-O-P06E13I01,48米层框架 ：无跑冒、无泄漏,BOOLEAN,,1,,,2,no,,,
+QH2-O-P07E01,QH2-O-P07E01I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P07E02,QH2-O-P07E02I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P07E03,QH2-O-P07E03I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P07E04,QH2-O-P07E04I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P07E05,QH2-O-P07E05I01,43米层框架 ：无跑冒、无泄漏,BOOLEAN,,1,,,2,no,,,
+QH2-O-P08E01,QH2-O-P08E01I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P08E02,QH2-O-P08E02I01,33TG0003就地温度 ：是否正常,NUMBER,°C,1,150.0,260.0,4,no,1.0,5.0,10.0
+QH2-O-P08E03,QH2-O-P08E03I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P08E04,QH2-O-P08E04I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P08E05,QH2-O-P08E05I01,33PG0044 就地压力 ：是否正常,NUMBER,MPa,1,4.0,6.0,4,no,0.1,0.5,1.0
+QH2-O-P08E06,QH2-O-P08E06I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P08E07,QH2-O-P08E07I01,38米层框架 ：无跑冒、无泄漏,BOOLEAN,,1,,,2,no,,,
+QH2-O-P09E01,QH2-O-P09E01I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P09E02,QH2-O-P09E02I01,33PG0001 就地压力 ：是否正常,NUMBER,MPa,1,3.4,3.9,4,no,0.01,0.03,0.05
+QH2-O-P09E02,QH2-O-P09E02I02,33TG0001 就地温度 ：是否正常,NUMBER,°C,1,15.0,50.0,4,no,1.0,5.0,10.0
+QH2-O-P09E03,QH2-O-P09E03I01,35FG0014 就地流量 ：是否正常,NUMBER,Nm3/h,1,60.0,120.0,4,no,1.0,5.0,10.0
+QH2-O-P09E04,QH2-O-P09E04I01,35FG0064 就地流量 ：是否正常,NUMBER,Nm3/h,1,60.0,120.0,4,no,1.0,5.0,10.0
+QH2-O-P09E05,QH2-O-P09E05I01,疏水器及管道 ：无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P09E06,QH2-O-P09E06I01,32米层框架 ：无跑冒、无泄漏,BOOLEAN,,1,,,2,no,,,
+QH2-O-P10E01,QH2-O-P10E01I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P10E02,QH2-O-P10E02I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P10E03,QH2-O-P10E03I01,管道及阀门 ：无跑冒、无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P10E04,QH2-O-P10E04I01,管道及阀门 ：无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P10E05,QH2-O-P10E05I01,33LG1001 就地液位 ：是否正常，有无漏水,BOOLEAN,,1,,,4,no,,,
+QH2-O-P10E06,QH2-O-P10E06I01,运行情况 ：无异音、无异常振动,BOOLEAN,,1,,,4,no,,,
+QH2-O-P10E07,QH2-O-P10E07I01,运行情况 ：无异音、无异常振动,BOOLEAN,,1,,,4,no,,,
+QH2-O-P10E08,QH2-O-P10E08I01,39LG5005 就地液位 ：是否正常，有无漏水,BOOLEAN,,1,,,4,no,,,
+QH2-O-P10E09,QH2-O-P10E09I01,合成气管道 ：无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P10E09,QH2-O-P10E09I02,24米层框架 ：无跑冒、无泄漏,BOOLEAN,,1,,,2,no,,,
+QH2-O-P11E01,QH2-O-P11E01I01,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E01,QH2-O-P11E01I02,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E01,QH2-O-P11E01I03,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E01,QH2-O-P11E01I04,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH2-O-P11E01,QH2-O-P11E01I05,电机驱动端/非驱动轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E01,QH2-O-P11E01I06,泵驱动端/非驱动轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E01,QH2-O-P11E01I07,驱动端机封冷却器温度 ：是否正常，超过50°C汇报,NUMBER,°C,1,20.0,50.0,2,yes,1.0,5.0,10.0
+QH2-O-P11E01,QH2-O-P11E01I08,非驱动端机封冷却器 ：是否正常，超过50°C汇报,NUMBER,°C,1,20.0,50.0,2,yes,1.0,5.0,10.0
+QH2-O-P11E01,QH2-O-P11E01I09,冷却水回路 ：是否畅通，事故冷却水是否投运，有无泄漏,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P11E02,QH2-O-P11E02I01,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E02,QH2-O-P11E02I02,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E02,QH2-O-P11E02I03,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E02,QH2-O-P11E02I04,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH2-O-P11E02,QH2-O-P11E02I05,电机驱动端/非驱动轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E02,QH2-O-P11E02I06,泵驱动端/非驱动轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E02,QH2-O-P11E02I07,驱动端机封冷却器温度 ：是否正常，超过50°C汇报,NUMBER,°C,1,20.0,50.0,2,yes,1.0,5.0,10.0
+QH2-O-P11E02,QH2-O-P11E02I08,非驱动端机封冷却器 ：是否正常，超过50°C汇报,NUMBER,°C,1,20.0,50.0,2,yes,1.0,5.0,10.0
+QH2-O-P11E02,QH2-O-P11E02I09,冷却水回路 ：是否畅通，事故冷却水是否投运，有无泄漏,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P11E03,QH2-O-P11E03I01,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E03,QH2-O-P11E03I02,电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E03,QH2-O-P11E03I03,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E03,QH2-O-P11E03I04,润滑油回路 ：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH2-O-P11E03,QH2-O-P11E03I05,电机驱动端/非驱动轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E03,QH2-O-P11E03I06,泵驱动端/非驱动轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E03,QH2-O-P11E03I07,驱动端机封冷却器温度 ：是否正常，超过50°C汇报,NUMBER,°C,1,20.0,50.0,2,yes,1.0,5.0,10.0
+QH2-O-P11E03,QH2-O-P11E03I08,非驱动端机封冷却器 ：是否正常，超过50°C汇报,NUMBER,°C,1,20.0,50.0,2,yes,1.0,5.0,10.0
+QH2-O-P11E03,QH2-O-P11E03I09,冷却水回路 ：是否畅通，事故冷却水是否投运，有无泄漏,BOOLEAN,,1,,,2,yes,,,
+QH2-O-P11E04,QH2-O-P11E04I01,投用情况 ：水流是否正常，排水温度超过40°C汇报,NUMBER,°C,1,20.0,40.0,2,no,1.0,5.0,10.0
+QH2-O-P11E05,QH2-O-P11E05I01,柴油管道及阀门 ：无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P11E05,QH2-O-P11E05I02,燃料气管道及阀门 ：无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P11E05,QH2-O-P11E05I03,天然气管道及阀门 ：无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P11E06,QH2-O-P11E06I01,润滑油油位 ：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH2-O-P11E06,QH2-O-P11E06I02,轴承箱温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E06,QH2-O-P11E06I03,电机驱动端温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E06,QH2-O-P11E06I04,电机非驱动端温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E06,QH2-O-P11E06I05,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E06,QH2-O-P11E06I06,风机运行情况 ：风机及出口软连接无漏风现象,BOOLEAN,,1,,,4,no,,,
+QH2-O-P11E07,QH2-O-P11E07I01,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E07,QH2-O-P11E07I02,电机非驱动端轴承 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E07,QH2-O-P11E07I03,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E07,QH2-O-P11E07I04,清扫电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E07,QH2-O-P11E07I05,清扫电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E07,QH2-O-P11E07I06,清扫电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E07,QH2-O-P11E07I07,给煤机尾部就地温度 ：是否正常，超过40°C汇报,NUMBER,°C,1,15.0,40.0,2,no,1.0,5.0,10.0
+QH2-O-P11E07,QH2-O-P11E07I08,给煤机运行情况 ：密封氮气是否投入，头尾部照明是否正常，皮带有无划痕,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P11E07,QH2-O-P11E07I09,清扫链运行情况 ：清扫链是否打“2”位运行，清扫链工作正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P11E08,QH2-O-P11E08I01,柴油管道及阀门 ：无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P11E08,QH2-O-P11E08I02,燃料气管道及阀门 ：无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P11E08,QH2-O-P11E08I03,天然气管道及阀门 ：无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P11E09,QH2-O-P11E09I01,润滑油油位 ：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH2-O-P11E09,QH2-O-P11E09I02,轴承箱温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E09,QH2-O-P11E09I03,电机驱动端温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E09,QH2-O-P11E09I04,电机非驱动端温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E09,QH2-O-P11E09I05,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E09,QH2-O-P11E09I06,风机运行情况 ：风机及出口软连接无漏风现象,BOOLEAN,,1,,,4,no,,,
+QH2-O-P11E10,QH2-O-P11E10I01,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E10,QH2-O-P11E10I02,电机非驱动端轴承 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E10,QH2-O-P11E10I03,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E10,QH2-O-P11E10I04,清扫电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E10,QH2-O-P11E10I05,清扫电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E10,QH2-O-P11E10I06,清扫电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E10,QH2-O-P11E10I07,给煤机尾部就地温度 ：是否正常，超过40°C汇报,NUMBER,°C,1,15.0,40.0,2,no,1.0,5.0,10.0
+QH2-O-P11E10,QH2-O-P11E10I08,给煤机运行情况 ：密封氮气是否投入，头尾部照明是否正常，皮带有无划痕,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P11E10,QH2-O-P11E10I09,清扫链运行情况 ：清扫链是否打“2”位运行，清扫链工作正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P11E11,QH2-O-P11E11I01,柴油管道及阀门 ：无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P11E11,QH2-O-P11E11I02,燃料气管道及阀门 ：无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P11E11,QH2-O-P11E11I03,天然气管道及阀门 ：无泄漏,BOOLEAN,,1,,,4,no,,,
+QH2-O-P11E12,QH2-O-P11E12I01,润滑油油位 ：油位不低于1/2，有无泄漏,BOOLEAN,,1,,,8,yes,,,
+QH2-O-P11E12,QH2-O-P11E12I02,轴承箱温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E12,QH2-O-P11E12I03,电机驱动端温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E12,QH2-O-P11E12I04,电机非驱动端温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E12,QH2-O-P11E12I05,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E12,QH2-O-P11E12I06,风机运行情况 ：风机及出口软连接无漏风现象,BOOLEAN,,1,,,4,no,,,
+QH2-O-P11E13,QH2-O-P11E13I01,电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E13,QH2-O-P11E13I02,电机非驱动端轴承 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E13,QH2-O-P11E13I03,电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E13,QH2-O-P11E13I04,清扫电机驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E13,QH2-O-P11E13I05,清扫电机非驱动端轴承温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E13,QH2-O-P11E13I06,清扫电机本体温度 ：是否正常，超过60°C汇报,NUMBER,°C,1,20.0,60.0,2,no,1.0,5.0,10.0
+QH2-O-P11E13,QH2-O-P11E13I07,给煤机尾部就地温度 ：是否正常，超过40°C汇报,NUMBER,°C,1,15.0,40.0,2,no,1.0,5.0,10.0
+QH2-O-P11E13,QH2-O-P11E13I08,给煤机运行情况 ：密封氮气是否投入，头尾部照明是否正常，皮带有无划痕,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P11E13,QH2-O-P11E13I09,清扫链运行情况 ：清扫链是否打“2”位运行，清扫链工作正常,BOOLEAN,,1,,,4,yes,,,
+QH2-O-P11E14,QH2-O-P11E14I01,16米层框架 ：无跑冒、无泄漏,BOOLEAN,,1,,,2,no,,,
+QH2-O-P12E01,QH2-O-P12E01I01,33LG0001 就地液位 ：是否正常，有无漏水,BOOLEAN,,1,,,4,no,,,
+QH2-O-P12E02,QH2-O-P12E02I01,管道及阀门 ：无漏灰、漏气,BOOLEAN,,1,,,4,no,,,
+QH2-O-P12E03,QH2-O-P12E03I01,36LG0002 就地液位 ：是否正常，有无漏水,BOOLEAN,,1,,,4,no,,,
+QH2-O-P12E04,QH2-O-P12E04I01,39TG5006 就地温度 ：是否正常,NUMBER,°C,1,50.0,100.0,4,no,1.0,5.0,10.0
+QH2-O-P12E05,QH2-O-P12E05I01,39TG5007 就地温度 ：是否正常,NUMBER,°C,1,15.0,40.0,4,no,1.0,5.0,10.0
+QH2-O-P12E06,QH2-O-P12E06I01,8米层框架 ：无跑冒、无泄漏,BOOLEAN,,1,,,2,no,,,

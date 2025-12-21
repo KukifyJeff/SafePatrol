@@ -1,6 +1,8 @@
 package com.kukifyjeff.safepatrol.ui.inspection
 
+import android.app.PendingIntent
 import android.content.Intent
+import android.content.IntentFilter
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.Bundle
@@ -22,13 +24,17 @@ import java.io.IOException
 import java.util.Locale
 import java.util.Objects.toString
 
-class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
+@Suppress("DEPRECATION")
+class NfcReaderActivity : BaseActivity() {
 
     private var nfcAdapter: NfcAdapter? = null
     private val db by lazy { AppDatabase.get(this) }
 
     // 从 HomeActivity 传入，用于写入检查记录
     private var sessionId: Long = 0L
+
+    private lateinit var nfcPendingIntent: PendingIntent
+    private lateinit var nfcIntentFilters: Array<IntentFilter>
 
     private fun appendDebugLine(line: String) {
         try {
@@ -52,6 +58,12 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
         sessionId = intent.getLongExtra("sessionId", 0L)
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 
+        val intent = Intent(this, javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        nfcPendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE)
+
+        val techFilter = IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED)
+        nfcIntentFilters = arrayOf(techFilter)
+
         if (nfcAdapter == null || !nfcAdapter!!.isEnabled) {
             Toast.makeText(this, "当前设备不支持或未开启 NFC", Toast.LENGTH_LONG).show()
             finish()
@@ -60,36 +72,33 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
 
     override fun onResume() {
         super.onResume()
-        // 开启 ReaderMode（A/B/F/V 基本覆盖常见工业标签）
-        nfcAdapter?.enableReaderMode(
+        nfcAdapter?.enableForegroundDispatch(
             this,
-            this,
-            NfcAdapter.FLAG_READER_NFC_A or
-                    NfcAdapter.FLAG_READER_NFC_B or
-                    NfcAdapter.FLAG_READER_NFC_F or
-                    NfcAdapter.FLAG_READER_NFC_V or
-                    NfcAdapter.FLAG_READER_NO_PLATFORM_SOUNDS or
-                    NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
+            nfcPendingIntent,
+            nfcIntentFilters,
             null
         )
     }
 
     override fun onPause() {
         super.onPause()
-        nfcAdapter?.disableReaderMode(this)
+        nfcAdapter?.disableForegroundDispatch(this)
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+        if (tag != null) {
+            handleTag(tag)
+        }
+    }
 
-    override fun onTagDiscovered(tag: Tag?) {
-        if (tag?.id == null) return
+    private fun handleTag(tag: Tag) {
         val uidHex = tag.id.toHexString()
-
         Log.d("NfcReaderActivity", "tag discovered: $uidHex")
         appendDebugLine("tag discovered: $uidHex")
-
         lifecycleScope.launch {
             try {
-                // 查找所有对应的点位
                 val allPoints: List<PointEntity> = withContext(Dispatchers.IO) {
                     val rev = uidHex.chunked(2).reversed().joinToString("")
                     val pointsNormal = db.pointDao().findAllByTagUid(uidHex) +
@@ -112,7 +121,6 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
                     return@launch
                 }
 
-                // 获取当前会话以确认 routeId
                 val session = withContext(Dispatchers.IO) {
                     db.inspectionDao().getSessionById(sessionId)
                 }
@@ -122,15 +130,7 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
                 val matchedPoint = if (currentRouteId != null) {
                     val matched =
                         allPoints.filter { it.routeId.trim().lowercase() == currentRouteId }
-                    if (matched.isEmpty()) null else {
-                        if (matched.size > 1) {
-                            Log.w(
-                                "NfcReaderActivity",
-                                "Multiple points matched route $currentRouteId for tag $uidHex, using first one"
-                            )
-                        }
-                        matched.first()
-                    }
+                    if (matched.isEmpty()) null else matched.first()
                 } else {
                     allPoints.firstOrNull()
                 }
@@ -146,16 +146,9 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
                     return@launch
                 }
 
-
-                // 查询该点位下的设备
                 val equipments: List<EquipmentEntity> = withContext(Dispatchers.IO) {
                     db.equipmentDao().getByPoint(matchedPoint.pointId)
                 }
-                Log.d(
-                    "FuckNfcReaderActivity",
-                    "Fucking equipments are =${equipments.joinToString()}"
-                )
-
 
                 if (equipments.isEmpty()) {
                     runOnUiThread {
@@ -171,33 +164,23 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
                 val matchesInRoute = if (currentRouteId != null) {
                     if (matchedPoint.routeId.trim().lowercase() == currentRouteId) {
                         equipments
-                    } else {
-                        emptyList()
-                    }
+                    } else emptyList()
                 } else equipments
 
                 val eqs = db.equipmentDao().getByPoint(matchedPoint.pointId)
 
-                // 获取该点下所有检查项
                 val allCheckItems = eqs.flatMap { eq ->
                     db.checkItemDao().getByEquipment(eq.equipmentId)
                 }
 
-                // 获取频率最高（间隔最短）的频次
                 val freq =
                     if (allCheckItems.isNotEmpty()) allCheckItems.minOf { it.freqHours } else 8
-                Log.d("FuckNfcReaderActivity", "Fucking session id is $sessionId")
 
                 if (matchesInRoute.isNotEmpty()) {
                     runOnUiThread {
                         val requiresStatusEquipments = equipments.filter { it.statusRequired }
                         if (requiresStatusEquipments.isEmpty()) {
-                            // 所有设备都不需要调整状态，直接跳转到 InspectionActivity
-                            val runningEquipments = equipments.map { it.equipmentId } // 默认全部视为运行中
-                            Log.d(
-                                "FuckRunningEquips",
-                                "Fucking Equipments are ${toString(runningEquipments)}"
-                            )
+                            val runningEquipments = equipments.map { it.equipmentId }
                             val intent = Intent(
                                 this@NfcReaderActivity,
                                 InspectionActivity::class.java
@@ -214,7 +197,6 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
                             startActivity(intent)
                             finish()
                         } else {
-                            // 存在需要设定状态的设备，跳转到状态选择界面
                             val intent = Intent(
                                 this@NfcReaderActivity,
                                 EquipmentStatusActivity::class.java
@@ -228,7 +210,6 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
                             finish()
                         }
                     }
-                    return@launch
                 } else {
                     runOnUiThread {
                         Toast.makeText(
@@ -237,7 +218,6 @@ class NfcReaderActivity : BaseActivity(), NfcAdapter.ReaderCallback {
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    return@launch
                 }
 
             } catch (e: Exception) {

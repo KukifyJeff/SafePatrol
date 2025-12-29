@@ -60,20 +60,37 @@ class InspectionActivity : BaseActivity() {
 
 
     // 调试开关：true 使用 minValue 作为默认值
-    private val useMinValueAsDefault: Boolean = true
+    private val useMinValueAsDefault: Boolean = false
+
     // 使用上次记录作为默认值（跨班次）
     private val useLastRecordAsDefault: Boolean = false
+
+    // 调试用：Toolbar 连点次数
+    private var toolbarTapCount = 0
 
     // 计算当前时间在班次窗口中的槽位：8h->1; 4h->2; 2h->4
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inspection)
+        val toolbar = findViewById<View>(R.id.toolbar)
+        toolbar.setOnClickListener {
+            toolbarTapCount++
+            if (toolbarTapCount >= 5) {
+                toolbarTapCount = 0
+                Toast.makeText(this, "已加载上次记录到所有数值项（调试）", Toast.LENGTH_SHORT).show()
+                loadLastRecordValuesForAllNumbers()
+            }
+        }
         ContextCompat.getColor(this, R.color.blue_primary).also { window.statusBarColor = it }
         runningEquipments = intent.getStringArrayListExtra("runningEquipments") ?: arrayListOf()
         val standbyEquipments = intent.getStringArrayListExtra("standbyEquipments") ?: arrayListOf()
-        val maintenanceEquipments = intent.getStringArrayListExtra("maintenanceEquipments") ?: arrayListOf()
-        Log.d("FuckInspectionActivity", "Fucking runningEquipments.size=${runningEquipments.size}  内容=${runningEquipments.joinToString()}")
+        val maintenanceEquipments =
+            intent.getStringArrayListExtra("maintenanceEquipments") ?: arrayListOf()
+        Log.d(
+            "FuckInspectionActivity",
+            "Fucking runningEquipments.size=${runningEquipments.size}  内容=${runningEquipments.joinToString()}"
+        )
 
 
         pointId = intent.getStringExtra("pointId").toString()
@@ -82,18 +99,26 @@ class InspectionActivity : BaseActivity() {
         sessionId = intent.getLongExtra("sessionId", 0L)
 
         // ===== 同一班次同一槽位防重复点检 =====
-        val nSlotsForFreq = when (freqHours) { 2 -> 4; 4 -> 2; 8 -> 1; else -> 1 }
+        val nSlotsForFreq = when (freqHours) {
+            2 -> 4; 4 -> 2; 8 -> 1; else -> 1
+        }
         val passedSlot = intent.getIntExtra("slotIndex", 0)
         currentSlotIdx = if (passedSlot in 1..nSlotsForFreq) {
             passedSlot
         } else {
-            com.kukifyjeff.safepatrol.utils.SlotUtils.getSlotIndex(freqHours, System.currentTimeMillis())
+            com.kukifyjeff.safepatrol.utils.SlotUtils.getSlotIndex(
+                freqHours,
+                System.currentTimeMillis()
+            )
         }
 
         lifecycleScope.launch {
             val existed = withContext(Dispatchers.IO) {
                 val window = com.kukifyjeff.safepatrol.utils.ShiftUtils.currentShiftWindowMillis()
-                val checkSlot = com.kukifyjeff.safepatrol.utils.SlotUtils.getSlotIndex(freqHours, System.currentTimeMillis())
+                val checkSlot = com.kukifyjeff.safepatrol.utils.SlotUtils.getSlotIndex(
+                    freqHours,
+                    System.currentTimeMillis()
+                )
                 db.inspectionDao().hasRecordForPointSlotInWindow(
                     equipId = pointId,
                     slotIndex = checkSlot,
@@ -114,7 +139,8 @@ class InspectionActivity : BaseActivity() {
             }
         }
 
-        findViewById<TextView>(R.id.tvHeader).text = getString(R.string.inspection_header,  pointName, pointId)
+        findViewById<TextView>(R.id.tvHeader).text =
+            getString(R.string.inspection_header, pointName, pointId)
 
         rv = findViewById(R.id.rvForm)
 
@@ -124,7 +150,9 @@ class InspectionActivity : BaseActivity() {
         lifecycleScope.launch {
             val lastText = withContext(Dispatchers.IO) {
                 val window = com.kukifyjeff.safepatrol.utils.ShiftUtils.currentShiftWindowMillis()
-                val nSlots = when (freqHours) { 2 -> 4; 4 -> 2; 8 -> 1; else -> 1 }
+                val nSlots = when (freqHours) {
+                    2 -> 4; 4 -> 2; 8 -> 1; else -> 1
+                }
                 val all = mutableListOf<InspectionRecordEntity>()
                 for (idx in 1..nSlots) {
                     all += db.inspectionDao().getRecordsForPointSlotInWindow(
@@ -144,7 +172,10 @@ class InspectionActivity : BaseActivity() {
         lifecycleScope.launch {
             val rowsAll = mutableListOf<FormRow>()
             withContext(Dispatchers.IO) {
-                val activeFreqs = com.kukifyjeff.safepatrol.utils.SlotUtils.getActiveFrequenciesForCurrentSlot(freqHours)
+                val activeFreqs =
+                    com.kukifyjeff.safepatrol.utils.SlotUtils.getActiveFrequenciesForCurrentSlot(
+                        freqHours
+                    )
                 Log.d("FuckInspectionActivity", "当前活动频率: $activeFreqs")
                 // 收集所有相关设备（运行、备用、维修）
                 val allEquipIds = mutableSetOf<String>()
@@ -175,23 +206,33 @@ class InspectionActivity : BaseActivity() {
                     val filteredItems = when (state) {
                         "standby" -> {
                             // 备用设备，仅加载 requiredInStandby == true
-                            val fi = items.filter { it.freqHours in activeFreqs && it.requiredInStandby }
-                            Log.d("FuckInspectionActivity", "设备 $equipId 备用，仅加载 requiredInStandby==true，筛选后数量=${fi.size}")
+                            val fi =
+                                items.filter { it.freqHours in activeFreqs && it.requiredInStandby }
+                            Log.d(
+                                "FuckInspectionActivity",
+                                "设备 $equipId 备用，仅加载 requiredInStandby==true，筛选后数量=${fi.size}"
+                            )
                             fi
                         }
+
                         "running" -> {
                             // 运行设备，加载全部
                             val fi = items.filter { it.freqHours in activeFreqs }
-                            Log.d("FuckInspectionActivity", "设备 $equipId 运行，筛选后数量=${fi.size}")
+                            Log.d(
+                                "FuckInspectionActivity",
+                                "设备 $equipId 运行，筛选后数量=${fi.size}"
+                            )
                             fi
                         }
+
                         else -> {
                             // 其他状态（理论不会进来），可以忽略
                             emptyList()
                         }
                     }
                     rowsAll.addAll(filteredItems.map {
-                        it.copy(itemName = "$equipName - ${it.itemName}（${it.freqHours}h/次）").toRow()
+                        it.copy(itemName = "$equipName - ${it.itemName}（${it.freqHours}h/次）")
+                            .toRow()
                     })
                 }
             }
@@ -206,7 +247,8 @@ class InspectionActivity : BaseActivity() {
                         val itemHistoryMap = mutableMapOf<String, Double>()
                         rows.forEach { row ->
                             if (row is FormRow.Number) {
-                                val lastItem = db.inspectionDao().getLastRecordItemForItem(row.item.itemId)
+                                val lastItem =
+                                    db.inspectionDao().getLastRecordItemForItem(row.item.itemId)
                                 val v = lastItem?.value?.toDoubleOrNull()
                                 if (v != null) {
                                     itemHistoryMap[row.item.itemId] = v
@@ -229,7 +271,8 @@ class InspectionActivity : BaseActivity() {
                     }
                 }
                 // 为每个已附加的子项设置行内确认按钮行为（对没有直接修改 Adapter 的项目进行增强）
-                rv.addOnChildAttachStateChangeListener(object : androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener {
+                rv.addOnChildAttachStateChangeListener(object :
+                    androidx.recyclerview.widget.RecyclerView.OnChildAttachStateChangeListener {
                     @SuppressLint("DefaultLocale", "SetTextI18n")
                     override fun onChildViewAttachedToWindow(view: View) {
                         try {
@@ -251,19 +294,25 @@ class InspectionActivity : BaseActivity() {
                                     true -> {
                                         btnOk.isEnabled = true
                                         btnNg.isEnabled = true
-                                        btnOk.backgroundTintList = android.content.res.ColorStateList.valueOf("#2E7D32".toColorInt())
-                                        btnNg.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
+                                        btnOk.backgroundTintList =
+                                            android.content.res.ColorStateList.valueOf("#2E7D32".toColorInt())
+                                        btnNg.backgroundTintList =
+                                            android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
                                         btnOk.setTextColor(Color.WHITE)
                                         btnNg.setTextColor(Color.BLACK)
                                     }
+
                                     false -> {
                                         btnOk.isEnabled = true
                                         btnNg.isEnabled = true
-                                        btnNg.backgroundTintList = android.content.res.ColorStateList.valueOf("#C62828".toColorInt())
-                                        btnOk.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
+                                        btnNg.backgroundTintList =
+                                            android.content.res.ColorStateList.valueOf("#C62828".toColorInt())
+                                        btnOk.backgroundTintList =
+                                            android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
                                         btnNg.setTextColor(Color.WHITE)
                                         btnOk.setTextColor(Color.BLACK)
                                     }
+
                                     else -> {
                                         btnOk.isEnabled = true
                                         btnNg.isEnabled = true
@@ -289,8 +338,10 @@ class InspectionActivity : BaseActivity() {
                                         remarkMap[row.item.itemId] = remark
                                         row.ok = false
 
-                                        btnNg.backgroundTintList = android.content.res.ColorStateList.valueOf("#C62828".toColorInt())
-                                        btnOk.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
+                                        btnNg.backgroundTintList =
+                                            android.content.res.ColorStateList.valueOf("#C62828".toColorInt())
+                                        btnOk.backgroundTintList =
+                                            android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
                                         btnNg.setTextColor(Color.WHITE)
                                         btnOk.setTextColor(Color.BLACK)
 
@@ -304,8 +355,10 @@ class InspectionActivity : BaseActivity() {
                                     remarkMap.remove(row.item.itemId)
                                     row.ok = true
 
-                                    btnOk.backgroundTintList = android.content.res.ColorStateList.valueOf("#2E7D32".toColorInt())
-                                    btnNg.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
+                                    btnOk.backgroundTintList =
+                                        android.content.res.ColorStateList.valueOf("#2E7D32".toColorInt())
+                                    btnNg.backgroundTintList =
+                                        android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
                                     btnOk.setTextColor(Color.WHITE)
                                     btnNg.setTextColor(Color.BLACK)
 
@@ -321,8 +374,22 @@ class InspectionActivity : BaseActivity() {
                                     )
                                     llRemark?.addView(et)
                                     et.addTextChangedListener(object : TextWatcher {
-                                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                                        override fun beforeTextChanged(
+                                            s: CharSequence?,
+                                            start: Int,
+                                            count: Int,
+                                            after: Int
+                                        ) {
+                                        }
+
+                                        override fun onTextChanged(
+                                            s: CharSequence?,
+                                            start: Int,
+                                            before: Int,
+                                            count: Int
+                                        ) {
+                                        }
+
                                         override fun afterTextChanged(s: Editable?) {
                                             remarkMap[row.item.itemId] = s?.toString()?.trim() ?: ""
                                         }
@@ -338,7 +405,8 @@ class InspectionActivity : BaseActivity() {
                             if (row !is FormRow.Number) return
 
                             val et = view.findViewById<EditText>(R.id.etValue)
-                            et.inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+                            et.inputType =
+                                android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
                             // if row.value already populated (from last record or min fallback), set it
                             if (row is FormRow.Number && row.value != null && et.text.isNullOrBlank()) {
                                 et.setText(row.value.toString())
@@ -346,25 +414,25 @@ class InspectionActivity : BaseActivity() {
                                 et.setText(row.item.minValue.toString())
                             }
                             // ====== 基础加减按钮（adjustValue） ======
-                            val btnMinus = view.findViewById<Button>(R.id.btnMinus)
-                            val btnPlus = view.findViewById<Button>(R.id.btnPlus)
-                            val adjust = row.item.adjustValue ?: 0.0
-                            // 同步按钮显示文本
-                            btnMinus?.text = if (adjust > 0) "-$adjust" else "-"
-                            btnPlus?.text = if (adjust > 0) "+$adjust" else "+"
-                            // 先清空旧监听，防止 RecyclerView 复用导致多次叠加
-                            btnMinus?.setOnClickListener(null)
-                            btnPlus?.setOnClickListener(null)
-                            btnMinus?.setOnClickListener {
-                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
-                                val newValue = current - adjust
-                                et.setText(String.format("%.3f", newValue))
-                            }
-                            btnPlus?.setOnClickListener {
-                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
-                                val newValue = current + adjust
-                                et.setText(String.format("%.3f", newValue))
-                            }
+//                            val btnMinus = view.findViewById<Button>(R.id.btnMinus)
+//                            val btnPlus = view.findViewById<Button>(R.id.btnPlus)
+//                            val adjust = row.item.adjustValue ?: 0.0
+//                            // 同步按钮显示文本
+//                            btnMinus?.text = if (adjust > 0) "-$adjust" else "-"
+//                            btnPlus?.text = if (adjust > 0) "+$adjust" else "+"
+//                            // 先清空旧监听，防止 RecyclerView 复用导致多次叠加
+//                            btnMinus?.setOnClickListener(null)
+//                            btnPlus?.setOnClickListener(null)
+//                            btnMinus?.setOnClickListener {
+//                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
+//                                val newValue = current - adjust
+//                                et.setText(String.format("%.3f", newValue))
+//                            }
+//                            btnPlus?.setOnClickListener {
+//                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
+//                                val newValue = current + adjust
+//                                et.setText(String.format("%.3f", newValue))
+//                            }
                             val btn = view.findViewById<Button>(R.id.btnConfirmNumber)
                             val tvStatus = view.findViewById<TextView>(R.id.tvStatus)
                             if (et == null || btn == null || tvStatus == null) return
@@ -373,58 +441,62 @@ class InspectionActivity : BaseActivity() {
                             val min = row.item.minValue ?: 0.0
                             val max = row.item.maxValue ?: 100.0
 
-                            val btnQuick0 = view.findViewById<Button>(R.id.btnQuick0)
-                            val btnQuick1 = view.findViewById<Button>(R.id.btnQuick1)
-                            val btnQuick5 = view.findViewById<Button>(R.id.btnQuick5)
-                            val btnQuick10 = view.findViewById<Button>(R.id.btnQuick10)
-                            val adj = row.item.adjustValue ?: 0.0
-                            val f1 = row.item.fastAdjust1 ?: adj
-                            val f2 = row.item.fastAdjust2 ?: adj
-
-
-                            btnQuick0?.text = "-${f2}"
-                            btnQuick1?.text = "-${f1}"
-                            btnQuick5?.text = "+${f1}"
-                            btnQuick10?.text = "+${f2}"
-
-                            btnQuick0?.setOnClickListener {
-                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
-                                et.setText(String.format("%.3f", current - f2))
-                            }
-
-                            btnQuick1?.setOnClickListener {
-                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
-                                et.setText(String.format("%.3f", current - f1))
-                            }
-
-                            btnQuick5?.setOnClickListener {
-                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
-                                et.setText(String.format("%.3f", current + f1))
-                            }
-
-                            btnQuick10?.setOnClickListener {
-                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
-                                et.setText(String.format("%.3f", current + f2))
-                            }
+//                            val btnQuick0 = view.findViewById<Button>(R.id.btnQuick0)
+//                            val btnQuick1 = view.findViewById<Button>(R.id.btnQuick1)
+//                            val btnQuick5 = view.findViewById<Button>(R.id.btnQuick5)
+//                            val btnQuick10 = view.findViewById<Button>(R.id.btnQuick10)
+//                            val adj = row.item.adjustValue ?: 0.0
+//                            val f1 = row.item.fastAdjust1 ?: adj
+//                            val f2 = row.item.fastAdjust2 ?: adj
+//
+//
+//                            btnQuick0?.text = "-${f2}"
+//                            btnQuick1?.text = "-${f1}"
+//                            btnQuick5?.text = "+${f1}"
+//                            btnQuick10?.text = "+${f2}"
+//
+//                            btnQuick0?.setOnClickListener {
+//                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
+//                                et.setText(String.format("%.3f", current - f2))
+//                            }
+//
+//                            btnQuick1?.setOnClickListener {
+//                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
+//                                et.setText(String.format("%.3f", current - f1))
+//                            }
+//
+//                            btnQuick5?.setOnClickListener {
+//                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
+//                                et.setText(String.format("%.3f", current + f1))
+//                            }
+//
+//                            btnQuick10?.setOnClickListener {
+//                                val current = et.text.toString().toDoubleOrNull() ?: 0.0
+//                                et.setText(String.format("%.3f", current + f2))
+//                            }
 
                             // 更新 tvRange 显示范围
                             view.findViewById<TextView>(R.id.tvRange)?.text = "范围：$min ~ $max"
 
                             val green = "#2E7D32".toColorInt()
                             val red = "#C62828".toColorInt()
+
                             // 初始按钮样式：灰色（不可确认）或可点击
                             fun setBtnGray() {
                                 btn.isEnabled = !(et.text.isNullOrBlank())
-                                btn.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
+                                btn.backgroundTintList =
+                                    android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
                                 btn.setTextColor(Color.BLACK)
-                                tvStatus.text = if (confirmedNumberItemIds.contains(row.item.itemId)) "已确认" else "状态：--"
+                                tvStatus.text =
+                                    if (confirmedNumberItemIds.contains(row.item.itemId)) "已确认" else "状态：--"
                             }
 
                             fun markConfirmed(isNormal: Boolean) {
                                 confirmedNumberItemIds.add(row.item.itemId)
                                 btn.isEnabled = false
                                 btn.setTextColor(Color.WHITE)
-                                btn.backgroundTintList = android.content.res.ColorStateList.valueOf(if (isNormal) green else red)
+                                btn.backgroundTintList =
+                                    android.content.res.ColorStateList.valueOf(if (isNormal) green else red)
                                 tvStatus.text = if (isNormal) "已确认（正常）" else "已确认（异常）"
                             }
 
@@ -432,12 +504,24 @@ class InspectionActivity : BaseActivity() {
                             btn.setOnClickListener {
                                 val text = et.text?.toString()?.trim()
                                 if (text.isNullOrEmpty()) {
-                                    Toast.makeText(this@InspectionActivity, "请先输入数值再确认", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        this@InspectionActivity,
+                                        "请先输入数值再确认",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                     return@setOnClickListener
                                 }
-                                val v = try { text.toDouble() } catch (_: Exception) { null }
+                                val v = try {
+                                    text.toDouble()
+                                } catch (_: Exception) {
+                                    null
+                                }
                                 if (v == null) {
-                                    Toast.makeText(this@InspectionActivity, "请输入有效的数字", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        this@InspectionActivity,
+                                        "请输入有效的数字",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                     return@setOnClickListener
                                 }
 
@@ -456,14 +540,29 @@ class InspectionActivity : BaseActivity() {
                                 et.removeTextChangedListener(existingTag)
                             }
                             val watcher = object : TextWatcher {
-                                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                                override fun beforeTextChanged(
+                                    s: CharSequence?,
+                                    start: Int,
+                                    count: Int,
+                                    after: Int
+                                ) {
+                                }
+
+                                override fun onTextChanged(
+                                    s: CharSequence?,
+                                    start: Int,
+                                    before: Int,
+                                    count: Int
+                                ) {
+                                }
+
                                 override fun afterTextChanged(s: Editable?) {
                                     // 用户手动修改时，取消确认
                                     if (confirmedNumberItemIds.remove(row.item.itemId)) {
                                         // 恢复按钮可点并置灰
                                         btn.isEnabled = !(et.text.isNullOrBlank())
-                                        btn.backgroundTintList = android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
+                                        btn.backgroundTintList =
+                                            android.content.res.ColorStateList.valueOf("#EEEEEE".toColorInt())
                                         tvStatus.text = "状态：--"
                                     } else {
                                         // 保持按钮启用/禁用状态
@@ -478,11 +577,18 @@ class InspectionActivity : BaseActivity() {
                             if (confirmedNumberItemIds.contains(row.item.itemId)) {
                                 // 如果已确认，显示绿色或红色需根据是否异常重新判定
                                 val currentText = et.text?.toString()?.trim()
-                                val vcur = try { currentText?.toDouble() } catch (_: Exception) { null }
-                                val low = vcur?.let { row.item.minValue?.let { vv -> it < vv } } ?: false
-                                val high = vcur?.let { row.item.maxValue?.let { vv -> it > vv } } ?: false
+                                val vcur = try {
+                                    currentText?.toDouble()
+                                } catch (_: Exception) {
+                                    null
+                                }
+                                val low =
+                                    vcur?.let { row.item.minValue?.let { vv -> it < vv } } ?: false
+                                val high =
+                                    vcur?.let { row.item.maxValue?.let { vv -> it > vv } } ?: false
                                 val normal = !(low || high)
-                                btn.backgroundTintList = android.content.res.ColorStateList.valueOf(if (normal) green else red)
+                                btn.backgroundTintList =
+                                    android.content.res.ColorStateList.valueOf(if (normal) green else red)
                                 btn.isEnabled = false
                                 tvStatus.text = if (normal) "已确认（正常）" else "已确认（异常）"
                             } else {
@@ -504,7 +610,8 @@ class InspectionActivity : BaseActivity() {
                                 et.removeTextChangedListener(tag)
                                 et.setTag(R.id.etValue, null)
                             }
-                        } catch (_: Throwable) {}
+                        } catch (_: Throwable) {
+                        }
                     }
                 })
                 // 当表单加载完成后，禁用提交按钮直到必要的数值项被确认
@@ -532,16 +639,40 @@ class InspectionActivity : BaseActivity() {
     private fun CheckItemEntity.toRow(): FormRow {
         return when (type.uppercase()) {
             "BOOLEAN" -> FormRow.Bool(this, null)   // 默认未选择，避免误触
-            "NUMBER"  -> FormRow.Number(this, null)
-            else      -> FormRow.Text(this, "")
+            "NUMBER" -> FormRow.Number(this, null)
+            else -> FormRow.Text(this, "")
         }
     }
 
     private fun onSubmit() {
+        // ===== 新增：校验是否所有检查项都已完成点检 =====
+        // Boolean：必须选择 正常 / 异常（ok != null）
+        // Number：必须已确认（value != null 且在 confirmedNumberItemIds 中）
+        val unfinishedRow = rows.firstOrNull { row ->
+            when (row) {
+                is FormRow.Bool -> row.ok == null
+                is FormRow.Number -> row.value == null || !confirmedNumberItemIds.contains(row.item.itemId)
+                else -> false
+            }
+        }
+
+        if (unfinishedRow != null) {
+            val targetIndex = rows.indexOf(unfinishedRow)
+            if (targetIndex >= 0) {
+                rv.scrollToPosition(targetIndex)
+            }
+            Toast.makeText(
+                this,
+                "存在未完成点检的项目，请逐项完成后再提交",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
         // 新增：校验异常项备注
         if (!validateRemarks()) return
         // 校验：所有已输入的数值项必须先被确认
-        val unconfirmed = rows.filterIsInstance<FormRow.Number>().filter { it.value != null && !confirmedNumberItemIds.contains(it.item.itemId) }
+        val unconfirmed = rows.filterIsInstance<FormRow.Number>()
+            .filter { it.value != null && !confirmedNumberItemIds.contains(it.item.itemId) }
         if (unconfirmed.isNotEmpty()) {
             // 滚动到第一个未确认项
             val firstUnconfirmedId = unconfirmed.first().item.itemId
@@ -582,11 +713,21 @@ class InspectionActivity : BaseActivity() {
                         )
                     )
                 }
+
                 is FormRow.Number -> {
                     val v = row.value
                     if (v == null) {
                         if (row.item.required) missingList.add(row.item.itemName)
-                        values.add(InspectionRecordItemEntity(recordId = 0, equipmentId = row.item.equipmentId, itemId = row.item.itemId, value = "", abnormal = row.item.required, slotIndex = currentSlotIdx))
+                        values.add(
+                            InspectionRecordItemEntity(
+                                recordId = 0,
+                                equipmentId = row.item.equipmentId,
+                                itemId = row.item.itemId,
+                                value = "",
+                                abnormal = row.item.required,
+                                slotIndex = currentSlotIdx
+                            )
+                        )
                     } else {
                         val low = row.item.minValue?.let { v < it } ?: false
                         val high = row.item.maxValue?.let { v > it } ?: false
@@ -595,9 +736,19 @@ class InspectionActivity : BaseActivity() {
                             val unitStr = row.item.unit?.takeIf { it.isNotBlank() } ?: ""
                             abnormalList.add("${row.item.itemName}=$v$unitStr")
                         }
-                        values.add(InspectionRecordItemEntity(recordId = 0, equipmentId = row.item.equipmentId, itemId = row.item.itemId, value = v.toString(), abnormal = ab, slotIndex = currentSlotIdx))
+                        values.add(
+                            InspectionRecordItemEntity(
+                                recordId = 0,
+                                equipmentId = row.item.equipmentId,
+                                itemId = row.item.itemId,
+                                value = v.toString(),
+                                abnormal = ab,
+                                slotIndex = currentSlotIdx
+                            )
+                        )
                     }
                 }
+
                 is FormRow.Text -> {
                     values.add(
                         InspectionRecordItemEntity(
@@ -615,7 +766,8 @@ class InspectionActivity : BaseActivity() {
 
         if (missingList.isNotEmpty()) {
             // 滚动到第一个未填项
-            val firstMissingId = rows.firstOrNull { it.item.itemName == missingList.first() }?.item?.itemId
+            val firstMissingId =
+                rows.firstOrNull { it.item.itemName == missingList.first() }?.item?.itemId
             if (firstMissingId != null) {
                 val targetIndex = rows.indexOfFirst { it.item.itemId == firstMissingId }
                 if (targetIndex >= 0) rv.scrollToPosition(targetIndex)
@@ -625,7 +777,8 @@ class InspectionActivity : BaseActivity() {
         }
 
         if (abnormalList.isNotEmpty()) {
-            val abnormalText = abnormalList.mapIndexed { index, s -> "${index + 1}. $s" }.joinToString("\n")
+            val abnormalText =
+                abnormalList.mapIndexed { index, s -> "${index + 1}. $s" }.joinToString("\n")
             AlertDialog.Builder(this)
                 .setTitle("异常确认")
                 .setMessage("发现异常项：\n$abnormalText\n\n确认提交？")
@@ -668,9 +821,14 @@ class InspectionActivity : BaseActivity() {
                 val finalItems = items.map { it.copy(recordId = recordId) }.toMutableList()
 
                 // read maintenance / standby lists from intent and add corresponding records
-                val maintenanceEquipments = intent.getStringArrayListExtra("maintenanceEquipments") ?: arrayListOf<String>()
-                val standbyEquipments = intent.getStringArrayListExtra("standbyEquipments") ?: arrayListOf<String>()
-                Log.d("FuckInspectionActivity", "Maintenance Equipments: $maintenanceEquipments, Standby Equipments: $standbyEquipments")
+                val maintenanceEquipments =
+                    intent.getStringArrayListExtra("maintenanceEquipments") ?: arrayListOf<String>()
+                val standbyEquipments =
+                    intent.getStringArrayListExtra("standbyEquipments") ?: arrayListOf<String>()
+                Log.d(
+                    "FuckInspectionActivity",
+                    "Maintenance Equipments: $maintenanceEquipments, Standby Equipments: $standbyEquipments"
+                )
                 for (equipId in maintenanceEquipments) {
                     finalItems.add(
                         InspectionRecordItemEntity(
@@ -720,4 +878,29 @@ class InspectionActivity : BaseActivity() {
     }
 
 
+    private fun loadLastRecordValuesForAllNumbers() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val itemHistoryMap = mutableMapOf<String, Double>()
+            rows.forEach { row ->
+                if (row is FormRow.Number) {
+                    val lastItem = db.inspectionDao().getLastRecordItemForItem(row.item.itemId)
+                    val v = lastItem?.value?.toDoubleOrNull()
+                    if (v != null) {
+                        itemHistoryMap[row.item.itemId] = v
+                    }
+                }
+            }
+            withContext(Dispatchers.Main) {
+                rows.forEach { row ->
+                    if (row is FormRow.Number) {
+                        val v = itemHistoryMap[row.item.itemId]
+                        if (v != null) {
+                            row.value = v
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged()
+            }
+        }
+    }
 }

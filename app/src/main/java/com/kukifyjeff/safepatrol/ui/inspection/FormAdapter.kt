@@ -102,9 +102,9 @@ class FormAdapter(private val rows: List<FormRow>) :
         private val et: EditText = v.findViewById(R.id.etValue)
 //        private val btnMinus: Button = v.findViewById(R.id.btnMinus)
 //        private val btnPlus: Button = v.findViewById(R.id.btnPlus)
-        private val btnQuick1: Button = v.findViewById(R.id.btnQuick1)
-        private val btnQuick5: Button = v.findViewById(R.id.btnQuick5)
-        private val btnQuick10: Button = v.findViewById(R.id.btnQuick10)
+//        private val btnQuick1: Button = v.findViewById(R.id.btnQuick1)
+//        private val btnQuick5: Button = v.findViewById(R.id.btnQuick5)
+//        private val btnQuick10: Button = v.findViewById(R.id.btnQuick10)
         private val tvStatus: TextView = v.findViewById(R.id.tvStatus)
 
         fun bind(row: FormRow.Number) {
@@ -130,9 +130,9 @@ class FormAdapter(private val rows: List<FormRow>) :
 
 //            btnMinus.setOnClickListener { delta(-1.0) }
 //            btnPlus.setOnClickListener { delta(+1.0) }
-            btnQuick1.setOnClickListener { delta(+1.0) }
-            btnQuick5.setOnClickListener { delta(+5.0) }
-            btnQuick10.setOnClickListener { delta(+10.0) }
+//            btnQuick1.setOnClickListener { delta(+1.0) }
+//            btnQuick5.setOnClickListener { delta(+5.0) }
+//            btnQuick10.setOnClickListener { delta(+10.0) }
 
             et.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) { renderStatus(row) }

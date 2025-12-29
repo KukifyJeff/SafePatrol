@@ -61,10 +61,7 @@ object CsvReaders {
                 minValue = row.getOrNull(6)?.ifBlank { null }?.toDoubleOrNull(),
                 maxValue = row.getOrNull(7)?.ifBlank { null }?.toDoubleOrNull(),
                 freqHours = row.getOrNull(8)?.ifBlank { null }?.toIntOrNull() ?: 8,
-                requiredInStandby = row.getOrNull(9)?.trim()?.equals("yes", true) ?: false,
-                adjustValue = row.getOrNull(10)?.ifBlank { null }?.toDoubleOrNull(),
-                fastAdjust1 = row.getOrNull(11)?.ifBlank { null }?.toDoubleOrNull(),
-                fastAdjust2 = row.getOrNull(12)?.ifBlank { null }?.toDoubleOrNull(),
+                requiredInStandby = row.getOrNull(9)?.trim()?.equals("yes", true) ?: false
             )
         }
 

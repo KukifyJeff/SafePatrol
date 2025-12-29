@@ -21,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/blue_primary"
+            android:id="@+id/toolbar"
             android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
             app:title="点检详情"
             app:titleCentered="true" />

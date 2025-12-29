@@ -28,7 +28,7 @@ data class CheckItemEntity(
     val minValue: Double?,
     val maxValue: Double?,
     val freqHours: Int,   // 2， 4 或 8
-    val adjustValue: Double?,
-    val fastAdjust1: Double?,
-    val fastAdjust2: Double?
+//    val adjustValue: Double?,
+//    val fastAdjust1: Double?,
+//    val fastAdjust2: Double?
 )

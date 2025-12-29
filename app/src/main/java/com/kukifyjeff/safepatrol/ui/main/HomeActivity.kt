@@ -303,7 +303,7 @@ class HomeActivity : BaseActivity() {
 
                     // 计算导出起止时间戳
                     val startTs =
-                        if (lastExportTs > 0) lastExportTs else 1765728000000L // 从最后导出时间开始或从第一条记录
+                        if (lastExportTs > 0) lastExportTs else 1766592000000L // 从最后导出时间开始或从第一条记录
                     val endTs = System.currentTimeMillis()
 
                     val path = exportFromLastTimeXlsx(

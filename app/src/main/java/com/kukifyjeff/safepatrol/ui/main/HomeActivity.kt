@@ -22,7 +22,9 @@ import com.kukifyjeff.safepatrol.BaseActivity
 import com.kukifyjeff.safepatrol.ui.review.PointRecordActivity
 import com.kukifyjeff.safepatrol.R
 import com.kukifyjeff.safepatrol.databinding.ActivityHomeBinding
+import com.kukifyjeff.safepatrol.export.ExportUtil
 import com.kukifyjeff.safepatrol.export.ExportUtil.exportFromLastTimeXlsx
+import com.kukifyjeff.safepatrol.export.exportIncrementalZipFromLastTime
 import com.kukifyjeff.safepatrol.utils.ShiftUtils
 import com.kukifyjeff.safepatrol.utils.SlotUtils
 import kotlinx.coroutines.Dispatchers
@@ -302,11 +304,12 @@ class HomeActivity : BaseActivity() {
                     val modifyPwd = exportPassword
 
                     // 计算导出起止时间戳
-                    val startTs =
-                        if (lastExportTs > 0) lastExportTs else 1766592000000L // 从最后导出时间开始或从第一条记录
+                    val startTs = 1766592000000L
+//                  val startTs =
+//                        if (lastExportTs > 0) lastExportTs else 1766592000000L // 从最后导出时间开始或从第一条记录
                     val endTs = System.currentTimeMillis()
 
-                    val path = exportFromLastTimeXlsx(
+                    val path = exportIncrementalZipFromLastTime(
                         context = this@HomeActivity,
                         db = db,
                         startTs = startTs,

@@ -22,6 +22,8 @@
 
 
         <activity android:name=".ui.route.RouteSelectActivity" />
+        <activity android:name=".ui.admin.AdminActivity" />
+        <activity android:name=".ui.admin.DBUpdateActivity" />
         <activity android:name=".ui.main.HomeActivity" />
         <activity android:name=".ui.inspection.NfcReaderActivity" />
         <activity android:name=".ui.inspection.InspectionActivity" />
@@ -37,7 +39,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

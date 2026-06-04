@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background">#4A7EB6</color>
+    <color name="ic_launcher_bg_red">#F44336</color>
+    <color name="ic_launcher_bg_yellow">#FFEB3B</color>
+    <color name="ic_launcher_bg_green">#4CAF50</color>
 </resources>

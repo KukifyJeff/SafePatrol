@@ -13,7 +13,7 @@ android {
         minSdk = 31
         targetSdk = 36
         versionCode = 1
-        versionName = "1.1"
+        versionName = "1.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -78,6 +78,7 @@ dependencies {
     implementation("org.apache.poi:poi-ooxml:5.2.5")
 //    implementation("org.apache.poi:ooxml-schemas:1.4")
     implementation("org.apache.xmlbeans:xmlbeans:5.1.1")
+    implementation("net.lingala.zip4j:zip4j:2.11.5")
 
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 }

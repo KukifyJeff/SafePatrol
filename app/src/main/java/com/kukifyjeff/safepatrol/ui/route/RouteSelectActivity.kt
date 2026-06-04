@@ -68,6 +68,34 @@ class RouteSelectActivity : BaseActivity() {
                 Toast.makeText(this, "无效工号，请检查后重新输入", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            if (employee.isAdmin) {
+                androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("管理员入口")
+                    .setMessage("请选择要进入的界面")
+                    .setPositiveButton("点检界面") { _, _ ->
+                        val routeId = routeIds.getOrNull(idx) ?: ""
+                        val routeName = if (routeIds.isEmpty()) "（无路线）" else binding.routeSpinner.selectedItem.toString()
+                        startActivity(
+                            Intent(this, ConfirmSystemTimeActivity::class.java)
+                                .putExtra("routeId", routeId)
+                                .putExtra("routeName", routeName)
+                                .putExtra("operatorId", operatorId)
+                                .putExtra("operatorName", employee.employeeName)
+                        )
+                        finish()
+                    }
+                    .setNegativeButton("管理员界面") { _, _ ->
+                        startActivity(
+                            Intent(this, com.kukifyjeff.safepatrol.ui.admin.AdminActivity::class.java)
+                                .putExtra("operatorId", operatorId)
+                                .putExtra("operatorName", employee.employeeName)
+                        )
+                        finish()
+                    }
+                    .setCancelable(true)
+                    .show()
+                return@setOnClickListener
+            }
 
             val routeId = routeIds[idx]
             val routeName = binding.routeSpinner.selectedItem.toString()
@@ -98,12 +126,20 @@ class RouteSelectActivity : BaseActivity() {
             }
 
             if (routes.isEmpty()) {
-                // 还为空：提示排查 assets 目录和文件名
                 Toast.makeText(
                     this@RouteSelectActivity,
-                    "未找到巡检路线，请确认 assets/config/routes.csv 是否存在且有数据（含表头）",
+                    "未找到巡检路线（当前允许管理员模式登录）",
                     Toast.LENGTH_LONG
                 ).show()
+
+                routeIds = emptyList()
+                binding.routeSpinner.adapter = ArrayAdapter(
+                    this@RouteSelectActivity,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    listOf("（无路线）")
+                )
+
+                employees = db.employeeDao().getAll()
                 return@launch
             }
 

@@ -67,9 +67,10 @@ object CsvReaders {
 
     fun readEmployees(file: File): List<EmployeeEntity> =
         readAll(file).drop(1).mapNotNull { row ->
-            if (row.size < 2) null else EmployeeEntity(
+            if (row.size < 3) null else EmployeeEntity(
                 employeeId = row[0].trim(),
                 employeeName = row[1].trim(),
+                isAdmin = row[2].trim() == "1"
             )
         }
 
@@ -83,12 +84,4 @@ object CsvReaders {
             )
         }
 
-    fun readEquipmentStatuses(file: File): List<EquipmentStatusEntity> =
-        readAll(file).drop(1).mapNotNull { row ->
-            if (row.size < 2) null else EquipmentStatusEntity(
-                equipmentId = row[0].trim(),
-                status = row[1].trim(),
-                updatedAt = row.getOrNull(2)?.trim()?.toLongOrNull() ?: System.currentTimeMillis()
-            )
-        }
 }

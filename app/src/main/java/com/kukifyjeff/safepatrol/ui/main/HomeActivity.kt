@@ -14,7 +14,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kukifyjeff.safepatrol.AppDatabase
@@ -22,20 +21,15 @@ import com.kukifyjeff.safepatrol.BaseActivity
 import com.kukifyjeff.safepatrol.ui.review.PointRecordActivity
 import com.kukifyjeff.safepatrol.R
 import com.kukifyjeff.safepatrol.databinding.ActivityHomeBinding
-import com.kukifyjeff.safepatrol.export.ExportUtil
-import com.kukifyjeff.safepatrol.export.ExportUtil.exportFromLastTimeXlsx
-import com.kukifyjeff.safepatrol.export.exportIncrementalZipFromLastTime
 import com.kukifyjeff.safepatrol.utils.ShiftUtils
 import com.kukifyjeff.safepatrol.utils.SlotUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
+import android.os.Environment
 
 class HomeActivity : BaseActivity() {
-
-    // 存储最后导出时间戳
-    private var lastExportTs: Long = 0L
 
     private lateinit var binding: ActivityHomeBinding
     private var sessionId: Long = 0L
@@ -46,6 +40,7 @@ class HomeActivity : BaseActivity() {
     private lateinit var routeName: String
     private lateinit var operatorId: String
     private lateinit var exportPassword: String
+    private val debugExportToDownloads = true
 
     private lateinit var adapter: PointStatusAdapter
 
@@ -65,16 +60,8 @@ class HomeActivity : BaseActivity() {
 
         val shift = ShiftUtils.resolveCurrentShift()
         val shiftValue = ShiftUtils.currentShiftValue()
-        Log.d("FuckShift", shiftValue)
         val today =
             java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(java.util.Date())
-        // 读取上次导出时间
-        val prefs = getSharedPreferences("SafePatrolPrefs", MODE_PRIVATE)
-        lastExportTs = prefs.getLong("lastExportTs", 0L)
-        val lastExportStr = if (lastExportTs > 0) java.text.SimpleDateFormat(
-            "yyyy-MM-dd HH:mm",
-            Locale.getDefault()
-        ).format(java.util.Date(lastExportTs)) else "无"
         binding.tvHeader.text = getString(
             R.string.homepage_header,
             routeName,
@@ -82,8 +69,7 @@ class HomeActivity : BaseActivity() {
             today,
             shiftValue,
             shift.name,
-            shift.rangeText,
-            lastExportStr
+            shift.rangeText
         )
         // RecyclerView 基本设置
         binding.rvPoints.layoutManager = LinearLayoutManager(this)
@@ -301,43 +287,82 @@ class HomeActivity : BaseActivity() {
 
             lifecycleScope.launch {
                 try {
-                    val modifyPwd = exportPassword
+                    // === 导出数据库并压缩为加密 zip ===
+                    // 通过 Room 打开数据库，获取真实路径（避免 getDatabasePath 找不到）
+                    val roomDb = AppDatabase.get(this@HomeActivity).openHelper.writableDatabase
+                    val dbPath = roomDb.path
+                    val dbFile = java.io.File(dbPath)
+                    if (!dbFile.exists()) throw RuntimeException("数据库文件不存在: $dbPath")
 
-                    // 计算导出起止时间戳
-                    val startTs = 1766592000000L
-//                  val startTs =
-//                        if (lastExportTs > 0) lastExportTs else 1766592000000L // 从最后导出时间开始或从第一条记录
-                    val endTs = System.currentTimeMillis()
+                    // 可能存在 WAL 模式文件
+                    val walFile = java.io.File(dbPath + "-wal")
+                    val shmFile = java.io.File(dbPath + "-shm")
 
-                    val path = exportIncrementalZipFromLastTime(
-                        context = this@HomeActivity,
-                        db = db,
-                        startTs = startTs,
-                        endTs = endTs,
-                        modifyPassword = modifyPwd
-                    )
+                    val timeStr = java.text.SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+                        .format(java.util.Date())
 
-                    val file = java.io.File(path)
-                    // === Copy file to system Downloads folder ===
-                    val downloads = android.os.Environment.getExternalStoragePublicDirectory(
-                        android.os.Environment.DIRECTORY_DOWNLOADS
-                    )
-                    if (!downloads.exists()) downloads.mkdirs()
+                    val safeRoute = routeName.replace(Regex("[/:*?\"<>|]"), "_")
 
-                    val destFile = java.io.File(downloads, file.name)
-                    try {
-                        file.copyTo(destFile, overwrite = true)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                    val outDir = if (debugExportToDownloads) {
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                    } else {
+                        getExternalFilesDir(android.os.Environment.DIRECTORY_DOCUMENTS)
+                    } ?: throw RuntimeException("无法获取导出目录")
+
+                    // 确保 WAL 内容写回主库，避免导出空库
+                    // 正确执行 wal_checkpoint（该 PRAGMA 会返回结果，不能用 execSQL）
+                    roomDb.query("PRAGMA wal_checkpoint(FULL)").use { cursor ->
+                        // 可选：打印返回值用于调试
+                        if (cursor.moveToFirst()) {
+                            Log.d("FuckExport", "wal_checkpoint result = ${cursor.getInt(0)}, ${cursor.getInt(1)}, ${cursor.getInt(2)}")
+                        }
                     }
+
+                    val exportedDb = java.io.File(outDir, "safepatrol_${safeRoute}_$timeStr.db")
+                    dbFile.inputStream().use { input ->
+                        exportedDb.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+
+                    // 如果存在 WAL/SHM，也一并拷贝（便于完整恢复）
+                    if (walFile.exists()) {
+                        java.io.File(outDir, "safepatrol_${safeRoute}_$timeStr.db-wal").also { out ->
+                            walFile.inputStream().use { input -> out.outputStream().use { input.copyTo(it) } }
+                        }
+                    }
+                    if (shmFile.exists()) {
+                        java.io.File(outDir, "safepatrol_${safeRoute}_$timeStr.db-shm").also { out ->
+                            shmFile.inputStream().use { input -> out.outputStream().use { input.copyTo(it) } }
+                        }
+                    }
+
+                    // 使用 zip4j 进行带密码压缩
+                    val zipFile = java.io.File(outDir, "safepatrol_${safeRoute}_$timeStr.zip")
+                    val zip = net.lingala.zip4j.ZipFile(zipFile, exportPassword.toCharArray())
+                    val params = net.lingala.zip4j.model.ZipParameters().apply {
+                        isEncryptFiles = true
+                        encryptionMethod = net.lingala.zip4j.model.enums.EncryptionMethod.AES
+                    }
+                    zip.addFile(exportedDb, params)
+                    val outWal = java.io.File(outDir, "safepatrol_${safeRoute}_$timeStr.db-wal")
+                    val outShm = java.io.File(outDir, "safepatrol_${safeRoute}_$timeStr.db-shm")
+                    if (outWal.exists()) zip.addFile(outWal, params)
+                    if (outShm.exists()) zip.addFile(outShm, params)
+
+                    // 删除明文 db，只保留 zip
+                    exportedDb.delete()
+                    java.io.File(outDir, "safepatrol_${safeRoute}_$timeStr.db-wal").delete()
+                    java.io.File(outDir, "safepatrol_${safeRoute}_$timeStr.db-shm").delete()
+
                     val uri = androidx.core.content.FileProvider.getUriForFile(
                         this@HomeActivity,
                         "${applicationContext.packageName}.fileprovider",
-                        file
+                        zipFile
                     )
 
                     val share = Intent(Intent.ACTION_SEND).apply {
-                        type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        type = "application/zip"
                         putExtra(Intent.EXTRA_STREAM, uri)
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     }
@@ -346,59 +371,19 @@ class HomeActivity : BaseActivity() {
                     progressDialog.dismiss()
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
 
-                    startActivity(Intent.createChooser(share, "分享导出文件"))
-
-                    // 弹出导出确认对话框
-                    AlertDialog.Builder(this@HomeActivity)
-                        .setTitle("确认导出")
-                        .setMessage("是否确认已经完成导出？确认后系统将记录导出时间，以后将无法重新导出本次时间段。")
-
-                        .setPositiveButton("是") { dialog, _ ->
-                            // 更新导出时间
-                            lastExportTs = endTs
-                            // 保存到 SharedPreferences
-                            getSharedPreferences("SafePatrolPrefs", MODE_PRIVATE)
-                                .edit {
-                                    putLong("lastExportTs", endTs)
-                                }
-
-                            // 刷新 tvHeader 上的最后导出时间显示
-                            val shift = ShiftUtils.resolveCurrentShift()
-                            val shiftValue = ShiftUtils.currentShiftValue()
-                            Log.d("FuckShift", shiftValue)
-                            val today =
-                                java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                                    .format(java.util.Date())
-                            val lastExportStr =
-                                java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                                    .format(java.util.Date(lastExportTs))
-                            binding.tvHeader.text = getString(
-                                R.string.homepage_header,
-                                routeName,
-                                operatorName,
-                                today,
-                                shiftValue,
-                                shift.name,
-                                shift.rangeText,
-                                lastExportStr
-                            )
-                            dialog.dismiss()
-                            Toast.makeText(this@HomeActivity, "已记录导出时间", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                        .setNegativeButton("否") { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .show()
+                    startActivity(Intent.createChooser(share, "分享数据库备份(zip)"))
                 } catch (t: Throwable) {
+                    Log.e("FuckExport", "导出失败", t)
+
                     // 关闭加载对话框并恢复窗口交互
                     try {
                         progressDialog.dismiss()
                     } catch (_: Throwable) {
                     }
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                    Toast.makeText(this@HomeActivity, "导出失败：${t.message}", Toast.LENGTH_LONG)
-                        .show()
+
+                    val msg = t.message ?: t.javaClass.simpleName
+                    Toast.makeText(this@HomeActivity, "导出失败：$msg", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -437,10 +422,6 @@ class HomeActivity : BaseActivity() {
                     8 -> 1
                     else -> 1
                 }
-                android.util.Log.d(
-                    "FuckHomeActivity",
-                    "→ Point=${point.pointId}, highestFreq=$highestFreq, expectedSlotCount=$expectedSlotCount"
-                )
 
                 // 只保留最高频率的检查项
                 val targetCheckItems = allCheckItems.filter { it.freqHours == highestFreq }
@@ -470,7 +451,7 @@ class HomeActivity : BaseActivity() {
                     for (item in items) {
                         // 忽略系统日志条目
                         if (item.itemId == "-1" || item.equipmentId == "-1") {
-                            android.util.Log.d(
+                            Log.d(
                                 "FuckHomeActivity",
                                 "⏭ Skipped system item for point=${point.pointId}"
                             )
@@ -482,7 +463,7 @@ class HomeActivity : BaseActivity() {
                         val recTs = recordTimestampMap[item.recordId] ?: continue
                         val slotIdx = SlotUtils.getSlotIndex(highestFreq, recTs)
                         slotStatusMap[slotIdx] = recTs
-                        android.util.Log.d(
+                        Log.d(
                             "FuckHomeActivity",
                             "✅ Point=${point.pointId}, CheckItem=${checkItem.itemId}, Slot=$slotIdx (recordId=${item.recordId})"
                         )
@@ -493,10 +474,6 @@ class HomeActivity : BaseActivity() {
                 val slots = (1..expectedSlotCount).map { slotIdx ->
                     val ts = slotStatusMap[slotIdx]
                     val isChecked = ts != null
-                    android.util.Log.d(
-                        "FuckHomeActivity",
-                        "Point ${point.pointId} slot $slotIdx -> ${if (isChecked) "✅ checked" else "⬜ unchecked"}"
-                    )
                     val slotChinese = slotIndexToChinese(slotIdx)
                     val title = if (isChecked) {
                         val timeStr = hhmm(ts)

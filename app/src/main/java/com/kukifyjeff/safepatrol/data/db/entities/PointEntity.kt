@@ -19,7 +19,6 @@ data class PointEntity(
     @PrimaryKey val pointId: String,
     val name: String,
     val location: String,
-//    val freqHours: Int,   // 2， 4 或 8
     val routeId: String,
     val tagUid: String
 )

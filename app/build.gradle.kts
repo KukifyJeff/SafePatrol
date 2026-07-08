@@ -13,9 +13,55 @@ android {
         minSdk = 31
         targetSdk = 36
         versionCode = 1
-        versionName = "1.3"
+        versionName = "1.5.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions += "major"
+
+    productFlavors {
+
+        create("QH1") {
+            dimension = "major"
+            applicationId = "com.kukifyjeff.safepatrol.qh1"
+            versionNameSuffix = "-QH1"
+        }
+        create("QH2") {
+            dimension = "major"
+            applicationId = "com.kukifyjeff.safepatrol.qh2"
+            versionNameSuffix = "-QH2"
+        }
+        create("DQ") {
+            dimension = "major"
+            applicationId = "com.kukifyjeff.safepatrol.dq"
+            versionNameSuffix = "-DQ"
+        }
+        create("RJ") {
+            dimension = "major"
+            applicationId = "com.kukifyjeff.safepatrol.rj"
+            versionNameSuffix = "-RJ"
+        }
+        create("KF") {
+            dimension = "major"
+            applicationId = "com.kukifyjeff.safepatrol.kf"
+            versionNameSuffix = "-KF"
+        }
+        create("JH") {
+            dimension = "major"
+            applicationId = "com.kukifyjeff.safepatrol.jh"
+            versionNameSuffix = "-JH"
+        }
+        create("LGI") {
+            dimension = "major"
+            applicationId = "com.kukifyjeff.safepatrol.lgi"
+            versionNameSuffix = "-LGI"
+        }
+        create("LGO") {
+            dimension = "major"
+            applicationId = "com.kukifyjeff.safepatrol.lgo"
+            versionNameSuffix = "-LGO"
+        }
     }
     buildFeatures {
         viewBinding = true

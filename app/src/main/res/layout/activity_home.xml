@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:background="@color/blue_primary"
             android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
-            app:title="IGCC气化安巡宝"
+            app:title="SafePatrol | IGCC安巡宝"
             app:titleCentered="true"
             app:titleTextColor="@color/white" />
 

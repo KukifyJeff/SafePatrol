@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">临港内圈安巡宝</string>
+    <string name="app_name">气化2安巡宝</string>
     <string name="form_bool_label">• %1$s（正常/异常）</string>
     <string name="status_current_normal">当前：正常</string>
     <string name="status_current_abnormal">当前：异常</string>

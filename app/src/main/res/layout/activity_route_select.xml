@@ -32,7 +32,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="SafePatrol | 华能天津IGCC\n煤气化装置安巡宝"
+            android:text="SafePatrol\n华能天津IGCC安巡宝"
             android:paddingTop="50dp"
             android:gravity="center"
             android:textSize="20dp"

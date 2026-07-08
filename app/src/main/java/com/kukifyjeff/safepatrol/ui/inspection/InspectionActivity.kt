@@ -406,7 +406,7 @@ class InspectionActivity : BaseActivity() {
 
                             val et = view.findViewById<EditText>(R.id.etValue)
                             et.inputType =
-                                android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+                                android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL or android.text.InputType.TYPE_NUMBER_FLAG_SIGNED
                             // if row.value already populated (from last record or min fallback), set it
                             if (row is FormRow.Number && row.value != null && et.text.isNullOrBlank()) {
                                 et.setText(row.value.toString())
@@ -892,11 +892,19 @@ class InspectionActivity : BaseActivity() {
             }
             withContext(Dispatchers.Main) {
                 rows.forEach { row ->
-                    if (row is FormRow.Number) {
-                        val v = itemHistoryMap[row.item.itemId]
-                        if (v != null) {
-                            row.value = v
+                    when (row) {
+                        is FormRow.Number -> {
+                            val v = itemHistoryMap[row.item.itemId]
+                            if (v != null) {
+                                row.value = v
+                                confirmedNumberItemIds.add(row.item.itemId)
+                            }
                         }
+                        is FormRow.Bool -> {
+                            row.ok = true
+                            remarkMap.remove(row.item.itemId)
+                        }
+                        else -> {}
                     }
                 }
                 adapter.notifyDataSetChanged()
